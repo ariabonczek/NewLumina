@@ -1,0 +1,49 @@
+//--------------------------------------
+// LuminaEngine belongs to Aria Bonczek
+//--------------------------------------
+#ifndef GAME_HPP
+#define GAME_HPP
+
+#include <Core\Common.hpp>
+#include <Core\Renderer.hpp>
+
+NS_BEGIN
+
+/// <summary>
+/// Top-level single to encapsulate the entire game
+/// </summary>
+class Game
+{
+public:
+	~Game();
+
+	static Game GetInstance();
+
+	/// <summary>
+	/// Starts the game, called in main/WinMain
+	/// </summary>
+	int32 Run();
+private:
+	Game();
+
+	/// <summary>
+	/// Initializes game subsystems and loads necessary data
+	/// </summary>
+	void Initialize();
+
+	/// <summary>
+	/// Shuts down game subsystems in a safe order
+	/// </summary>
+	void Shutdown();
+
+	/// <summary>
+	/// Used by the game loop. Returns true if the game should keep going
+	/// </summary>
+	bool ShouldContinueRunning();
+	Renderer m_Renderer;
+	//SceneManager m_SceneManager;
+};
+
+NS_END
+
+#endif

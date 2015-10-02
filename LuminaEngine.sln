@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LuminaEngine", "src\LuminaEngine.vcxproj", "{A49BB2D6-6670-48DF-8EA3-58FA9A100A55}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		DX11_Debug|Win32 = DX11_Debug|Win32
+		DX11_Release|Win32 = DX11_Release|Win32
+		DX12_Debug|Win32 = DX12_Debug|Win32
+		DX12_Release|Win32 = DX12_Release|Win32
+		GL_Debug|Win32 = GL_Debug|Win32
+		GL_Release|Win32 = GL_Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A49BB2D6-6670-48DF-8EA3-58FA9A100A55}.DX11_Debug|Win32.ActiveCfg = DX11_Debug|Win32
+		{A49BB2D6-6670-48DF-8EA3-58FA9A100A55}.DX11_Debug|Win32.Build.0 = DX11_Debug|Win32
+		{A49BB2D6-6670-48DF-8EA3-58FA9A100A55}.DX11_Release|Win32.ActiveCfg = DX11_Release|Win32
+		{A49BB2D6-6670-48DF-8EA3-58FA9A100A55}.DX11_Release|Win32.Build.0 = DX11_Release|Win32
+		{A49BB2D6-6670-48DF-8EA3-58FA9A100A55}.DX12_Debug|Win32.ActiveCfg = DX12_Debug|Win32
+		{A49BB2D6-6670-48DF-8EA3-58FA9A100A55}.DX12_Debug|Win32.Build.0 = DX12_Debug|Win32
+		{A49BB2D6-6670-48DF-8EA3-58FA9A100A55}.DX12_Release|Win32.ActiveCfg = DX12_Release|Win32
+		{A49BB2D6-6670-48DF-8EA3-58FA9A100A55}.DX12_Release|Win32.Build.0 = DX12_Release|Win32
+		{A49BB2D6-6670-48DF-8EA3-58FA9A100A55}.GL_Debug|Win32.ActiveCfg = GL_Debug|Win32
+		{A49BB2D6-6670-48DF-8EA3-58FA9A100A55}.GL_Debug|Win32.Build.0 = GL_Debug|Win32
+		{A49BB2D6-6670-48DF-8EA3-58FA9A100A55}.GL_Release|Win32.ActiveCfg = GL_Release|Win32
+		{A49BB2D6-6670-48DF-8EA3-58FA9A100A55}.GL_Release|Win32.Build.0 = GL_Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

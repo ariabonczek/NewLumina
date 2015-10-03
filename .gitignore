@@ -29,6 +29,7 @@
 *.sdf
 *.opensdf
 *.suo
+*.vcxproj.user
 
 # Lumina-Specific Ignores
 build/*

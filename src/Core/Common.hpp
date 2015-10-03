@@ -25,12 +25,18 @@
 #if GL43
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
+#include <pthread.h>
 #endif
 
 #define NS_BEGIN namespace Lumina{
 #define NS_END }
 
 #include <string>
+
+#include <Utility\Timer.hpp>
+#if _DEBUG
+#include <Utility\Debug.hpp>
+#endif
 
 typedef unsigned char uint8;
 typedef char int8;

@@ -5,8 +5,8 @@
 #define RENDERER_HPP
 
 #include <Core\Common.hpp>
-#include <Core\Window.hpp>
-#include <Core\GraphicsDevice.hpp>
+#include <Graphics\Window.hpp>
+#include <Graphics\GraphicsDevice.hpp>
 
 NS_BEGIN
 
@@ -19,10 +19,14 @@ public:
 	Renderer();
 	~Renderer();
 
+	void BeginFrame();
+
+	void EndFrame();
+
 	/// <summary>
-	/// Render the scene
+	/// Executes "previous" frame command list
 	/// </summary>
-	void Render();
+	void ExecuteCommandList();
 
 	/// <summary>
 	/// Poll for and handle events from the window
@@ -38,6 +42,10 @@ public:
 	/// Shuts down the renderer and its subsystems
 	/// </summary>
 	void Shutdown();
+
+#if DX11 || DX12
+	static DWORD WINAPI ThreadFunc(void* param);
+#endif
 
 private:
 	Window* mp_Window;

@@ -25,7 +25,17 @@ int32 Game::Run()
 	// Game loop
 	while (ShouldContinueRunning())
 	{
-		m_Renderer.Render();
+		// Start drawing the "previous" frame
+		m_Scheduler.StartThreads();
+
+		m_Renderer.BeginFrame();
+
+		// Render the world here
+
+		m_Renderer.EndFrame();
+
+		// Sync the threads
+		m_Scheduler.WaitForSync();
 	}
 
 	// Safely shut down subsystems in order
@@ -36,12 +46,15 @@ int32 Game::Run()
 
 void Game::Initialize()
 {
+	Debug::Initialize();
 	m_Renderer.Initialize();
+	m_Scheduler.Initialize(&m_Renderer);
 }
 
 void Game::Shutdown()
 {
 	m_Renderer.Shutdown();
+	Debug::Shutdown();
 }
 
 bool Game::ShouldContinueRunning()

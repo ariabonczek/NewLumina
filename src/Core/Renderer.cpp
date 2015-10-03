@@ -46,11 +46,28 @@ bool Renderer::HandleWindowEvents()
 	return true;
 }
 
-void Renderer::Render()
+void Renderer::BeginFrame()
 {
 	mp_GraphicsDevice->ResetCommandList();
-	mp_GraphicsDevice->Clear();
-	mp_GraphicsDevice->Display();
 }
+
+void Renderer::EndFrame()
+{
+	mp_GraphicsDevice->CloseCommandList();
+}
+
+void Renderer::ExecuteCommandList()
+{
+	mp_GraphicsDevice->ExecuteCommandList();
+}
+
+#if DX11 || DX12
+DWORD WINAPI Renderer::ThreadFunc(void* param)
+{
+	Renderer* _this = (Renderer*)param;
+	_this->ExecuteCommandList();
+	return 0;
+}
+#endif
 
 NS_END

@@ -27,19 +27,27 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Core\Allocator.cpp" />
     <ClCompile Include="Core\Game.cpp" />
-    <ClCompile Include="Core\GraphicsDevice.cpp" />
     <ClCompile Include="Core\Renderer.cpp" />
-    <ClCompile Include="Core\Window.cpp" />
+    <ClCompile Include="Core\Scheduler.cpp" />
+    <ClCompile Include="Graphics\GraphicsDevice.cpp" />
+    <ClCompile Include="Graphics\Window.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Utility\Debug.cpp" />
+    <ClCompile Include="Utility\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core\Allocator.hpp" />
     <ClInclude Include="Core\Common.hpp" />
     <ClInclude Include="Core\Game.hpp" />
-    <ClInclude Include="Core\GraphicsDevice.hpp" />
     <ClInclude Include="Core\Renderer.hpp" />
-    <ClInclude Include="Core\Window.hpp" />
     <ClInclude Include="Config.hpp" />
+    <ClInclude Include="Core\Scheduler.hpp" />
+    <ClInclude Include="Graphics\GraphicsDevice.hpp" />
+    <ClInclude Include="Graphics\Window.hpp" />
+    <ClInclude Include="Utility\Debug.hpp" />
+    <ClInclude Include="Utility\Timer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="P:\LuminaEngine\content\Shaders\DirectX\defaultPixel.hlsl">

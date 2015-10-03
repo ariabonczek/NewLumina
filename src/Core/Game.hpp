@@ -6,6 +6,7 @@
 
 #include <Core\Common.hpp>
 #include <Core\Renderer.hpp>
+#include <Core\Scheduler.hpp>
 
 NS_BEGIN
 
@@ -40,6 +41,7 @@ private:
 	/// Used by the game loop. Returns true if the game should keep going
 	/// </summary>
 	bool ShouldContinueRunning();
+	Scheduler m_Scheduler;
 	Renderer m_Renderer;
 	//SceneManager m_SceneManager;
 };

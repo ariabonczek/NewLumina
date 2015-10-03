@@ -59,12 +59,13 @@ private:
 	ID3D11DeviceContext* defCon[2];
 	ID3D11CommandList* commandList;
 	uint32 contextIndex;		// Points the the context currently storing draw calls
-	IDXGISwapChain* swapChain;
-	ID3D11Texture2D* depthBuffer;
-	ID3D11RenderTargetView* renderTargetView;
-	ID3D11DepthStencilView* depthStencilView;
+	IDXGISwapChain3* swapChain;
+	ID3D11Texture2D* depthBuffer[NUM_BUFFERS];
+	ID3D11RenderTargetView* renderTargetView[NUM_BUFFERS];
+	ID3D11DepthStencilView* depthStencilView[NUM_BUFFERS];
 	D3D11_VIEWPORT viewport;
 	D3D_FEATURE_LEVEL featureLevel;
+	uint32 frameIndex;
 #elif DX12
 	// DirectX12 Interfaces
 	ID3D12Device* dev;

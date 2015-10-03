@@ -34,7 +34,7 @@
 #include <string>
 
 #include <Utility\Timer.hpp>
-#if _DEBUG
+#if _WIN32 && _DEBUG
 #include <Utility\Debug.hpp>
 #endif
 

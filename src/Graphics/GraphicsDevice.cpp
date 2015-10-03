@@ -21,9 +21,12 @@ GraphicsDevice::GraphicsDevice()
 GraphicsDevice::~GraphicsDevice()
 {
 #if DX11
-	DELETECOM(depthStencilView);
-	DELETECOM(depthBuffer);
-	DELETECOM(renderTargetView);
+	for (uint32 i = 0; i < NUM_BUFFERS; ++i)
+	{
+		DELETECOM(depthStencilView[i]);
+		DELETECOM(depthBuffer[i]);
+		DELETECOM(renderTargetView[i]);
+	}
 	DELETECOM(swapChain);
 
 	if (defCon[0])
@@ -60,12 +63,14 @@ GraphicsDevice::~GraphicsDevice()
 void GraphicsDevice::Initialize(Window* window)
 {
 	this->window = window;
+	
+
+#if DX11 
 	HRESULT hr;
 
 	IDXGIFactory4* factory;
 	CreateDXGIFactory1(__uuidof(IDXGIFactory4), (void**)&factory);
 
-#if DX11 
 	hr = D3D11CreateDevice(
 		NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
@@ -83,7 +88,6 @@ void GraphicsDevice::Initialize(Window* window)
 		&immCon
 		);
 
-
 	//
 	// Deferred Context
 	//
@@ -94,7 +98,7 @@ void GraphicsDevice::Initialize(Window* window)
 
 	DXGI_SWAP_CHAIN_DESC scd;
 	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
-	scd.BufferCount = 1;
+	scd.BufferCount = NUM_BUFFERS;
 	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	scd.BufferDesc.Width = window->GetWidth();
 	scd.BufferDesc.Height = window->GetHeight();
@@ -109,7 +113,8 @@ void GraphicsDevice::Initialize(Window* window)
 	scd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	scd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
-	factory->CreateSwapChain(dev, &scd, &swapChain);
+	factory->CreateSwapChain(dev, &scd, (IDXGISwapChain**)&swapChain);
+	frameIndex = swapChain->GetCurrentBackBufferIndex();
 
 	DELETECOM(factory);
 
@@ -117,6 +122,11 @@ void GraphicsDevice::Initialize(Window* window)
 #elif DX12
 
 #ifdef _DEBUG
+	HRESULT hr;
+
+	IDXGIFactory4* factory;
+	CreateDXGIFactory1(__uuidof(IDXGIFactory4), (void**)&factory);
+
 	// Enable the D3D12 debug layer.
 	{
 		ID3D12Debug* debugController;
@@ -290,36 +300,40 @@ void GraphicsDevice::Initialize(Window* window)
 void GraphicsDevice::OnResize()
 {
 #if DX11
-	DELETECOM(renderTargetView);
-	DELETECOM(depthStencilView);
-	DELETECOM(depthBuffer);
-
 	swapChain->ResizeBuffers(
-		1,
+		NUM_BUFFERS,
 		window->GetWidth(),
 		window->GetHeight(),
 		DXGI_FORMAT_R8G8B8A8_UNORM,
 		NULL);
-	ID3D11Texture2D* backBuffer;
-	swapChain->GetBuffer(NULL, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
-	dev->CreateRenderTargetView(backBuffer, 0, &renderTargetView);
-	DELETECOM(backBuffer);
 
-	D3D11_TEXTURE2D_DESC dsd;
-	ZeroMemory(&dsd, sizeof(D3D11_TEXTURE2D_DESC));
-	dsd.Width = window->GetWidth();
-	dsd.Height = window->GetHeight();
-	dsd.MipLevels = 1;
-	dsd.ArraySize = 1;
-	dsd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	dsd.Usage = D3D11_USAGE_DEFAULT;
-	dsd.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	dsd.CPUAccessFlags = NULL;
-	dsd.MiscFlags = NULL;
-	dsd.SampleDesc.Count = 4;
+	for (uint32 i = 0; i < NUM_BUFFERS; ++i)
+	{
+		DELETECOM(renderTargetView[i]);
+		DELETECOM(depthStencilView[i]);
+		DELETECOM(depthBuffer[i]);
 
-	dev->CreateTexture2D(&dsd, NULL, &depthBuffer);
-	dev->CreateDepthStencilView(depthBuffer, NULL, &depthStencilView);
+		ID3D11Texture2D* backBuffer;
+		swapChain->GetBuffer(NULL, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
+		dev->CreateRenderTargetView(backBuffer, 0, &renderTargetView[i]);
+		DELETECOM(backBuffer);
+
+		D3D11_TEXTURE2D_DESC dsd;
+		ZeroMemory(&dsd, sizeof(D3D11_TEXTURE2D_DESC));
+		dsd.Width = window->GetWidth();
+		dsd.Height = window->GetHeight();
+		dsd.MipLevels = 1;
+		dsd.ArraySize = 1;
+		dsd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		dsd.Usage = D3D11_USAGE_DEFAULT;
+		dsd.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		dsd.CPUAccessFlags = NULL;
+		dsd.MiscFlags = NULL;
+		dsd.SampleDesc.Count = 4;
+
+		dev->CreateTexture2D(&dsd, NULL, &depthBuffer[i]);
+		dev->CreateDepthStencilView(depthBuffer[i], NULL, &depthStencilView[i]);
+	}
 
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
@@ -374,10 +388,10 @@ void GraphicsDevice::ResetCommandList()
 {
 #if DX11
 	defCon[contextIndex]->RSSetViewports(1, &viewport);
-	defCon[contextIndex]->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
+	defCon[contextIndex]->OMSetRenderTargets(1, &renderTargetView[frameIndex], depthStencilView[frameIndex]);
 
 	const float color[4] = { 0.392f, 0.584f, 0.929f, 1.0f };
-	defCon[contextIndex]->ClearRenderTargetView(renderTargetView, color);
+	defCon[contextIndex]->ClearRenderTargetView(renderTargetView[frameIndex], color);
 #elif DX12
 	commandAllocator[commandIndex]->Reset();
 	commandList[commandIndex]->Reset(commandAllocator[commandIndex], pipelineState);
@@ -404,7 +418,7 @@ void GraphicsDevice::ResetCommandList()
 	const float color[4] = { 0.392f, 0.584f, 0.929f, 1.0f };
 	commandList[commandIndex]->ClearRenderTargetView(rtvHandle, color, 0, NULL);
 #elif GL43
-	glClear();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 #endif
 }
 
@@ -424,6 +438,8 @@ void GraphicsDevice::CloseCommandList()
 	rb.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	commandList[commandIndex]->ResourceBarrier(1, &rb);
 	HRESULT hr = commandList[commandIndex]->Close();
+#elif GL43
+	glfwSwapBuffers(window->GetHandle());
 #endif
 }
 
@@ -432,6 +448,7 @@ void GraphicsDevice::ExecuteCommandList()
 #if DX11
 	immCon->ExecuteCommandList(commandList, TRUE);
 	swapChain->Present(VSYNC_ENABLED, 0);
+	frameIndex = swapChain->GetCurrentBackBufferIndex();
 #elif DX12
 	ID3D12CommandList* pCommandLists[] = { commandList[executeIndex] };
 
@@ -453,7 +470,7 @@ void GraphicsDevice::ExecuteCommandList()
 	frameIndex = swapChain->GetCurrentBackBufferIndex();
 	std::swap(commandIndex, executeIndex);
 #elif GL43
-	glfwSwapBuffers(window->GetHandle());
+	// WARNING: DO NOT MAKE GL CALLS HERE AS THE CONTEXT ONLY SUPPORTS ONE THREAD
 #endif
 }
 

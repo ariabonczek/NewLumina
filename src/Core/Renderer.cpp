@@ -68,6 +68,13 @@ DWORD WINAPI Renderer::ThreadFunc(void* param)
 	_this->ExecuteCommandList();
 	return 0;
 }
+#elif GL43
+void* Renderer::ThreadFunc(void* param)
+{
+	Renderer* _this = (Renderer*)param;
+	_this->ExecuteCommandList();
+	return 0;
+}
 #endif
 
 NS_END

@@ -19,16 +19,33 @@ public:
 	Scheduler();
 	~Scheduler();
 
+	/// <summary>
+	///
+	/// </summary>
 	void Initialize(Renderer* renderer);
+
+	/// <summary>
+	///
+	/// </summary>
 	void Shutdown();
 
+	/// <summary>
+	///
+	/// </summary>
 	void StartThreads();
 
+	/// <summary>
+	///
+	/// </summary>
 	void WaitForSync();
 
 private:
+#if DX11 || DX12
 	DWORD threadIDArray[1];
 	HANDLE threadArray[1];
+#elif GL43
+	pthread_t threadIDs[1];
+#endif
 
 	Renderer* p_Renderer;
 };

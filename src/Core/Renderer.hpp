@@ -19,8 +19,14 @@ public:
 	Renderer();
 	~Renderer();
 
+	/// <summary>
+	///
+	/// </summary>
 	void BeginFrame();
 
+	/// <summary>
+	///
+	/// </summary>
 	void EndFrame();
 
 	/// <summary>
@@ -45,6 +51,8 @@ public:
 
 #if DX11 || DX12
 	static DWORD WINAPI ThreadFunc(void* param);
+#elif GL43
+	static void* ThreadFunc(void* param);
 #endif
 
 private:

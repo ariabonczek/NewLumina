@@ -54,6 +54,11 @@ public:
 	/// Returns the height of the window
 	/// </summary>
 	uint16 GetHeight()const;
+
+	/// <summary>
+	/// Returns the aspect ratio
+	/// </summary>
+	float GetAspect()const;
 #if DX11 || DX12
 	/// <summary>
 	/// Returns a handle to the window object

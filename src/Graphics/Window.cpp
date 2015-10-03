@@ -175,6 +175,11 @@ uint16 Window::GetHeight()const
 	return height;
 }
 
+float Window::GetAspect()const
+{
+	return width / height;
+}
+
 #if DX11 || DX12
 HWND Window::GetHandle()const
 #elif GL43

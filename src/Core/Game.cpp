@@ -46,20 +46,28 @@ int32 Game::Run()
 
 void Game::Initialize()
 {
+#if _DEBUG
 	Debug::Initialize();
+	Debug::Log("Game Initialized");
+#endif
 	m_Renderer.Initialize();
-	m_Scheduler.Initialize(&m_Renderer);
+	m_WorldManager.Initialize();
+	m_Scheduler.Initialize(&m_Renderer, &m_WorldManager);
 }
 
 void Game::Shutdown()
 {
+	m_Scheduler.Shutdown();
 	m_Renderer.Shutdown();
+	m_WorldManager.Shutdown();
+#if _Debug
 	Debug::Shutdown();
+#endif
 }
 
 bool Game::ShouldContinueRunning()
 {
-	return m_Renderer.HandleWindowEvents(); // mp_SceneManager.ShouldQuit();
+	return m_Renderer.HandleWindowEvents() && !m_WorldManager.ShouldQuit();
 }
 
 NS_END

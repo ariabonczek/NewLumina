@@ -20,6 +20,9 @@ Renderer::~Renderer()
 
 void Renderer::Initialize()
 {
+#if _DEBUG
+	Debug::Log("Renderer Initialized");
+#endif
 	mp_Window->Initialize(mp_GraphicsDevice);
 	mp_GraphicsDevice->Initialize(mp_Window);
 
@@ -56,23 +59,23 @@ void Renderer::EndFrame()
 	mp_GraphicsDevice->CloseCommandList();
 }
 
-void Renderer::ExecuteCommandList()
+void Renderer::Run()
 {
 	mp_GraphicsDevice->ExecuteCommandList();
 }
 
 #if DX11 || DX12
-DWORD WINAPI Renderer::ThreadFunc(void* param)
+DWORD WINAPI Renderer::FireThread(void* param)
 {
 	Renderer* _this = (Renderer*)param;
-	_this->ExecuteCommandList();
+	_this->Run();
 	return 0;
 }
 #elif GL43
-void* Renderer::ThreadFunc(void* param)
+void* Renderer::FireThread(void* param)
 {
 	Renderer* _this = (Renderer*)param;
-	_this->ExecuteCommandList();
+	_this->Run();
 	return 0;
 }
 #endif

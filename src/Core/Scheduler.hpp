@@ -9,6 +9,7 @@
 NS_BEGIN
 
 class Renderer;
+class WorldManager;
 
 /// <summary>
 /// Schedules tasks and oversees multithread execution and synchronization
@@ -22,7 +23,7 @@ public:
 	/// <summary>
 	///
 	/// </summary>
-	void Initialize(Renderer* renderer);
+	void Initialize(Renderer* renderer, WorldManager* world);
 
 	/// <summary>
 	///
@@ -41,13 +42,14 @@ public:
 
 private:
 #if DX11 || DX12
-	DWORD threadIDArray[1];
-	HANDLE threadArray[1];
+	DWORD threadIDArray[3];
+	HANDLE threadArray[3];
 #elif GL43
-	pthread_t threadIDs[1];
+	pthread_t threadIDs[3];
 #endif
 
 	Renderer* p_Renderer;
+	WorldManager* p_WorldManager;
 };
 
 NS_END

@@ -4,8 +4,6 @@
 #ifndef DEBUG_HPP
 #define DEBUG_HPP
 
-#if _DEBUG
-
 #include <Windows.h>
 #include <string>
 
@@ -21,7 +19,5 @@ public:
 private:
 	static HANDLE consoleHandle;
 };
-
-#endif
 
 #endif

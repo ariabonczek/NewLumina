@@ -3,8 +3,6 @@
 //--------------------------------------
 #include <Utility\Debug.hpp>
 
-#if _DEBUG
-
 HANDLE Debug::consoleHandle;
 
 void Debug::Initialize()
@@ -12,6 +10,10 @@ void Debug::Initialize()
 	AllocConsole();
 	AttachConsole(GetCurrentProcessId());
 	consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+#if _DEBUG
+	Debug::Log("Debug Initialized");
+#endif
 }
 
 void Debug::Shutdown()
@@ -26,5 +28,3 @@ void Debug::Log(std::string s)
 	DWORD written;
 	WriteConsole(consoleHandle, s.c_str(), strlen(s.c_str()), &written, NULL);
 }
-
-#endif

@@ -36,6 +36,10 @@ Window::~Window()
 //
 void Window::Initialize(GraphicsDevice* graphicsDevice)
 {
+#if _DEBUG
+	Debug::Log("Window Initialized");
+#endif
+
 #if DX11 || DX12
 
 	WNDCLASS wc;
@@ -177,7 +181,7 @@ uint16 Window::GetHeight()const
 
 float Window::GetAspect()const
 {
-	return width / height;
+	return (float)width / height;
 }
 
 #if DX11 || DX12

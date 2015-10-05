@@ -29,8 +29,11 @@
   <ItemGroup>
     <ClCompile Include="Core\Allocator.cpp" />
     <ClCompile Include="Core\Game.cpp" />
+    <ClCompile Include="Core\ObjectManager.cpp" />
+    <ClCompile Include="Core\PhysicsManager.cpp" />
     <ClCompile Include="Core\Renderer.cpp" />
     <ClCompile Include="Core\Scheduler.cpp" />
+    <ClCompile Include="Core\WorldManager.cpp" />
     <ClCompile Include="Graphics\GraphicsDevice.cpp" />
     <ClCompile Include="Graphics\Window.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -41,9 +44,12 @@
     <ClInclude Include="Core\Allocator.hpp" />
     <ClInclude Include="Core\Common.hpp" />
     <ClInclude Include="Core\Game.hpp" />
+    <ClInclude Include="Core\ObjectManager.hpp" />
+    <ClInclude Include="Core\PhysicsManager.hpp" />
     <ClInclude Include="Core\Renderer.hpp" />
     <ClInclude Include="Config.hpp" />
     <ClInclude Include="Core\Scheduler.hpp" />
+    <ClInclude Include="Core\WorldManager.hpp" />
     <ClInclude Include="Graphics\GraphicsDevice.hpp" />
     <ClInclude Include="Graphics\Window.hpp" />
     <ClInclude Include="Utility\Debug.hpp" />

@@ -62,6 +62,9 @@ GraphicsDevice::~GraphicsDevice()
 
 void GraphicsDevice::Initialize(Window* window)
 {
+#if _DEBUG
+	Debug::Log("GraphicsDevice Initialized");
+#endif
 	this->window = window;
 	
 
@@ -398,7 +401,6 @@ void GraphicsDevice::ResetCommandList()
 	commandList[commandIndex]->SetGraphicsRootSignature(rootSignature);
 	commandList[commandIndex]->RSSetViewports(1, &viewport);
 
-
 	// Use to render
 	D3D12_RESOURCE_BARRIER rb;
 	ZeroMemory(&rb, sizeof(D3D12_RESOURCE_BARRIER));
@@ -428,7 +430,6 @@ void GraphicsDevice::CloseCommandList()
 	defCon[contextIndex]->FinishCommandList(FALSE, &commandList);
 	contextIndex ^= 1;
 #elif DX12
-
 	D3D12_RESOURCE_BARRIER rb;
 	ZeroMemory(&rb, sizeof(D3D12_RESOURCE_BARRIER));
 	rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;

@@ -7,6 +7,7 @@
 #include <Core\Common.hpp>
 #include <Core\Renderer.hpp>
 #include <Core\Scheduler.hpp>
+#include <Core\WorldManager.hpp>
 
 NS_BEGIN
 
@@ -43,7 +44,7 @@ private:
 	bool ShouldContinueRunning();
 	Scheduler m_Scheduler;
 	Renderer m_Renderer;
-	//SceneManager m_SceneManager;
+	WorldManager m_WorldManager;
 };
 
 NS_END

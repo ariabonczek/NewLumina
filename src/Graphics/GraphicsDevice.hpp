@@ -11,11 +11,23 @@ NS_BEGIN
 
 class Window;
 
+#if DX11
+struct DisplayBuffer
+{
+	ID3D11Texture2D* depthBuffer;
+	ID3D11RenderTargetView* renderTargetView;
+	ID3D11DepthStencilView* depthStencilView;
+};
+#elif DX12
+
+#endif
+
 /// <summary>
 /// Renderer's handle to the graphics context
 /// </summary>
 class GraphicsDevice
 {
+	friend class ResourceManager;
 public:
 	GraphicsDevice();
 	~GraphicsDevice();
@@ -60,9 +72,7 @@ private:
 	ID3D11CommandList* commandList;
 	uint32 contextIndex;		// Points the the context currently storing draw calls
 	IDXGISwapChain3* swapChain;
-	ID3D11Texture2D* depthBuffer[NUM_BUFFERS];
-	ID3D11RenderTargetView* renderTargetView[NUM_BUFFERS];
-	ID3D11DepthStencilView* depthStencilView[NUM_BUFFERS];
+	DisplayBuffer displayBuffers[NUM_BUFFERS];
 	D3D11_VIEWPORT viewport;
 	D3D_FEATURE_LEVEL featureLevel;
 	uint32 frameIndex;
@@ -90,6 +100,8 @@ private:
 #elif GL43
 
 #endif
+
+
 };
 
 NS_END

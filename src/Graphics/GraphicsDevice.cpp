@@ -6,6 +6,8 @@
 #include <Graphics\Window.hpp>
 #include <d3dcompiler.h>
 
+#include <Utility\ResourceManager.hpp>
+
 NS_BEGIN
 
 GraphicsDevice::GraphicsDevice()
@@ -23,9 +25,9 @@ GraphicsDevice::~GraphicsDevice()
 #if DX11
 	for (uint32 i = 0; i < NUM_BUFFERS; ++i)
 	{
-		DELETECOM(depthStencilView[i]);
-		DELETECOM(depthBuffer[i]);
-		DELETECOM(renderTargetView[i]);
+		DELETECOM(displayBuffers[i].depthStencilView);
+		DELETECOM(displayBuffers[i].depthBuffer);
+		DELETECOM(displayBuffers[i].renderTargetView);
 	}
 	DELETECOM(swapChain);
 
@@ -90,6 +92,8 @@ void GraphicsDevice::Initialize(Window* window)
 		NULL,
 		&immCon
 		);
+
+	ResourceManager::GetInstance().SetDevice(dev);
 
 	//
 	// Deferred Context
@@ -166,6 +170,8 @@ void GraphicsDevice::Initialize(Window* window)
 	}
 	
 	hr = D3D12CreateDevice(hardwareAdapter, D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), (void**)&dev);
+
+	ResourceManager::GetInstance().SetDevice(dev);
 
 	//
 	// Command Queue
@@ -245,6 +251,7 @@ void GraphicsDevice::Initialize(Window* window)
 		D3D12_DEFAULT_DEPTH_BIAS_CLAMP, D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS, TRUE, FALSE, FALSE, 0,
 		D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF };
 	gpsd.BlendState = { FALSE, FALSE };
+
 	const D3D12_RENDER_TARGET_BLEND_DESC defaultRenderTargetBlendDesc =
 	{
 		FALSE,FALSE,
@@ -312,13 +319,13 @@ void GraphicsDevice::OnResize()
 
 	for (uint32 i = 0; i < NUM_BUFFERS; ++i)
 	{
-		DELETECOM(renderTargetView[i]);
-		DELETECOM(depthStencilView[i]);
-		DELETECOM(depthBuffer[i]);
+		DELETECOM(displayBuffers[i].renderTargetView);
+		DELETECOM(displayBuffers[i].depthStencilView);
+		DELETECOM(displayBuffers[i].depthBuffer);
 
 		ID3D11Texture2D* backBuffer;
 		swapChain->GetBuffer(NULL, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
-		dev->CreateRenderTargetView(backBuffer, 0, &renderTargetView[i]);
+		dev->CreateRenderTargetView(backBuffer, 0, &displayBuffers[i].renderTargetView);
 		DELETECOM(backBuffer);
 
 		D3D11_TEXTURE2D_DESC dsd;
@@ -334,8 +341,8 @@ void GraphicsDevice::OnResize()
 		dsd.MiscFlags = NULL;
 		dsd.SampleDesc.Count = 4;
 
-		dev->CreateTexture2D(&dsd, NULL, &depthBuffer[i]);
-		dev->CreateDepthStencilView(depthBuffer[i], NULL, &depthStencilView[i]);
+		dev->CreateTexture2D(&dsd, NULL, &displayBuffers[i].depthBuffer);
+		dev->CreateDepthStencilView(displayBuffers[i].depthBuffer, NULL, &displayBuffers[i].depthStencilView);
 	}
 
 	viewport.TopLeftX = 0;
@@ -391,10 +398,10 @@ void GraphicsDevice::ResetCommandList()
 {
 #if DX11
 	defCon[contextIndex]->RSSetViewports(1, &viewport);
-	defCon[contextIndex]->OMSetRenderTargets(1, &renderTargetView[frameIndex], depthStencilView[frameIndex]);
+	defCon[contextIndex]->OMSetRenderTargets(1, &displayBuffers[frameIndex].renderTargetView, displayBuffers[frameIndex].depthStencilView);
 
 	const float color[4] = { 0.392f, 0.584f, 0.929f, 1.0f };
-	defCon[contextIndex]->ClearRenderTargetView(renderTargetView[frameIndex], color);
+	defCon[contextIndex]->ClearRenderTargetView(displayBuffers[frameIndex].renderTargetView, color);
 #elif DX12
 	commandAllocator[commandIndex]->Reset();
 	commandList[commandIndex]->Reset(commandAllocator[commandIndex], pipelineState);

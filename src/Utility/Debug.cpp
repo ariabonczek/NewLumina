@@ -25,6 +25,20 @@ void Debug::Log(std::string s)
 {
 	s.append("\n");
 	SetConsoleTextAttribute(consoleHandle, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-	DWORD written;
-	WriteConsole(consoleHandle, s.c_str(), strlen(s.c_str()), &written, NULL);
+	WriteConsole(consoleHandle, s.c_str(), strlen(s.c_str()), NULL, NULL);
+}
+
+
+void Debug::LogError(std::string s)
+{
+	s.append("\n");
+	SetConsoleTextAttribute(consoleHandle, FOREGROUND_RED | FOREGROUND_INTENSITY);
+	WriteConsole(consoleHandle, s.c_str(), strlen(s.c_str()), NULL, NULL);
+}
+
+void Debug::LogWarning(std::string s)
+{
+	s.append("\n");
+	SetConsoleTextAttribute(consoleHandle, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+	WriteConsole(consoleHandle, s.c_str(), strlen(s.c_str()), NULL, NULL);
 }

@@ -8,6 +8,8 @@
 #include <Core\Renderer.hpp>
 #include <Core\Scheduler.hpp>
 #include <Core\WorldManager.hpp>
+#include <Utility\ResourceManager.hpp>
+#include <Utility\Filesystem.hpp>
 
 NS_BEGIN
 
@@ -42,6 +44,7 @@ private:
 	/// Used by the game loop. Returns true if the game should keep going
 	/// </summary>
 	bool ShouldContinueRunning();
+
 	Scheduler m_Scheduler;
 	Renderer m_Renderer;
 	WorldManager m_WorldManager;

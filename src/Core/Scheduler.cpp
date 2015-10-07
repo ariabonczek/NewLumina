@@ -13,9 +13,16 @@ Scheduler::~Scheduler()
 
 void Scheduler::Initialize(Renderer* renderer, WorldManager* world)
 {
+#if DX11 || DX12
+	GetSystemInfo(&sysInfo);
+	numCores = sysInfo.dwNumberOfProcessors;
+#endif
+
 #if _DEBUG
 	Debug::Log("Scheduler Initialized");
+	Debug::Log("Number of Cores: " + std::to_string(numCores));
 #endif
+
 	p_Renderer = renderer;
 	p_WorldManager = world;
 }

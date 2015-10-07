@@ -50,6 +50,9 @@ void Game::Initialize()
 	Debug::Initialize();
 	Debug::Log("Game Initialized");
 #endif
+
+	Filesystem::Initialize();
+	ResourceManager::GetInstance().Initialize();
 	m_Renderer.Initialize();
 	m_WorldManager.Initialize();
 	m_Scheduler.Initialize(&m_Renderer, &m_WorldManager);
@@ -60,6 +63,9 @@ void Game::Shutdown()
 	m_Scheduler.Shutdown();
 	m_Renderer.Shutdown();
 	m_WorldManager.Shutdown();
+	ResourceManager::GetInstance().Shutdown();
+	Filesystem::Shutdown();
+
 #if _Debug
 	Debug::Shutdown();
 #endif

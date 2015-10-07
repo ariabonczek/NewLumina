@@ -9,6 +9,5 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR cmdLine, i
 int main(int argc, char** argv)
 #endif
 {
-	Lumina::Game game = Lumina::Game::GetInstance();
-	return game.Run();
+	return Lumina::Game::GetInstance().Run();
 }

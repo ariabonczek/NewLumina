@@ -35,9 +35,21 @@
     <ClCompile Include="Core\Scheduler.cpp" />
     <ClCompile Include="Core\WorldManager.cpp" />
     <ClCompile Include="Graphics\GraphicsDevice.cpp" />
+    <ClCompile Include="Graphics\Mesh.cpp" />
+    <ClCompile Include="Graphics\Sampler.cpp" />
+    <ClCompile Include="Graphics\Texture2D.cpp" />
     <ClCompile Include="Graphics\Window.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Math\Data.cpp" />
+    <ClCompile Include="Math\Math.cpp" />
+    <ClCompile Include="Math\Matrix.cpp" />
+    <ClCompile Include="Math\Quaternion.cpp" />
+    <ClCompile Include="Math\Vector.cpp" />
     <ClCompile Include="Utility\Debug.cpp" />
+    <ClCompile Include="Utility\Filesystem.cpp" />
+    <ClCompile Include="Utility\Murmur3\MurmurHash.cpp" />
+    <ClCompile Include="Utility\ResourceManager.cpp" />
+    <ClCompile Include="Utility\Resources\Resource.cpp" />
     <ClCompile Include="Utility\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -50,9 +62,23 @@
     <ClInclude Include="Config.hpp" />
     <ClInclude Include="Core\Scheduler.hpp" />
     <ClInclude Include="Core\WorldManager.hpp" />
+    <ClInclude Include="Graphics\Data.hpp" />
     <ClInclude Include="Graphics\GraphicsDevice.hpp" />
+    <ClInclude Include="Graphics\Mesh.hpp" />
+    <ClInclude Include="Graphics\Sampler.hpp" />
+    <ClInclude Include="Graphics\Texture2D.hpp" />
     <ClInclude Include="Graphics\Window.hpp" />
+    <ClInclude Include="Math\Math.hpp" />
+    <ClInclude Include="Math\MathCommon.hpp" />
+    <ClInclude Include="Math\Matrix.hpp" />
+    <ClInclude Include="Math\Quaternion.hpp" />
+    <ClInclude Include="Math\Vector.hpp" />
     <ClInclude Include="Utility\Debug.hpp" />
+    <ClInclude Include="Utility\Filesystem.hpp" />
+    <ClInclude Include="Utility\Murmur3\MurmurHash.h" />
+    <ClInclude Include="Utility\ResourceManager.hpp" />
+    <ClInclude Include="Utility\Resources\Resource.hpp" />
+    <ClInclude Include="Utility\stb_image.h" />
     <ClInclude Include="Utility\Timer.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -231,7 +257,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32d.lib;pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimpd.lib;opengl32.lib;glfw3.lib;glew32d.lib;pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Outputs>dummy.txt;%(Outputs)</Outputs>
@@ -249,7 +275,7 @@ xcopy "$(SolutionDir)bin\*" "$(OutDir)" /s /y</Command>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dxgi.lib;d3d12.lib;d3dcompiler.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimpd.lib;dxgi.lib;d3d12.lib;d3dcompiler.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <CustomBuildStep>
@@ -270,7 +296,7 @@ xcopy "$(SolutionDir)bin\*" "$(OutDir)" /s /y</Command>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dxgi.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimpd.lib;dxgi.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <CustomBuildStep>
@@ -295,7 +321,7 @@ xcopy "$(SolutionDir)bin\*" "$(OutDir)" /s /y</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32d.lib;pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib;opengl32.lib;glfw3.lib;glew32d.lib;pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Outputs>dummy.txt;%(Outputs)</Outputs>
@@ -317,7 +343,7 @@ xcopy "$(SolutionDir)bin\*" "$(OutDir)" /s /y</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>dxgi.lib;d3d12.lib;d3dcompiler.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib;dxgi.lib;d3d12.lib;d3dcompiler.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>xcopy "$(SolutionDir)content\*" "$(OutDir)" /s /y
@@ -341,7 +367,7 @@ xcopy "$(SolutionDir)bin\*" "$(OutDir)" /s /y</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>dxgi.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib;dxgi.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>xcopy "$(SolutionDir)content\*" "$(OutDir)" /s /y

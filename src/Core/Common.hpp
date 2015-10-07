@@ -26,14 +26,21 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include <pthread.h>
+
+typedef unsigned int GLHANDLE;
 #endif
 
 #define NS_BEGIN namespace Lumina{
 #define NS_END }
 
 #include <string>
+#include <vector>
+
+#include <Math\Math.hpp>
+using namespace LMath;
 
 #include <Utility\Timer.hpp>
+
 #if _WIN32 && _DEBUG
 #include <Utility\Debug.hpp>
 #endif
@@ -46,5 +53,8 @@ typedef unsigned int uint32;
 typedef int int32;
 typedef unsigned long long uint64;
 typedef long long int64;
+NS_BEGIN
+typedef int GUID;
+NS_END
 
 #endif

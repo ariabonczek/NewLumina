@@ -8,4 +8,6 @@
 #define VSYNC_ENABLED 0
 #define NUM_BUFFERS 2
 
+#define MURMUR3_SEED 78382875
+
 #endif

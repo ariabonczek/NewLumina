@@ -11,13 +11,17 @@ class Mesh : public Resource
 {
 public:
 #if DX11
-	Mesh(MeshData& meshData, GUID guid, ID3D11Device* device);
+	Mesh(MeshData& meshData, LGUID guid, ID3D11Device* device);
 #elif DX12
-	Mesh(MeshData& meshData, GUID guid, ID3D12Device* device);
+	Mesh(MeshData& meshData, LGUID guid, ID3D12Device* device);
 #elif GL43
-	Mesh(MeshData& meshData, GUID guid);
+	Mesh(MeshData& meshData, LGUID guid);
 #endif
 	~Mesh();
+
+	uint32 GetNumberOfIndices()const;
+	const uint32* GetOffset()const;
+	const uint32* GetStride()const;
 
 #if DX11
 	ID3D11Buffer* GetVertexBuffer()const;
@@ -32,6 +36,11 @@ private:
 #if DX11
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
+
+	uint32 numIndices;
+
+	const uint32 offset;
+	const uint32 stride;
 #elif DX12
 	ID3D12Resource* vertexBuffer;
 	ID3D12Resource* indexBuffer;

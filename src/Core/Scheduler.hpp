@@ -33,7 +33,12 @@ public:
 	/// <summary>
 	///
 	/// </summary>
-	void StartThreads();
+	void StartRenderThread();
+
+	/// <summary>
+	///
+	/// </summary>
+	void RunWorkerThreads();
 
 	/// <summary>
 	///
@@ -43,13 +48,19 @@ public:
 private:
 #if DX11 || DX12
 	SYSTEM_INFO sysInfo;
-	DWORD threadIDArray[3];
-	HANDLE threadArray[3];
+
+	DWORD renderThreadID;
+	HANDLE renderThread;
+
+	DWORD* workerThreadIDs;
+	HANDLE* workerThreads;
 #elif GL43
+	pthread_t renderThreadID;
 	pthread_t threadIDs[3];
 #endif
 
 	uint32 numCores;
+	uint32 numWorkerThreads;
 	Renderer* p_Renderer;
 	WorldManager* p_WorldManager;
 };

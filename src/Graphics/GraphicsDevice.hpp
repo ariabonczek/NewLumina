@@ -28,6 +28,7 @@ struct DisplayBuffer
 class GraphicsDevice
 {
 	friend class ResourceManager;
+	friend class Renderer;
 public:
 	GraphicsDevice();
 	~GraphicsDevice();
@@ -43,21 +44,6 @@ public:
 	void Shutdown();
 
 	/// <summary>
-	/// Resets command lists and clears the render target
-	/// </summary>
-	void ResetCommandList();
-
-	/// <summary>
-	/// Closes the current command list to prevent further adding of draw calls
-	/// </summary>
-	void CloseCommandList();
-
-	/// <summary>
-	/// Executes the commands in the list
-	/// </summary>
-	void ExecuteCommandList();
-
-	/// <summary>
 	/// Called when the window is resized to handle recreation of back buffer and viewport
 	/// </summary>
 	void OnResize();
@@ -68,25 +54,19 @@ private:
 	// DirectX11 Interfaces
 	ID3D11Device* dev;
 	ID3D11DeviceContext* immCon;
-	ID3D11DeviceContext* defCon[2];
-	ID3D11CommandList* commandList;
-	uint32 contextIndex;		// Points the the context currently storing draw calls
 	IDXGISwapChain3* swapChain;
 	DisplayBuffer displayBuffers[NUM_BUFFERS];
 	D3D11_VIEWPORT viewport;
 	D3D_FEATURE_LEVEL featureLevel;
-	uint32 frameIndex;
 #elif DX12
 	// DirectX12 Interfaces
 	ID3D12Device* dev;
 	IDXGISwapChain3* swapChain;
 	ID3D12CommandQueue* commandQueue;
-	ID3D12CommandAllocator*	commandAllocator[2];
 	ID3D12DescriptorHeap* rtvHeap;
 	ID3D12Resource* renderTarget[NUM_BUFFERS];
 	ID3D12RootSignature* rootSignature;
 	ID3D12PipelineState* pipelineState;
-	ID3D12GraphicsCommandList* commandList[2];
 	uint32 commandIndex;
 	uint32 executeIndex;
 	D3D12_VIEWPORT viewport;

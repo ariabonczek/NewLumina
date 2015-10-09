@@ -1,0 +1,64 @@
+#include <Graphics\Material.hpp>
+
+NS_BEGIN
+
+Material::Material()
+{}
+
+Material::~Material()
+{}
+
+void Material::SetTexture2D(const char* name, Texture2D* tex, ShaderType type, ID3D11DeviceContext* deviceContext)
+{
+	switch (type)
+	{
+	case ShaderType::Vertex:
+		p_VertexShader->SetShaderResourceView(name, tex->GetShaderResourceView(), deviceContext);
+		p_VertexShader->SetSamplerState(name, tex->GetSampler()->GetSamplerState(), deviceContext);
+		break;
+	case ShaderType::Hull:
+
+		break;
+	case ShaderType::Domain:
+
+		break;
+	case ShaderType::Geometry:
+		p_GeometryShader->SetShaderResourceView(name, tex->GetShaderResourceView(), deviceContext);
+		p_GeometryShader->SetSamplerState(name, tex->GetSampler()->GetSamplerState(), deviceContext);
+		break;
+	case ShaderType::Pixel:
+		p_PixelShader->SetShaderResourceView(name, tex->GetShaderResourceView(), deviceContext);
+		p_PixelShader->SetSamplerState(name, tex->GetSampler()->GetSamplerState(), deviceContext);
+		break;
+	}
+}
+
+void Material::SetVertexShader(VertexShader* shader)
+{
+	p_VertexShader = shader;
+}
+
+//void SetHullShader(HullShader* shader);
+//void SetDomainShader(DomainShader* shader);
+void Material::SetGeometryShader(GeometryShader* shader)
+{
+	p_GeometryShader = shader;
+}
+
+void Material::SetPixelShader(PixelShader* shader)
+{
+	p_PixelShader = shader;
+}
+
+void Material::BindMaterial(ID3D11DeviceContext* deviceContext)
+{
+	if (p_VertexShader)
+		p_VertexShader->BindShader(deviceContext);
+	if (p_GeometryShader)
+		p_GeometryShader->BindShader(deviceContext);
+	if (p_PixelShader)
+		p_PixelShader->BindShader(deviceContext);
+}
+
+
+NS_END

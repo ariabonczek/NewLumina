@@ -2,7 +2,7 @@
 
 NS_BEGIN
 
-Resource::Resource(GUID guid):
+Resource::Resource(LGUID guid):
 guid(guid)
 {}
 
@@ -11,7 +11,7 @@ Resource::~Resource()
 
 }
 
-GUID Resource::GetGUID()const
+LGUID Resource::GetLGUID()const
 {
 	return guid;
 }

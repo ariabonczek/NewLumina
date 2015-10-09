@@ -4,6 +4,8 @@
 #ifndef COMMON_HPP
 #define COMMON_HPP
 
+#define NOMINMAX
+
 #if DX11
 
 #define DELETECOM(x) {if(x) {x->Release(); x = 0;} }
@@ -36,6 +38,8 @@ typedef unsigned int GLHANDLE;
 #include <string>
 #include <vector>
 
+#include <Core\Allocator.hpp>
+
 #include <Math\Math.hpp>
 using namespace LMath;
 
@@ -53,8 +57,12 @@ typedef unsigned int uint32;
 typedef int int32;
 typedef unsigned long long uint64;
 typedef long long int64;
+
 NS_BEGIN
-typedef int GUID;
+
+typedef long long LGUID;
+LGUID Hash(const char* key);
+
 NS_END
 
 #endif

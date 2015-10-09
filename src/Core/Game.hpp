@@ -46,8 +46,8 @@ private:
 	bool ShouldContinueRunning();
 
 	Scheduler m_Scheduler;
-	Renderer m_Renderer;
-	WorldManager m_WorldManager;
+	Renderer* p_Renderer;
+	WorldManager* p_WorldManager;
 };
 
 NS_END

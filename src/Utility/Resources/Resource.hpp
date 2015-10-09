@@ -9,12 +9,12 @@ NS_BEGIN
 class Resource
 {
 public:
-	Resource(GUID guid);
+	Resource(LGUID guid);
 	virtual ~Resource();
 
-	GUID GetGUID()const;
+	LGUID GetLGUID()const;
 protected:
-	GUID guid;
+	LGUID guid;
 };
 
 NS_END

@@ -4,6 +4,7 @@
 #include <Core\Renderer.hpp>
 
 #include <Config.hpp>
+#include <Graphics\Sampler.hpp>
 
 NS_BEGIN
 
@@ -18,6 +19,12 @@ Renderer::~Renderer()
 	
 }
 
+Renderer* Renderer::GetInstance()
+{
+	static Renderer instance;
+	return &instance;
+}
+
 void Renderer::Initialize()
 {
 #if _DEBUG
@@ -25,8 +32,16 @@ void Renderer::Initialize()
 #endif
 	mp_Window->Initialize(mp_GraphicsDevice);
 	mp_GraphicsDevice->Initialize(mp_Window);
+#if DX11
 
-#if DX11 || DX12
+	Sampler::InitializeSamplers(mp_GraphicsDevice->dev);
+	p_Viewport = &mp_GraphicsDevice->viewport;
+	p_SwapChain = mp_GraphicsDevice->swapChain;
+	p_ImmediateContext = mp_GraphicsDevice->immCon;
+
+	SetupCommandLists();
+
+#elif DX12
 
 #elif GL43
 
@@ -49,26 +64,50 @@ bool Renderer::HandleWindowEvents()
 	return true;
 }
 
-void Renderer::BeginFrame()
+void Renderer::Clear()
 {
-	mp_GraphicsDevice->ResetCommandList();
+	p_ImmediateContext->RSSetViewports(1, p_Viewport);
+	p_ImmediateContext->OMSetRenderTargets(1, &p_BackBuffer, p_DepthBuffer);
+
+	const float color[4] = { 0.392f, 0.584f, 0.929f, 1.0f };
+	p_ImmediateContext->ClearRenderTargetView(p_BackBuffer, color);
+	// TODO: ClearDepth is wrong
+	p_ImmediateContext->ClearDepthStencilView(p_DepthBuffer, 0, 0, 0);
 }
 
-void Renderer::EndFrame()
+void Renderer::SetupCommandLists()
 {
-	mp_GraphicsDevice->CloseCommandList();
+	mp_OpaqueCommandList.Create(mp_GraphicsDevice->immCon);
+	mp_TransparentCommandList.Create(mp_GraphicsDevice->immCon);
+	mp_ParticlesCommandList.Create(mp_GraphicsDevice->immCon);
+	mp_LightingCommandList.Create(mp_GraphicsDevice->immCon);
 }
 
-void Renderer::Run()
+void Renderer::ExecuteCommandLists()
 {
-	mp_GraphicsDevice->ExecuteCommandList();
+	mp_OpaqueCommandList.Execute();
+	mp_TransparentCommandList.Execute();
+	mp_ParticlesCommandList.Execute();
+	mp_LightingCommandList.Execute();
+}
+
+void Renderer::Flush()
+{
+	p_SwapChain->Present(VSYNC_ENABLED, 0);
+	frameIndex = p_SwapChain->GetCurrentBackBufferIndex();
+	p_BackBuffer = mp_GraphicsDevice->displayBuffers[frameIndex].renderTargetView;
+	p_DepthBuffer = mp_GraphicsDevice->displayBuffers[frameIndex].depthStencilView;
 }
 
 #if DX11 || DX12
 DWORD WINAPI Renderer::FireThread(void* param)
 {
-	Renderer* _this = (Renderer*)param;
-	_this->Run();
+	Renderer* _this = static_cast<Renderer*>(param);
+	
+	_this->Clear();
+	_this->ExecuteCommandLists();
+	_this->Flush();
+
 	return 0;
 }
 #elif GL43

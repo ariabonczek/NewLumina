@@ -1,6 +1,7 @@
 #include <Utility\Filesystem.hpp>
 
 #include <Utility\Resources\Resource.hpp>
+#include <Graphics\Shader.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <Utility\stb_image.h>
@@ -54,9 +55,37 @@ MeshData Filesystem::LoadMesh(char* filepath)
 	return AssimpProcessScene(scene->mRootNode, scene);
 }
 
-Resource* Filesystem::LoadShader(char* filepath)
+Shader* Filesystem::LoadShader(char* filepath, ShaderType type, ID3D11Device* device)
 {
-	return 0;
+	Shader* shader = nullptr;
+	switch (type)
+	{
+	case ShaderType::Vertex:
+		shader = new VertexShader(0);
+		shader->CreateShader(device);
+		return shader;
+	case ShaderType::Hull:
+		return nullptr;
+	case ShaderType::Domain:
+		return nullptr;
+	case ShaderType::Geometry:
+		shader = new GeometryShader(0);
+		shader->LoadShaderFromFile(filepath, device);
+		shader->CreateShader(device);
+		return shader;
+	case ShaderType::GeometrySO:
+		shader = new GeometryShader(0, true, true);
+		shader->LoadShaderFromFile(filepath, device);
+		shader->CreateShader(device);
+		return shader;
+	case ShaderType::Pixel:
+		shader = new PixelShader(0);
+		shader->LoadShaderFromFile(filepath, device);
+		shader->CreateShader(device);
+		return shader;
+	default:
+		return nullptr;
+	}
 }
 
 Resource* Filesystem::LoadMaterial(char* filepath)

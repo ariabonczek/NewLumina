@@ -6,6 +6,7 @@
 
 #include <Graphics\Texture2D.hpp>
 #include <Graphics\Mesh.hpp>
+#include <Graphics\Shader.hpp>
 
 NS_BEGIN
 
@@ -33,13 +34,6 @@ ResourceManager ResourceManager::GetInstance()
 	return instance;
 }
 
-uint32 ResourceManager::Hash(char* key)
-{
-	uint32 hash;
-	MurmurHash3_x86_32(key, strlen(key), MURMUR3_SEED, &hash);
-	return hash;
-}
-
 #if DX11
 Resource* ResourceManager::LoadTexture2D(char* filepath, ID3D11Device* device)
 #elif DX12
@@ -48,7 +42,7 @@ Resource* ResourceManager::LoadTexture2D(char* filepath, ID3D12Device* device)
 
 #endif
 {
-	GUID guid = Hash(filepath);
+	LGUID guid = Hash(filepath);
 
 	if (resourceMap.find(guid) != resourceMap.end())
 	{
@@ -76,7 +70,7 @@ Resource* ResourceManager::LoadMesh(char* filepath, ID3D12Device* device)
 
 #endif
 {
-	GUID guid = Hash(filepath);
+	LGUID guid = Hash(filepath);
 
 	if (resourceMap.find(guid) != resourceMap.end())
 	{
@@ -94,7 +88,7 @@ Resource* ResourceManager::LoadMesh(char* filepath, ID3D12Device* device)
 	return mesh;
 }
 #if DX11
-Resource* ResourceManager::LoadShader(char* filepath, ID3D11Device* device)
+Resource* ResourceManager::LoadShader(char* filepath, ShaderType type, ID3D11Device* device)
 #elif DX12
 Resource* ResourceManager::LoadShader(char* filepath, ID3D12Device* device)
 
@@ -102,14 +96,16 @@ Resource* ResourceManager::LoadShader(char* filepath, ID3D12Device* device)
 
 #endif
 {
-	GUID guid = Hash(filepath);
+	LGUID guid = Hash(filepath);
 
 	if (resourceMap.find(guid) != resourceMap.end())
 	{
 		return resourceMap[guid];
 	}
 
-	return Filesystem::LoadShader(filepath);
+	Shader* s = Filesystem::LoadShader(filepath, type, device);
+	s->SetLGUID(guid);
+	return s;
 }
 
 #if DX11
@@ -120,7 +116,7 @@ Resource* ResourceManager::LoadMaterial(char* filepath, ID3D12Device* device)
 
 #endif
 {
-	GUID guid = Hash(filepath);
+	LGUID guid = Hash(filepath);
 
 	if (resourceMap.find(guid) != resourceMap.end())
 	{
@@ -144,7 +140,7 @@ void ResourceManager::FreeAllResources()
 
 void ResourceManager::FreeResource(Resource* resource)
 {
-	GUID guid = resource->GetGUID();
+	LGUID guid = resource->GetLGUID();
 	if (resourceMap.find(guid) != resourceMap.end())
 	{
 #if _DEBUG

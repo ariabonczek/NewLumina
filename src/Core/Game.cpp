@@ -26,13 +26,9 @@ int32 Game::Run()
 	while (ShouldContinueRunning())
 	{
 		// Start drawing the "previous" frame
-		m_Scheduler.StartThreads();
+		m_Scheduler.StartRenderThread();
 
-		m_Renderer.BeginFrame();
-
-		// Render the world here
-
-		m_Renderer.EndFrame();
+		m_Scheduler.RunWorkerThreads();
 
 		// Sync the threads
 		m_Scheduler.WaitForSync();
@@ -46,6 +42,7 @@ int32 Game::Run()
 
 void Game::Initialize()
 {
+	Allocator::Initialize(PROGRAM_HEAP_MEMORY_IN_BYTES);
 #if _DEBUG
 	Debug::Initialize();
 	Debug::Log("Game Initialized");
@@ -53,27 +50,30 @@ void Game::Initialize()
 
 	Filesystem::Initialize();
 	ResourceManager::GetInstance().Initialize();
-	m_Renderer.Initialize();
-	m_WorldManager.Initialize();
-	m_Scheduler.Initialize(&m_Renderer, &m_WorldManager);
+	p_Renderer = Renderer::GetInstance();			// Creates
+	p_WorldManager = WorldManager::GetInstance();
+	p_Renderer->Initialize();						// Initializes
+	p_WorldManager->Initialize();
+	m_Scheduler.Initialize(p_Renderer, p_WorldManager);
 }
 
 void Game::Shutdown()
 {
 	m_Scheduler.Shutdown();
-	m_Renderer.Shutdown();
-	m_WorldManager.Shutdown();
+	p_Renderer->Shutdown();
+	p_WorldManager->Shutdown();
 	ResourceManager::GetInstance().Shutdown();
 	Filesystem::Shutdown();
 
 #if _Debug
 	Debug::Shutdown();
 #endif
+	Allocator::Shutdown();
 }
 
 bool Game::ShouldContinueRunning()
 {
-	return m_Renderer.HandleWindowEvents() && !m_WorldManager.ShouldQuit();
+	return p_Renderer->HandleWindowEvents() && !p_WorldManager->ShouldQuit();
 }
 
 NS_END

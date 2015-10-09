@@ -7,7 +7,8 @@
 
 NS_BEGIN
 
-typedef std::unordered_map<GUID, Resource*> Resourcemap;
+
+typedef std::unordered_map<LGUID, Resource*> Resourcemap;
 
 class ResourceManager
 {
@@ -22,7 +23,7 @@ public:
 #if DX11
 	Resource* LoadTexture2D(char* filepath, ID3D11Device* device);
 	Resource* LoadMesh(char* filepath, ID3D11Device* device);
-	Resource* LoadShader(char* filepath, ID3D11Device* device);
+	Resource* LoadShader(char* filepath, ShaderType type, ID3D11Device* device);
 	Resource* LoadMaterial(char* filepath, ID3D11Device* device);
 #elif DX12
 	Resource* LoadTexture2D(char* filepath, ID3D12Device* device);
@@ -37,8 +38,6 @@ public:
 #endif
 
 	void FreeResource(Resource* resource);
-
-	uint32 Hash(char* key);
 private:
 #if DX11
 	ID3D11Device* p_Device;

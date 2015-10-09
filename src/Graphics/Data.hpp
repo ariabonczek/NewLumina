@@ -7,6 +7,7 @@ typedef unsigned char uint8;
 typedef unsigned short uint16;
 typedef unsigned int uint32;
 
+
 NS_BEGIN
 
 struct Image
@@ -45,8 +46,19 @@ struct Color
 	static Color Blue;
 	static Color White;
 	static Color Black;
-	static Color Grey7;
-	static Color Gray7;
+	static Color Grey;
+	static Color Gray;
+};
+
+enum class ShaderType
+{
+	Vertex,
+	Hull,
+	Domain,
+	Geometry,
+	GeometrySO,
+	Pixel,
+	Compute
 };
 
 NS_END

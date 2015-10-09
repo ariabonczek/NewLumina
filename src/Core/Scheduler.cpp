@@ -25,40 +25,63 @@ void Scheduler::Initialize(Renderer* renderer, WorldManager* world)
 
 	p_Renderer = renderer;
 	p_WorldManager = world;
+	
+	//numWorkerThreads = numCores - 2;
+
+	numWorkerThreads = 1;
+
+	workerThreadIDs = new DWORD[numWorkerThreads];
+	workerThreads = new HANDLE[numWorkerThreads];
 }
 
 void Scheduler::Shutdown()
 {
-
+	delete[] workerThreads;
+	delete[] workerThreadIDs;
 }
 
-void Scheduler::StartThreads()
+void Scheduler::StartRenderThread()
 {
 #if DX11 || DX12
-	threadArray[0] = CreateThread(
-		NULL, 0, p_Renderer->FireThread, (void*)p_Renderer, 0, &threadIDArray[0]);
-	threadArray[1] = CreateThread(
-		NULL, 0, p_WorldManager->FireUpdateThread, (void*)p_WorldManager, 0, &threadIDArray[1]);
-	threadArray[2] = CreateThread(
-		NULL, 0, p_WorldManager->FirePhysicsThread, (void*)p_WorldManager, 0, &threadIDArray[2]);
+	renderThread = CreateThread(
+		NULL, 0, p_Renderer->FireThread, (void*)p_Renderer, 0, &renderThreadID);
 #elif GL43
-	pthread_create(&threadIDs[0], NULL, p_Renderer->FireThread, p_Renderer);
-	pthread_create(&threadIDs[1], NULL,p_WorldManager->FireUpdateThread, p_Renderer);
-	pthread_create(&threadIDs[2], NULL,p_WorldManager->FirePhysicsThread, p_Renderer);
+	pthread_create(renderThreadID, NULL, p_Renderer->FireThread, p_Renderer);
 #endif
+}
+
+void Scheduler::RunWorkerThreads()
+{
+	for (uint32 i = 0; i < numWorkerThreads; ++i)
+	{
+		// TODO: LOCKING NOT DONE YET, HARDCODE WORKER THREADS TO ONE
+		workerThreads[i] = CreateThread(NULL, 0, p_WorldManager->GetInstance()->Update, p_WorldManager, 0, &workerThreadIDs[i]);
+	}
+
+	WaitForMultipleObjects(numWorkerThreads, workerThreads, TRUE, INFINITE);
+
+	for (uint32 i = 0; i < numWorkerThreads; ++i)
+	{
+		// TODO: LOCKING NOT DONE YET, HARDCODE WORKER THREADS TO ONE
+		workerThreads[i] = CreateThread(NULL, 0, p_WorldManager->GetInstance()->Physics, p_WorldManager, 0, &workerThreadIDs[i]);
+	}
+
+	WaitForMultipleObjects(numWorkerThreads, workerThreads, TRUE, INFINITE);
+
+	for (uint32 i = 0; i < numWorkerThreads; ++i)
+	{
+		// TODO: LOCKING NOT DONE YET, HARDCODE WORKER THREADS TO ONE
+		workerThreads[i] = CreateThread(NULL, 0, p_WorldManager->GetInstance()->Render, p_WorldManager, 0, &workerThreadIDs[i]);
+	}
 }
 
 void Scheduler::WaitForSync()
 {
 #if DX11 || DX12
-	WaitForMultipleObjects(3, threadArray, TRUE, INFINITE);
-	CloseHandle(threadArray[0]);
-	CloseHandle(threadArray[1]);
-	CloseHandle(threadArray[2]);
+	WaitForSingleObject(renderThread, INFINITE);
+	WaitForMultipleObjects(numWorkerThreads, workerThreads, TRUE, INFINITE);
 #elif GL43
 	pthread_join(threadIDs[0], NULL);
-	pthread_join(threadIDs[1], NULL);
-	pthread_join(threadIDs[2], NULL);
 #endif
 }
 

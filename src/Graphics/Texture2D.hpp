@@ -11,13 +11,16 @@ class Texture2D : public Resource
 {
 public:
 #if DX11
-	Texture2D(Image& imageData, GUID guid, ID3D11Device* device);
+	Texture2D(Image& imageData, LGUID guid, ID3D11Device* device);
 #elif DX12
-	Texture2D(Image& imageData, GUID guid, ID3D12Device* device);
+	Texture2D(Image& imageData, LGUID guid, ID3D12Device* device);
 #elif GL43
-	Texture2D(Image& imageData, GUID guid);
+	Texture2D(Image& imageData, LGUID guid);
 #endif
 	~Texture2D();
+
+	Sampler* GetSampler()const;
+	ID3D11ShaderResourceView* GetShaderResourceView()const;
 
 private:
 	Sampler* sampler;

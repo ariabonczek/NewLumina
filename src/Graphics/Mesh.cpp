@@ -3,8 +3,8 @@
 NS_BEGIN
 
 #if DX11
-Mesh::Mesh(MeshData& meshData, GUID guid, ID3D11Device* device):
-	Resource(guid)
+Mesh::Mesh(MeshData& meshData, LGUID guid, ID3D11Device* device):
+	Resource(guid), stride(sizeof(MeshVertex)), offset(0)
 {
 	MeshVertex* vertices = &meshData.vertices[0];
 	uint16* indices = &meshData.indices[0];
@@ -40,7 +40,7 @@ ID3D11Buffer* Mesh::GetIndexBuffer()const
 }
 
 #elif DX12
-Mesh::Mesh(MeshData& meshData, GUID guid, ID3D12Device* device) :
+Mesh::Mesh(MeshData& meshData, LGUID guid, ID3D12Device* device) :
 	Resource(guid)
 {
 	MeshVertex* vertices = &meshData.vertices[0];
@@ -103,13 +103,29 @@ ID3D12Resource* Mesh::GetIndexBuffer()const
 
 #endif
 
+uint32 Mesh::GetNumberOfIndices()const
+{
+	return numIndices;
+}
+
+const uint32* Mesh::GetOffset()const
+{
+	return &offset;
+}
+
+const uint32* Mesh::GetStride()const
+{
+	return &stride;
+}
+
 Mesh::~Mesh()
 {
 #if DX11
 	DELETECOM(vertexBuffer);
 	DELETECOM(indexBuffer);
 #elif DX12
-
+	DELETECOM(vertexBuffer);
+	DELETECOM(indexBuffer);
 #elif GL43
 
 #endif

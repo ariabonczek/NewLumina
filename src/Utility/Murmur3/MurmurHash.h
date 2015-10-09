@@ -12,9 +12,9 @@
 
 #if defined(_MSC_VER)
 
-typedef unsigned char uint8_t;
-typedef unsigned long uint32_th;
-typedef unsigned __int64 uint64_t;
+typedef unsigned char uint168_t;
+typedef unsigned long uint1632_th;
+typedef unsigned __int64 uint1664_t;
 
 // Other compilers
 
@@ -26,11 +26,11 @@ typedef unsigned __int64 uint64_t;
 
 //-----------------------------------------------------------------------------
 
-void MurmurHash3_x86_32  ( const void * key, int len, uint32_th seed, void * out );
+void MurmurHash3_x86_32  ( const void * key, int len, uint1632_th seed, void * out );
 
-void MurmurHash3_x86_128 ( const void * key, int len, uint32_th seed, void * out );
+void MurmurHash3_x86_128 ( const void * key, int len, uint1632_th seed, void * out );
 
-void MurmurHash3_x64_128 ( const void * key, int len, uint32_th seed, void * out );
+void MurmurHash3_x64_128 ( const void * key, int len, uint1632_th seed, void * out );
 
 //-----------------------------------------------------------------------------
 

@@ -30,13 +30,6 @@ GraphicsDevice::~GraphicsDevice()
 		DELETECOM(displayBuffers[i].renderTargetView);
 	}
 	DELETECOM(swapChain);
-
-	if (defCon[0])
-		defCon[0]->ClearState();
-	DELETECOM(defCon[0]);
-	if (defCon[1])
-		defCon[1]->ClearState();
-	DELETECOM(defCon[1]);
 	if (immCon)
 		immCon->ClearState();
 	DELETECOM(immCon);
@@ -95,14 +88,6 @@ void GraphicsDevice::Initialize(Window* window)
 
 	ResourceManager::GetInstance().SetDevice(dev);
 
-	//
-	// Deferred Context
-	//
-	dev->CreateDeferredContext(0, &defCon[0]);
-	dev->CreateDeferredContext(0, &defCon[1]);
-	contextIndex = 0;
-	defCon[contextIndex]->FinishCommandList(FALSE, &commandList);
-
 	DXGI_SWAP_CHAIN_DESC scd;
 	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
 	scd.BufferCount = NUM_BUFFERS;
@@ -121,7 +106,6 @@ void GraphicsDevice::Initialize(Window* window)
 	scd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
 	factory->CreateSwapChain(dev, &scd, (IDXGISwapChain**)&swapChain);
-	frameIndex = swapChain->GetCurrentBackBufferIndex();
 
 	DELETECOM(factory);
 
@@ -204,9 +188,6 @@ void GraphicsDevice::Initialize(Window* window)
 	frameIndex = swapChain->GetCurrentBackBufferIndex();
 
 	OnResize();
-
-	dev->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), (void**)&commandAllocator[0]);
-	dev->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), (void**)&commandAllocator[1]);
 
 	//
 	// Root Simgnature
@@ -394,92 +375,92 @@ void GraphicsDevice::Shutdown()
 
 }
 
-void GraphicsDevice::ResetCommandList()
-{
-#if DX11
-	defCon[contextIndex]->RSSetViewports(1, &viewport);
-	defCon[contextIndex]->OMSetRenderTargets(1, &displayBuffers[frameIndex].renderTargetView, displayBuffers[frameIndex].depthStencilView);
-
-	const float color[4] = { 0.392f, 0.584f, 0.929f, 1.0f };
-	defCon[contextIndex]->ClearRenderTargetView(displayBuffers[frameIndex].renderTargetView, color);
-#elif DX12
-	commandAllocator[commandIndex]->Reset();
-	commandList[commandIndex]->Reset(commandAllocator[commandIndex], pipelineState);
-	commandList[commandIndex]->SetGraphicsRootSignature(rootSignature);
-	commandList[commandIndex]->RSSetViewports(1, &viewport);
-
-	// Use to render
-	D3D12_RESOURCE_BARRIER rb;
-	ZeroMemory(&rb, sizeof(D3D12_RESOURCE_BARRIER));
-	rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	rb.Transition.pResource = renderTarget[(frameIndex + 1) % NUM_BUFFERS];
-	rb.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-	rb.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-
-	commandList[commandIndex]->ResourceBarrier(1, &rb);
-
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle(rtvHeap->GetCPUDescriptorHandleForHeapStart());
-	rtvHandle.ptr += (frameIndex + 1) % NUM_BUFFERS * descriptorSize;
-	commandList[commandIndex]->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
-
-	const float color[4] = { 0.392f, 0.584f, 0.929f, 1.0f };
-	commandList[commandIndex]->ClearRenderTargetView(rtvHandle, color, 0, NULL);
-#elif GL43
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-#endif
-}
-
-void GraphicsDevice::CloseCommandList()
-{
-#if DX11
-	defCon[contextIndex]->FinishCommandList(FALSE, &commandList);
-	contextIndex ^= 1;
-#elif DX12
-	D3D12_RESOURCE_BARRIER rb;
-	ZeroMemory(&rb, sizeof(D3D12_RESOURCE_BARRIER));
-	rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	rb.Transition.pResource = renderTarget[(frameIndex + 1) % NUM_BUFFERS];
-	rb.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	rb.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	commandList[commandIndex]->ResourceBarrier(1, &rb);
-	HRESULT hr = commandList[commandIndex]->Close();
-#elif GL43
-	glfwSwapBuffers(window->GetHandle());
-#endif
-}
-
-void GraphicsDevice::ExecuteCommandList()
-{
-#if DX11
-	immCon->ExecuteCommandList(commandList, TRUE);
-	swapChain->Present(VSYNC_ENABLED, 0);
-	frameIndex = swapChain->GetCurrentBackBufferIndex();
-#elif DX12
-	ID3D12CommandList* pCommandLists[] = { commandList[executeIndex] };
-
-	commandQueue->ExecuteCommandLists(_countof(pCommandLists), pCommandLists);
-	swapChain->Present(VSYNC_ENABLED, 0);
-
-	// Synchronize
-	const uint64 _fence = fenceValue;
-	commandQueue->Signal(fence, _fence);
-	fenceValue++;
-
-	if (fence->GetCompletedValue() < _fence)
-	{
-		fence->SetEventOnCompletion(_fence, fenceEvent);
-		WaitForSingleObject(fenceEvent, INFINITE);
-	}
-
-	// Swap the indices
-	frameIndex = swapChain->GetCurrentBackBufferIndex();
-	std::swap(commandIndex, executeIndex);
-#elif GL43
-	// WARNING: DO NOT MAKE GL CALLS HERE AS THE CONTEXT ONLY SUPPORTS ONE THREAD
-#endif
-}
+//void GraphicsDevice::ResetCommandList()
+//{
+//#if DX11
+//	defCon[contextIndex]->RSSetViewports(1, &viewport);
+//	defCon[contextIndex]->OMSetRenderTargets(1, &displayBuffers[frameIndex].renderTargetView, displayBuffers[frameIndex].depthStencilView);
+//
+//	const float color[4] = { 0.392f, 0.584f, 0.929f, 1.0f };
+//	defCon[contextIndex]->ClearRenderTargetView(displayBuffers[frameIndex].renderTargetView, color);
+//#elif DX12
+//	commandAllocator[commandIndex]->Reset();
+//	commandList[commandIndex]->Reset(commandAllocator[commandIndex], pipelineState);
+//	commandList[commandIndex]->SetGraphicsRootSignature(rootSignature);
+//	commandList[commandIndex]->RSSetViewports(1, &viewport);
+//
+//	// Use to render
+//	D3D12_RESOURCE_BARRIER rb;
+//	ZeroMemory(&rb, sizeof(D3D12_RESOURCE_BARRIER));
+//	rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+//	rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+//	rb.Transition.pResource = renderTarget[(frameIndex + 1) % NUM_BUFFERS];
+//	rb.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+//	rb.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+//	rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+//
+//	commandList[commandIndex]->ResourceBarrier(1, &rb);
+//
+//	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle(rtvHeap->GetCPUDescriptorHandleForHeapStart());
+//	rtvHandle.ptr += (frameIndex + 1) % NUM_BUFFERS * descriptorSize;
+//	commandList[commandIndex]->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+//
+//	const float color[4] = { 0.392f, 0.584f, 0.929f, 1.0f };
+//	commandList[commandIndex]->ClearRenderTargetView(rtvHandle, color, 0, NULL);
+//#elif GL43
+//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//#endif
+//}
+//
+//void GraphicsDevice::CloseCommandList()
+//{
+//#if DX11
+//	defCon[contextIndex]->FinishCommandList(FALSE, &commandList);
+//	contextIndex ^= 1;
+//#elif DX12
+//	D3D12_RESOURCE_BARRIER rb;
+//	ZeroMemory(&rb, sizeof(D3D12_RESOURCE_BARRIER));
+//	rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+//	rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+//	rb.Transition.pResource = renderTarget[(frameIndex + 1) % NUM_BUFFERS];
+//	rb.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+//	rb.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+//	commandList[commandIndex]->ResourceBarrier(1, &rb);
+//	HRESULT hr = commandList[commandIndex]->Close();
+//#elif GL43
+//	glfwSwapBuffers(window->GetHandle());
+//#endif
+//}
+//
+//void GraphicsDevice::ExecuteCommandList()
+//{
+//#if DX11
+//	immCon->ExecuteCommandList(commandList, TRUE);
+//	swapChain->Present(VSYNC_ENABLED, 0);
+//	frameIndex = swapChain->GetCurrentBackBufferIndex();
+//#elif DX12
+//	ID3D12CommandList* pCommandLists[] = { commandList[executeIndex] };
+//
+//	commandQueue->ExecuteCommandLists(_countof(pCommandLists), pCommandLists);
+//	swapChain->Present(VSYNC_ENABLED, 0);
+//
+//	// Synchronize
+//	const uint64 _fence = fenceValue;
+//	commandQueue->Signal(fence, _fence);
+//	fenceValue++;
+//
+//	if (fence->GetCompletedValue() < _fence)
+//	{
+//		fence->SetEventOnCompletion(_fence, fenceEvent);
+//		WaitForSingleObject(fenceEvent, INFINITE);
+//	}
+//
+//	// Swap the indices
+//	frameIndex = swapChain->GetCurrentBackBufferIndex();
+//	std::swap(commandIndex, executeIndex);
+//#elif GL43
+//	// WARNING: DO NOT MAKE GL CALLS HERE AS THE CONTEXT ONLY SUPPORTS ONE THREAD
+//#endif
+//}
 
 NS_END

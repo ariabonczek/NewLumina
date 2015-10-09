@@ -3,17 +3,16 @@
 NS_BEGIN
 
 #if DX11
-	Texture2D::Texture2D(Image& imageData, GUID guid, ID3D11Device* device)
+	Texture2D::Texture2D(Image& imageData, LGUID guid, ID3D11Device* device)
 #elif DX12
-	Texture2D::Texture2D(Image& imageData, GUID guid, ID3D12Device* device)
+	Texture2D::Texture2D(Image& imageData, LGUID guid, ID3D12Device* device)
 #elif GL43
-	Texture2D::Texture2D(Image& imageData, GUID guid)
+	Texture2D::Texture2D(Image& imageData, LGUID guid)
 #endif
 	: Resource(guid)
 {
 #if DX11
 	ID3D11Texture2D* texture;
-	HRESULT hr;
 	// Create the texture
 
 	D3D11_TEXTURE2D_DESC td;
@@ -185,5 +184,16 @@ Texture2D::~Texture2D()
 {
 
 }
+
+Sampler* Texture2D::GetSampler()const
+{
+	return sampler;
+}
+
+ID3D11ShaderResourceView* Texture2D::GetShaderResourceView()const
+{
+	return srv;
+}
+
 
 NS_END

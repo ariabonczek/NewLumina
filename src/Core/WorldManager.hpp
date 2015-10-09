@@ -5,10 +5,12 @@
 #define WORLD_MANAGER_HPP
 
 #include <Core\Common.hpp>
-#include <Core\PhysicsManager.hpp>
-#include <Core\ObjectManager.hpp>
 
 NS_BEGIN
+
+class GameObject;
+class BaseRenderer;
+class PhysicsObject;
 
 /// <summary>
 /// Manages the world and what is in it
@@ -17,8 +19,9 @@ class WorldManager
 {
 	friend class Scheduler;
 public:
-	WorldManager();
 	~WorldManager();
+
+	static WorldManager* GetInstance();
 
 	/// <summary>
 	/// Initializes the WorldManager and its subsystems
@@ -30,22 +33,47 @@ public:
 	/// </summary>
 	void Shutdown();
 
+#if DX11 || DX12
+	/// <summary>
+	///
+	/// </summary>
+	static DWORD WINAPI Update(void* param);
+
+	/// <summary>
+	///
+	/// </summary>
+	static DWORD WINAPI Physics(void* param);
+
+	/// <summary>
+	///
+	/// </summary>   
+	static DWORD WINAPI Render(void* param);
+#elif GL43
+
+#endif
+	
+	void AddActiveGameObject(GameObject* gameObject);
+	void AddRenderableGameObject(BaseRenderer* renderer);
+	void AddPhysicsObject(PhysicsObject* physicsObject);
+
+	void RemoveInactiveGameObject(GameObject* gameObject);
+	void RemoveRenderableGameObject(BaseRenderer* renderer);
+	void RemovePhysicsObject(PhysicsObject* physicsObject);
+
 	/// <summary>
 	/// Returns true if the application should quit
 	/// </summary>
 	bool ShouldQuit();
 private:
-	PhysicsManager m_PhysicsManager;
-	ObjectManager m_ObjectManager;
-	bool shouldQuit;
+	WorldManager();
 
-#if DX11 || DX12
-	static DWORD WINAPI FirePhysicsThread(void* param);
-	static DWORD WINAPI FireUpdateThread(void* param);
-#elif GL43
-	static void* FirePhysicsThread(void* param);
-	static void* FireUpdateThread(void* param);
-#endif
+	ID3D11DeviceContext* p_DeviceContext;
+
+	std::vector<GameObject*> activeObjects;
+	std::vector<BaseRenderer*> renderableObjects;
+	std::vector<PhysicsObject*> physicsObjects;
+
+	bool shouldQuit;
 };
 
 NS_END

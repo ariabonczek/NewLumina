@@ -4,6 +4,7 @@
 #include <Core\Common.hpp>
 #include <Graphics\Data.hpp>
 #include <assimp\scene.h>
+#include <Graphics\Shader.hpp>
 
 NS_BEGIN
 
@@ -12,13 +13,12 @@ class Resource;
 class Filesystem
 {
 public:
-	
 	static void Initialize();
 	static void Shutdown();
 	
 	static Image LoadTexture2D(char* filepath);
 	static MeshData LoadMesh(char* filepath);
-	static Resource* LoadShader(char* filepath);
+	static Shader* LoadShader(char* filepath, ShaderType type, ID3D11Device* device);
 	static Resource* LoadMaterial(char* filepath);
 private:
 	Filesystem();

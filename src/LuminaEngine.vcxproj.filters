@@ -64,6 +64,15 @@
     <Filter Include="Source Files\Scenes">
       <UniqueIdentifier>{43611238-f86b-44d2-bf8d-22fd79014f52}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\TestGame">
+      <UniqueIdentifier>{715318a0-ed44-4109-93ce-2acf5b3aa2bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\TestGame">
+      <UniqueIdentifier>{df766ff9-5159-44b0-8662-9c104e3f2a55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Physics">
+      <UniqueIdentifier>{f952c321-708e-487f-bef0-ce2db597d1ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -174,14 +183,14 @@
     <ClCompile Include="Scenes\SceneManager.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Scenes\TestScene.cpp">
-      <Filter>Source Files\Scenes</Filter>
+    <ClCompile Include="TestGame\Camera_Debug.cpp">
+      <Filter>Source Files\TestGame</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Camera_Debug.cpp">
-      <Filter>Source Files\Objects</Filter>
+    <ClCompile Include="TestGame\TestScene.cpp">
+      <Filter>Source Files\TestGame</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\PhysicsObject.cpp">
-      <Filter>Source Files\Objects</Filter>
+    <ClCompile Include="TestGame\TransformRotator.cpp">
+      <Filter>Source Files\TestGame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -287,9 +296,6 @@
     <ClInclude Include="Objects\BaseRenderer.hpp">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Objects\PhysicsObject.hpp">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\GraphicsCommandList.hpp">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
@@ -302,17 +308,20 @@
     <ClInclude Include="Scenes\SceneManager.hpp">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Scenes\TestScene.hpp">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="Lumina.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Core.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Objects\Camera_Debug.hpp">
-      <Filter>Header Files\Objects</Filter>
+    <ClInclude Include="TestGame\Camera_Debug.hpp">
+      <Filter>Header Files\TestGame</Filter>
+    </ClInclude>
+    <ClInclude Include="TestGame\TestScene.hpp">
+      <Filter>Header Files\TestGame</Filter>
+    </ClInclude>
+    <ClInclude Include="TestGame\TransformRotator.hpp">
+      <Filter>Header Files\TestGame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

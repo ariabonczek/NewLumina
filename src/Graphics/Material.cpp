@@ -8,13 +8,13 @@ Material::Material()
 Material::~Material()
 {}
 
-void Material::SetTexture2D(const char* name, Texture2D* tex, ShaderType type, ID3D11DeviceContext* deviceContext)
+void Material::SetTexture2D(const char* textureName, const char* samplerName, Texture2D* tex, ShaderType type, ID3D11DeviceContext* deviceContext)
 {
 	switch (type)
 	{
 	case ShaderType::Vertex:
-		p_VertexShader->SetShaderResourceView(name, tex->GetShaderResourceView(), deviceContext);
-		p_VertexShader->SetSamplerState(name, tex->GetSampler()->GetSamplerState(), deviceContext);
+		p_VertexShader->SetShaderResourceView(textureName, tex->GetShaderResourceView(), deviceContext);
+		p_VertexShader->SetSamplerState(samplerName, tex->GetSampler()->GetSamplerState(), deviceContext);
 		break;
 	case ShaderType::Hull:
 
@@ -23,12 +23,12 @@ void Material::SetTexture2D(const char* name, Texture2D* tex, ShaderType type, I
 
 		break;
 	case ShaderType::Geometry:
-		p_GeometryShader->SetShaderResourceView(name, tex->GetShaderResourceView(), deviceContext);
-		p_GeometryShader->SetSamplerState(name, tex->GetSampler()->GetSamplerState(), deviceContext);
+		p_GeometryShader->SetShaderResourceView(textureName, tex->GetShaderResourceView(), deviceContext);
+		p_GeometryShader->SetSamplerState(samplerName, tex->GetSampler()->GetSamplerState(), deviceContext);
 		break;
 	case ShaderType::Pixel:
-		p_PixelShader->SetShaderResourceView(name, tex->GetShaderResourceView(), deviceContext);
-		p_PixelShader->SetSamplerState("_Sampler", tex->GetSampler()->GetSamplerState(), deviceContext);
+		p_PixelShader->SetShaderResourceView(textureName, tex->GetShaderResourceView(), deviceContext);
+		p_PixelShader->SetSamplerState(samplerName, tex->GetSampler()->GetSamplerState(), deviceContext);
 		break;
 	}
 }
@@ -68,9 +68,7 @@ PixelShader* Material::GetPixelShader()const
 void Material::BindMaterial(ID3D11DeviceContext* deviceContext)
 {
 	if (p_VertexShader)
-	{
 		p_VertexShader->BindShader(deviceContext);
-	}
 	if (p_GeometryShader)
 		p_GeometryShader->BindShader(deviceContext);
 	if (p_PixelShader)

@@ -10,7 +10,10 @@ GameObject::GameObject(char* name) :
 	name(name),
 	enabled(false)
 {
-	AddComponent<Transform>(new Transform());
+	LGUID t = Hash(typeid(Transform).name());
+	components[t] = new Transform();
+	GetComponent<Transform>()->OnAddToGameObject(this);
+	guid = Hash(Timer::GetTimeSinceEpoch());
 }
 
 GameObject::~GameObject()
@@ -18,7 +21,6 @@ GameObject::~GameObject()
 
 void GameObject::Initialize()
 {
-	guid = Hash(Timer::GetTimeSinceEpoch());
 #if _DEBUG
 	Debug::Log("[GameObject] created with guid: " + std::to_string(guid));
 #endif

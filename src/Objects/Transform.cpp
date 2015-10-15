@@ -57,7 +57,7 @@ void Transform::SetLocalScale(Vector3 scale) { localScale = scale; dirty = true;
 Vector3 Transform::GetLocalPosition()const { return localPosition; }
 Quaternion Transform::GetLocalRotation()const { return localRotation; }
 Vector3 Transform::GetLocalScale()const { return localScale; }
-Vector3 Transform::GetEulerAngles()const { throw "Not implemented"; }
+Vector3 Transform::GetEulerAngles()const { throw "Lumina::Transform::GetEulerAngles()const not implemented"; }
 
 Vector3 Transform::GetWorldPosition()
 {

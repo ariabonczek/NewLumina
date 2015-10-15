@@ -1,4 +1,5 @@
 #include <Graphics\GraphicsCommandList.hpp>
+#include <Objects\Camera.hpp>
 
 NS_BEGIN
 
@@ -27,7 +28,8 @@ void GraphicsCommandList::Create(ID3D12Device* device)
 
 #endif
 
-void GraphicsCommandList::SetupFrame()
+void GraphicsCommandList::SetupFrame(
+	)
 {
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	

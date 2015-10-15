@@ -14,7 +14,7 @@ public:
 	Material();
 	~Material();
 
-	void SetTexture2D(const char* name, Texture2D* tex, ShaderType type, ID3D11DeviceContext* deviceContext);
+	void SetTexture2D(const char* textureName, const char* samplerName, Texture2D* tex, ShaderType type, ID3D11DeviceContext* deviceContext);
 	//void SetRenderTexture(GraphicsShaderType type, RenderTexture* rt);
 
 	template<typename T>

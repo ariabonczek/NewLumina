@@ -3,7 +3,7 @@
 //--------------------------------------
 #include "Core\Game.hpp"
 #include "Scenes\SceneManager.hpp"
-#include "Scenes\TestScene.hpp"
+#include "TestGame\TestScene.hpp"
 
 using namespace Lumina;
 

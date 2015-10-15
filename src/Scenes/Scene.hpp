@@ -3,6 +3,7 @@
 
 #include <Core\Common.hpp>
 #include <Graphics\Data.hpp>
+#include <unordered_map>
 
 NS_BEGIN
 
@@ -56,7 +57,7 @@ protected:
 	/// </summary>
 	void SetAmbientLight(Color color);
 private:
-	std::vector<GameObject*> objects;
+	std::unordered_map<LGUID,GameObject*> objects;
 	Camera* activeCamera;
 	Color ambientLight;
 	char* name;

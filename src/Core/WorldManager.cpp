@@ -4,7 +4,6 @@
 #include <Core\WorldManager.hpp>
 
 #include <Objects\GameObject.hpp>
-#include <Objects\PhysicsObject.hpp>
 #include <Objects\BaseRenderer.hpp>
 #include <Scenes\Scene.hpp>
 
@@ -16,7 +15,7 @@ WorldManager::WorldManager():
 
 WorldManager::~WorldManager()
 {
-
+	
 }
 
 WorldManager* WorldManager::GetInstance()
@@ -35,7 +34,6 @@ void WorldManager::Initialize()
 
 void WorldManager::Shutdown()
 {
-
 }
 
 DWORD WINAPI WorldManager::Update(void* param)
@@ -110,7 +108,7 @@ void WorldManager::AddRenderableGameObject(BaseRenderer* renderer)
 
 void WorldManager::AddPhysicsObject(PhysicsObject* physicsObject)
 {
-	physicsObjects[physicsObject->GetLGUID()] = physicsObject;
+	//physicsObjects[physicsObject->GetLGUID()] = physicsObject;
 }
 
 void WorldManager::RemoveInactiveGameObject(GameObject* gameObject)

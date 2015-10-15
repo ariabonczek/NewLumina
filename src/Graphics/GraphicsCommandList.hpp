@@ -30,6 +30,7 @@ private:
 	ID3D11RenderTargetView* renderTarget;
 	ID3D11DepthStencilView* depthStencil;
 	D3D11_VIEWPORT viewport;
+	ID3D11RasterizerState* rasterizerState;
 #elif DX12
 	ID3D12GraphicsCommandList* commandList;
 	ID3D12CommandAllocator* commandAllocator;

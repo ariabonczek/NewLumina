@@ -13,21 +13,23 @@ Scene::~Scene()
 
 void Scene::Initialize()
 {
-	uint size = objects.size();
-	for (uint i = 0; i < size; ++i)
+	for (std::unordered_map<LGUID, GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
 	{
-		objects[i]->Initialize();
+		it->second->Initialize();
 	}
 }
 
 void Scene::Shutdown()
 {
-
+	for (std::unordered_map<LGUID, GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
+	{
+		it->second->Destroy();
+	}
 }
 
 void Scene::AddObject(GameObject* object)
 {
-	objects.push_back(object);
+	objects[object->GetLGUID()] = object;
 }
 
 void Scene::SetActiveCamera(Camera* camera)
@@ -40,7 +42,7 @@ void Scene::SetActiveCamera(Camera* camera)
 
 void Scene::SetAmbientLight(Color color)
 {
-
+	ambientLight = color;
 }
 
 char* Scene::GetName()const

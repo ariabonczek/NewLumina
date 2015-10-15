@@ -113,7 +113,7 @@ void GraphicsDevice::Initialize(Window* window)
 	D3D11_RASTERIZER_DESC rd;
 	ZeroMemory(&rd, sizeof(D3D11_RASTERIZER_DESC));
 	rd.FillMode = D3D11_FILL_SOLID;
-	rd.CullMode = D3D11_CULL_NONE;
+	rd.CullMode = D3D11_CULL_BACK;
 	rd.DepthClipEnable = true;
 
 	dev->CreateRasterizerState(&rd, &rasterizerState);

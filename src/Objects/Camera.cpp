@@ -132,7 +132,7 @@ void Camera::UpdateViewMatrix()
 		float y = -Vector3::Dot(pos, up);
 		float z = -Vector3::Dot(pos, look);
 
-		view = Matrix::CreateLookAt(pos, pos + look, Vector3::Up);
+		view = Matrix::CreateLookAt(pos, pos + look, up);
 	}
 }
 

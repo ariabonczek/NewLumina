@@ -40,7 +40,7 @@ MeshData MeshBuilder::CreatePlane(float width, float depth, uint32 n, uint32 m)
 			cVert.position = Vector3(x, 0.0f, z);
 			cVert.normal = Vector3(0.0f, 1.0f, 0.0f);
 			cVert.tangent = Vector3(1.0f, 0.0f, 0.0f);
-			cVert.texCoord.x = j * du;
+			cVert.texCoord.x = 1.0f - j * du;
 			cVert.texCoord.y = i * dv;
 			data.vertices[v++] = cVert;
 		}
@@ -257,25 +257,25 @@ MeshData MeshBuilder::CreateCube(float size, Color color)
 	cVert.position = Vector3(-size, -size, size);
 	cVert.normal = Vector3(0.0f, 0.0f, 1.0f);
 	cVert.tangent = Vector3(1.0f, 0.0f, 0.0f);
-	cVert.texCoord = Vector2(0.0f, 1.0f);
+	cVert.texCoord = Vector2(1.0f, 1.0f);
 	data.vertices[v++] = cVert;
 
 	cVert.position = Vector3(-size, size, size);
 	cVert.normal = Vector3(0.0f, 0.0f, 1.0f);
 	cVert.tangent = Vector3(1.0f, 0.0f, 0.0f);
-	cVert.texCoord = Vector2(0.0f, 0.0f);
+	cVert.texCoord = Vector2(1.0f, 0.0f);
 	data.vertices[v++] = cVert;
 
 	cVert.position = Vector3(size, size, size);
 	cVert.normal = Vector3(0.0f, 0.0f, 1.0f);
 	cVert.tangent = Vector3(1.0f, 0.0f, 0.0f);
-	cVert.texCoord = Vector2(1.0f, 0.0f);
+	cVert.texCoord = Vector2(0.0f, 0.0f);
 	data.vertices[v++] = cVert;
 
 	cVert.position = Vector3(size, -size, size);
 	cVert.normal = Vector3(0.0f, 0.0f, 1.0f);
 	cVert.tangent = Vector3(1.0f, 0.0f, 0.0f);
-	cVert.texCoord = Vector2(1.0f, 1.0f);
+	cVert.texCoord = Vector2(0.0f, 1.0f);
 	data.vertices[v++] = cVert;
 
 	// Left
@@ -357,25 +357,25 @@ MeshData MeshBuilder::CreateCube(float size, Color color)
 	cVert.position = Vector3(-size, -size, -size);
 	cVert.normal = Vector3(0.0f, -1.0f, 0.0f);
 	cVert.tangent = Vector3(1.0f, 0.0f, 0.0f);
-	cVert.texCoord = Vector2(0.0f, 1.0f);
+	cVert.texCoord = Vector2(1.0f, 0.0f);
 	data.vertices[v++] = cVert;
 
 	cVert.position = Vector3(-size, -size, size);
 	cVert.normal = Vector3(0.0f, -1.0f, 0.0f);
 	cVert.tangent = Vector3(1.0f, 0.0f, 0.0f);
-	cVert.texCoord = Vector2(0.0f, 0.0f);
+	cVert.texCoord = Vector2(1.0f, 1.0f);
 	data.vertices[v++] = cVert;
 
 	cVert.position = Vector3(size, -size, size);
 	cVert.normal = Vector3(0.0f, -1.0f, 0.0f);
 	cVert.tangent = Vector3(1.0f, 0.0f, 0.0f);
-	cVert.texCoord = Vector2(1.0f, 0.0f);
+	cVert.texCoord = Vector2(0.0f, 1.0f);
 	data.vertices[v++] = cVert;
 
 	cVert.position = Vector3(size, -size, -size);
 	cVert.normal = Vector3(0.0f, -1.0f, 0.0f);
 	cVert.tangent = Vector3(1.0f, 0.0f, 0.0f);
-	cVert.texCoord = Vector2(1.0f, 1.0f);
+	cVert.texCoord = Vector2(0.0f, 0.0f);
 	data.vertices[v++] = cVert;
 
 	// INDICES

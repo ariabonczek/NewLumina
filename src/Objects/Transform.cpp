@@ -43,8 +43,13 @@ void Transform::Translate(Vector3 v)
 
 void Transform::Rotate(Quaternion rotation)
 {
-	//localRotation = (rotation * localRotation).Normalized();
-	localRotation = (localRotation * rotation).Normalized();
+	Matrix m = Matrix::CreateFromQuaternion(rotation);
+
+	forward = (forward * m).Normalized();
+	right = (right * m).Normalized();
+	up = Vector3::Cross(forward, right);
+
+	localRotation = (rotation * localRotation);
 	dirty = true;
 }
 
@@ -156,9 +161,9 @@ void Transform::UpdateWorldMatrix()
 
 	worldCache = s*r*t;
 
-	forward = Vector3::Normalize(Vector3::Forward * r);
-	up = Vector3::Normalize(Vector3::Up * r);
-	right = Vector3::Cross(up, forward);
+	//forward = Vector3::Normalize(Vector3::Forward * r);
+	//right = Vector3::Normalize(Vector3::Right * r);
+	//up = Vector3::Cross(forward, right);
 
 	if (Camera * c = p_GameObject->GetComponent<Camera>())
 	{

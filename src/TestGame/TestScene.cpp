@@ -33,8 +33,8 @@ void TestScene::LoadAssets(ID3D11Device* device)
 	meshRenderer->SetMaterial(mat);
 
 	testObject->AddComponent<MeshRenderer>(meshRenderer);
-	testObject->GetComponent<Transform>()->SetLocalPosition(Vector3(0.0f,-5.0f, 0.0f));
-	testObject->AddComponent<TransformRotator>(new TransformRotator(Vector3::Up, 5.0f));
+	testObject->GetComponent<Transform>()->SetLocalPosition(Vector3(0.0f, 0.0f, 0.0f));
+	testObject->AddComponent<TransformRotator>(new TransformRotator(Vector3::Up, 0.f));
 	AddObject(testObject);
 
 	Mesh* plane = new Mesh(MeshBuilder::CreatePlane(10.0f, 10.0f, 10, 10), 1, device);
@@ -48,7 +48,7 @@ void TestScene::LoadAssets(ID3D11Device* device)
 
 	GameObject* camera = new GameObject("Camera");
 	camera->AddComponent<Camera>(new Camera());
-	camera->GetComponent<Transform>()->SetLocalPosition(Vector3(0.0f, 0.0f, 0.0f));
+	camera->GetComponent<Transform>()->SetLocalPosition(Vector3(0.0f, 0.0f, -10.0f));
 	camera->AddComponent<CameraDebug>(new CameraDebug());
 	SetActiveCamera(camera->GetComponent<Camera>());
 	AddObject(camera);

@@ -14,9 +14,15 @@ public:
 	Material();
 	~Material();
 
+	/// <summary>
+	///
+	/// </summary>
 	void SetTexture2D(const char* textureName, const char* samplerName, Texture2D* tex, ShaderType type, ID3D11DeviceContext* deviceContext);
 	//void SetRenderTexture(GraphicsShaderType type, RenderTexture* rt);
 
+	/// <summary>
+	///
+	/// </summary>
 	template<typename T>
 	void SetShaderVariable(const char* name, T* data, ShaderType type)
 	{
@@ -43,16 +49,41 @@ public:
 		}
 	}
 
+	/// <summary>
+	///
+	/// </summary>
 	void SetVertexShader(VertexShader* shader);
 	//void SetHullShader(HullShader* shader);
 	//void SetDomainShader(DomainShader* shader);
+
+	/// <summary>
+	///
+	/// </summary>
 	void SetGeometryShader(GeometryShader* shader);
+
+	/// <summary>
+	///
+	/// </summary>
 	void SetPixelShader(PixelShader* shader);
 
+	/// <summary>
+	///
+	/// </summary>
 	VertexShader* GetVertexShader()const;
+
+	/// <summary>
+	///
+	/// </summary>
 	GeometryShader* GetGeometryShader()const;
+
+	/// <summary>
+	///
+	/// </summary>
 	PixelShader* GetPixelShader()const;
 
+	/// <summary>
+	///
+	/// </summary>
 	void BindMaterial(ID3D11DeviceContext* devCon);
 private:
 	VertexShader* p_VertexShader;

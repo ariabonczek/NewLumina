@@ -5,21 +5,43 @@
 
 NS_BEGIN
 
+/// <summary>
+///
+/// </summary>
 class GraphicsCommandList
 {
 public:
 	GraphicsCommandList();
 	~GraphicsCommandList();
 #if DX11
+	/// <summary>
+	///
+	/// </summary>
 	void Create(ID3D11DeviceContext* immContext);
 #elif DX12
+	/// <summary>
+	///
+	/// </summary>
 	void Create(ID3D12Device* device);
 #endif
-
+	/// <summary>
+	///
+	/// </summary>
 	void SetupFrame();
+
+	/// <summary>
+	///
+	/// </summary>
 	void Finish();
+
+	/// <summary>
+	///
+	/// </summary>
 	void Execute();
 
+	/// <summary>
+	///
+	/// </summary>
 	ID3D11DeviceContext* GetDeferredContext()const;
 
 private:

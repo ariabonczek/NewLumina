@@ -32,8 +32,8 @@ void MeshRenderer::Render(ID3D11DeviceContext* deviceContext)
 	p_Material->GetVertexShader()->SetData<Matrix>("world", &p_GameObject->GetComponent<Transform>()->GetWorldMatrix().Transpose());
 	p_Material->GetVertexShader()->SetData<Matrix>("view", &WorldManager::GetInstance()->activeCamera->GetView().Transpose());
 	p_Material->GetVertexShader()->SetData<Matrix>("projection", &WorldManager::GetInstance()->activeCamera->GetProj().Transpose());
-	p_Material->SetTexture2D("_Albedo", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_diff.jpg", device), ShaderType::Pixel, deviceContext);
-	p_Material->SetTexture2D("_Normal", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_nor.jpg", device), ShaderType::Pixel, deviceContext);
+	p_Material->SetTexture2D("_Albedo", "_Sampler", ResourceManager::LoadTexture2D("Textures/MaidOfTime.png", device), ShaderType::Pixel, deviceContext);
+	//p_Material->SetTexture2D("_Normal", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_nor.jpg", device), ShaderType::Pixel, deviceContext);
 
 	p_Material->BindMaterial(deviceContext);
 

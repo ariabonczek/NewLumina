@@ -11,20 +11,43 @@ NS_BEGIN
 
 class MeshRenderer;
 
+/// <summary>
+///
+/// </summary>
 class GameObject
 {
 public:
 	GameObject(char* name);
 	virtual ~GameObject();
 
+	/// <summary>
+	///
+	/// </summary>
 	virtual void Initialize();
+
+	/// <summary>
+	///
+	/// </summary>
 	virtual void Destroy();
 
+	/// <summary>
+	///
+	/// </summary>
 	virtual void Update();
 
+	/// <summary>
+	///
+	/// </summary>
 	void Enable();
+
+	/// <summary>
+	///
+	/// </summary>
 	void Disable();
 
+	/// <summary>
+	///
+	/// </summary>
 	template<class T>
 	T* GetComponent()
 	{
@@ -33,6 +56,9 @@ public:
 		return nullptr;
 	}
 
+	/// <summary>
+	///
+	/// </summary>
 	template<class T>
 	void AddComponent(Component* component)
 	{
@@ -49,6 +75,9 @@ public:
 		components[guid] = component;
 	}
 
+	/// <summary>
+	///
+	/// </summary>
 	LGUID GetLGUID()const;
 	// TODO: Template specialization for physics objects
 	

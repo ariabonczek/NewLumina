@@ -7,6 +7,9 @@
 
 NS_BEGIN
 
+/// <summary>
+///
+/// </summary>
 class Texture2D : public Resource
 {
 public:
@@ -19,7 +22,14 @@ public:
 #endif
 	~Texture2D();
 
+	/// <summary>
+	///
+	/// </summary>
 	Sampler* GetSampler()const;
+
+	/// <summary>
+	///
+	/// </summary>
 	ID3D11ShaderResourceView* GetShaderResourceView()const;
 
 private:

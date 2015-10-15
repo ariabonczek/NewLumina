@@ -220,11 +220,10 @@ Quaternion Quaternion::operator-()
 
 Quaternion operator*(const Quaternion& l, const Quaternion& r)
 {
-	float x = ((l.w*r.x + l.x*r.w) + (l.z*r.y - l.y*r.z));
-	float y = ((l.w*r.y + l.y*r.w) + (l.x*r.z - l.z*r.x));
-	float z = ((l.w*r.z + l.z*r.w) + (l.y*r.x - l.x*r.y));
-	float w = (l.w*r.w) - (((l.x*r.x) + (l.y*r.y)) + (l.z*r.z));
-
+	float x = (l.w*r.x + l.x*r.w + l.y*r.z - l.z*r.y);
+	float y = (l.w*r.y - l.x*r.z + l.y*r.w + l.z*r.x);
+	float z = (l.w*r.z + l.x*r.y - l.y*r.x + l.z*r.w);
+	float w = (l.w*r.w - l.x*r.x - l.y*r.y - l.z*r.z);
 	return Quaternion(x, y, z, w);
 }
 

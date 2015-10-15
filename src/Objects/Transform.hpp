@@ -17,6 +17,7 @@ public:
 
 	void Initialize();
 	void Destroy();
+	void Update();
 
 	void Translate(Vector3 v);
 	void Rotate(Quaternion q);
@@ -50,6 +51,8 @@ public:
 
 	Transform* GetParent();
 	std::vector<Transform*> GetChildren();
+
+	bool OnAddToGameObject(GameObject* object);
 
 private:
 	void UpdateWorldMatrix();

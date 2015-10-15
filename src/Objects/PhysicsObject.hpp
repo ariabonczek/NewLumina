@@ -9,8 +9,9 @@ class PhysicsObject
 {
 public:
 
+	LGUID GetLGUID()const;
 private:
-
+	LGUID guid;
 };
 
 NS_END

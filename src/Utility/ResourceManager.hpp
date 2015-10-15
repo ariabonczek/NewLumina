@@ -15,15 +15,14 @@ class ResourceManager
 	friend class GraphicsDevice;
 public:
 	~ResourceManager();
-	static ResourceManager GetInstance();
 
-	void Initialize();
-	void Shutdown();
+	static void Initialize();
+	static void Shutdown();
 
 #if DX11
-	Texture2D* LoadTexture2D(char* filepath, ID3D11Device* device);
-	Mesh* LoadMesh(char* filepath, ID3D11Device* device);
-	Shader* LoadShader(wchar_t* filepath, ShaderType type, ID3D11Device* device);
+	static Texture2D* LoadTexture2D(char* filepath, ID3D11Device* device);
+	static Mesh* LoadMesh(char* filepath, ID3D11Device* device);
+	static Shader* LoadShader(wchar_t* filepath, ShaderType type, ID3D11Device* device);
 #elif DX12
 	Resource* LoadTexture2D(char* filepath, ID3D12Device* device);
 	Resource* LoadMesh(char* filepath, ID3D12Device* device);
@@ -34,11 +33,11 @@ public:
 	Resource* LoadShader(char* filepath);
 #endif
 
-	void FreeResource(Resource* resource);
+	static void FreeResource(Resource* resource);
 private:
 #if DX11
-	ID3D11Device* p_Device;
-	void SetDevice(ID3D11Device* device);
+	static ID3D11Device* p_Device;
+	static void SetDevice(ID3D11Device* device);
 #elif DX12
 	ID3D12Device* p_Device;
 	void SetDevice(ID3D12Device* device);
@@ -47,9 +46,9 @@ private:
 #endif
 	ResourceManager();
 
-	void FreeAllResources();
+	static void FreeAllResources();
 
-	Resourcemap resourceMap;
+	static Resourcemap resourceMap;
 };
 
 NS_END

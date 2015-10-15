@@ -14,6 +14,7 @@ public:
 
 	virtual void Initialize() = 0;
 	virtual void Destroy() = 0;
+	virtual void Update() = 0;
 
 #if DX11
 	virtual void Render(ID3D11DeviceContext* deviceContext) = 0;

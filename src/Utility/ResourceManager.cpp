@@ -10,6 +10,9 @@
 
 NS_BEGIN
 
+ID3D11Device* ResourceManager::p_Device;
+Resourcemap ResourceManager::resourceMap;
+
 ResourceManager::ResourceManager()
 {}
 
@@ -26,12 +29,6 @@ void ResourceManager::Initialize()
 void ResourceManager::Shutdown()
 {
 	FreeAllResources();
-}
-
-ResourceManager ResourceManager::GetInstance()
-{
-	static ResourceManager instance;
-	return instance;
 }
 
 #if DX11
@@ -105,6 +102,7 @@ Resource* ResourceManager::LoadShader(char* filepath, ID3D12Device* device)
 
 	Shader* s = Filesystem::LoadShader(filepath, type, device);
 	s->SetLGUID(guid);
+	//resourceMap[guid] = s;
 	return s;
 }
 

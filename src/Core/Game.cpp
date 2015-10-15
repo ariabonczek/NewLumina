@@ -54,7 +54,7 @@ void Game::Initialize()
 #endif
 
 	Filesystem::Initialize();
-	ResourceManager::GetInstance().Initialize();
+	ResourceManager::Initialize();
 	p_Renderer = Renderer::GetInstance();			// Creates
 	p_WorldManager = WorldManager::GetInstance();
 	p_Renderer->Initialize();						// Initializes
@@ -69,7 +69,7 @@ void Game::Shutdown()
 	m_Scheduler.Shutdown();
 	p_Renderer->Shutdown();
 	p_WorldManager->Shutdown();
-	ResourceManager::GetInstance().Shutdown();
+	ResourceManager::Shutdown();
 	Filesystem::Shutdown();
 
 #if _Debug

@@ -20,7 +20,7 @@ public:
 	virtual void Initialize();
 	virtual void Destroy();
 
-	virtual void Update(float dt);
+	virtual void Update();
 
 	void Enable();
 	void Disable();
@@ -28,16 +28,16 @@ public:
 	template<class T>
 	T* GetComponent()
 	{
-		// TODO: Log the output of typeid(T).name() to make sure I'm using it write
-		// Also try raw_name();
-		return static_cast<T*>(components[Hash(typeid(T).name())]);
+		if(components.find(Hash(typeid(T).name())) != components.end())
+			return reinterpret_cast<T*>(components[Hash(typeid(T).name())]);
+		return nullptr;
 	}
 
 	template<class T>
 	void AddComponent(Component* component)
 	{
 		LGUID guid = Hash(typeid(T).name());
-		if (components[guid])
+		if (components.find(guid) != components.end())
 		{
 #if _DEBUG
 			Debug::LogError("[GameObject] Attempted to add a new instance of an already existing component.");
@@ -49,6 +49,7 @@ public:
 		components[guid] = component;
 	}
 
+	LGUID GetLGUID()const;
 	// TODO: Template specialization for physics objects
 	
 protected:

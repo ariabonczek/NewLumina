@@ -10,7 +10,7 @@ GameObject::GameObject(char* name) :
 	name(name),
 	enabled(false)
 {
-	components[Hash(typeid(Transform).name())] = new Transform();
+	AddComponent<Transform>(new Transform());
 }
 
 GameObject::~GameObject()
@@ -36,9 +36,12 @@ void GameObject::Destroy()
 	components.clear();
 }
 
-void GameObject::Update(float dt)
+void GameObject::Update()
 {
-
+	for (std::unordered_map<LGUID, Component*>::iterator it = components.begin(); it != components.end(); ++it)
+	{
+		it->second->Update();
+	}
 }
 
 void GameObject::Enable()
@@ -47,7 +50,7 @@ void GameObject::Enable()
 		return;
 
 	WorldManager::GetInstance()->AddActiveGameObject(this);
-	if (BaseRenderer* r = dynamic_cast<BaseRenderer*>(GetComponent<BaseRenderer>()))
+	if (BaseRenderer* r = reinterpret_cast<BaseRenderer*>(GetComponent<MeshRenderer>()))
 	{
 		WorldManager::GetInstance()->AddRenderableGameObject(r);
 	}
@@ -62,11 +65,15 @@ void GameObject::Disable()
 		return;
 
 	WorldManager::GetInstance()->RemoveInactiveGameObject(this);
-	if (BaseRenderer* r = dynamic_cast<BaseRenderer*>(GetComponent<BaseRenderer>()))
+	if (BaseRenderer* r = reinterpret_cast<BaseRenderer*>(GetComponent<MeshRenderer>()))
 	{
 		WorldManager::GetInstance()->RemoveRenderableGameObject(r);
 	}
 }
 
+LGUID GameObject::GetLGUID()const
+{
+	return guid;
+}
 
 NS_END

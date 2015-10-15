@@ -22,6 +22,8 @@ public:
 
 	void Destroy();
 
+	void Update();
+
 	/// <summary>
 	/// 
 	/// </summary>
@@ -37,6 +39,10 @@ public:
 	/// </summary>
 	void UpdateViewMatrix();
 
+	void Pitch(float angle);
+	void Yaw(float angle);
+	void Roll(float angle);
+	
 	void RotateX(float angle);
 	void RotateY(float angle);
 	void RotateZ(float angle);
@@ -58,7 +64,6 @@ public:
 
 	Matrix GetView()const;
 	Matrix GetProj()const;
-	Matrix GetViewProj()const;
 
 #pragma endregion
 
@@ -81,7 +86,7 @@ private:
 
 	Matrix view;
 	Matrix projection;
-	Matrix viewProjection;
+	bool dirty;
 };
 
 NS_END

@@ -16,6 +16,7 @@ public:
 	~MeshRenderer();
 
 	void Initialize();
+	void Update();
 	void Render(ID3D11DeviceContext* deviceContext);
 	void Destroy();
 

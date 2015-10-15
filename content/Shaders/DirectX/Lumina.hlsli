@@ -28,3 +28,8 @@ cbuffer perObject : register(b2)
 	matrix world;
 	matrix worldInverseTranspose;
 }
+
+float3 UnpackNormals(float3 samplevalue)
+{
+	return samplevalue * 2.0f - 1.0f;
+}

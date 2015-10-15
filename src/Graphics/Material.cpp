@@ -28,7 +28,7 @@ void Material::SetTexture2D(const char* name, Texture2D* tex, ShaderType type, I
 		break;
 	case ShaderType::Pixel:
 		p_PixelShader->SetShaderResourceView(name, tex->GetShaderResourceView(), deviceContext);
-		p_PixelShader->SetSamplerState(name, tex->GetSampler()->GetSamplerState(), deviceContext);
+		p_PixelShader->SetSamplerState("_Sampler", tex->GetSampler()->GetSamplerState(), deviceContext);
 		break;
 	}
 }

@@ -81,10 +81,9 @@ private:
 
 	ID3D11DeviceContext* p_DeviceContext;
 
-	std::vector<GameObject*> activeObjects;
-	std::vector<BaseRenderer*> renderableObjects;
-	std::vector<PhysicsObject*> physicsObjects;
-
+	std::unordered_map<LGUID, GameObject*> activeObjects;
+	std::unordered_map<LGUID, BaseRenderer*> renderableObjects;
+	std::unordered_map<LGUID, PhysicsObject*> physicsObjects;
 
 	bool shouldQuit;
 };

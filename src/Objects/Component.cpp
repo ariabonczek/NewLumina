@@ -4,7 +4,9 @@
 NS_BEGIN
 
 Component::Component()
-{}
+{
+	guid = Hash(Timer::GetTimeSinceEpoch());
+}
 
 Component::~Component()
 {}
@@ -20,6 +22,12 @@ bool Component::OnAddToGameObject(GameObject* gameObject)
 	}
 	p_GameObject = gameObject;
 	return true;
+
+}
+
+LGUID Component::GetLGUID()const
+{
+	return guid;
 }
 
 NS_END

@@ -12,6 +12,7 @@ NS_BEGIN
 	: Resource(guid)
 {
 #if DX11
+	sampler = Sampler::ClampLinear;
 	ID3D11Texture2D* texture;
 	// Create the texture
 
@@ -70,22 +71,22 @@ NS_BEGIN
 
 	D3D11_SUBRESOURCE_DATA srd;
 	ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
-	srd.pSysMem = temp;
+	srd.pSysMem = &temp[0];
 	srd.SysMemPitch = rowpitch;
 	srd.SysMemSlicePitch = imagesize;
-
+	
 	device->CreateTexture2D(&td, &srd, &texture);
-
+	
 	// Create the shader resource view
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvd;
 	ZeroMemory(&srvd, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-
+	
 	srvd.Format = td.Format;
 	srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	srvd.Texture2D.MipLevels = 1;
-
+	
 	device->CreateShaderResourceView(texture, &srvd, &srv);
-
+	
 	DELETECOM(texture);
 	delete[] temp;
 #elif DX12

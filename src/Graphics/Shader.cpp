@@ -179,6 +179,9 @@ uint32 Shader::GetTextureIndex(const char* name)
 
 	if (it == textures.end())
 	{
+#if _DEBUG
+		Debug::LogError("[Shader] Could not locate texture index.");
+#endif
 		return -1;
 	}
 
@@ -191,6 +194,9 @@ uint32 Shader::GetSamplerIndex(const char* name)
 
 	if (it == samplers.end())
 	{
+#if _DEBUG
+		Debug::LogError("[Shader] Could not locate sampler index.");
+#endif
 		return -1;
 	}
 

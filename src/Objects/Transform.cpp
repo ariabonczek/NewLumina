@@ -1,4 +1,6 @@
 #include <Objects/Transform.hpp>
+#include <Objects\GameObject.hpp>
+#include <Objects\Camera.hpp>
 
 NS_BEGIN
 
@@ -27,6 +29,12 @@ void Transform::Initialize()
 void Transform::Destroy()
 {}
 
+void Transform::Update()
+{
+	if (dirty)
+		UpdateWorldMatrix();
+}
+
 void Transform::Translate(Vector3 v)
 {
 	localPosition = localPosition + v;
@@ -35,7 +43,8 @@ void Transform::Translate(Vector3 v)
 
 void Transform::Rotate(Quaternion rotation)
 {
-	localRotation = (rotation * localRotation);
+	//localRotation = (rotation * localRotation).Normalized();
+	localRotation = (localRotation * rotation).Normalized();
 	dirty = true;
 }
 
@@ -60,7 +69,7 @@ Vector3 Transform::GetWorldPosition()
 }
 Quaternion Transform::GetWorldRotation()
 {
-	if (IsBatman()) return localRotation;
+	if (IsBatman()) return localRotation.Normalized();
 	else
 	{
 		return localRotation * parent->GetWorldRotation();
@@ -145,11 +154,16 @@ void Transform::UpdateWorldMatrix()
 	s = Matrix::CreateScale(worldScale);
 	t = Matrix::CreateTranslation(worldPosition);
 
-	worldCache = r*s*t;
+	worldCache = s*r*t;
 
 	forward = Vector3::Normalize(Vector3::Forward * r);
-	right = Vector3::Normalize(Vector3::Right * r);
-	up = Vector3::Cross(forward, right);
+	up = Vector3::Normalize(Vector3::Up * r);
+	right = Vector3::Cross(up, forward);
+
+	if (Camera * c = p_GameObject->GetComponent<Camera>())
+	{
+		c->UpdateViewMatrix();
+	}
 
 	for (uint i = 0; i < children.size(); i++)
 	{
@@ -178,6 +192,12 @@ Vector3 Transform::GetUp()const
 Vector3 Transform::GetRight()const
 {
 	return right;
+}
+
+bool Transform::OnAddToGameObject(GameObject* object)
+{
+	Component::OnAddToGameObject(object);
+	return true;
 }
 
 NS_END

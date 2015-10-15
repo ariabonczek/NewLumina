@@ -5,8 +5,8 @@ NS_BEGIN
 Color Color::Red = Color(1.0f, 0.0f, 0.0f, 1.0f);
 Color Color::Green = Color(0.0f, 1.0f, 0.0f, 1.0f);
 Color Color::Blue = Color(0.0f, 0.0f, 1.0f, 1.0f);
-Color Color::White = Color(0.0f, 0.0f, 0.0f, 1.0f);
-Color Color::Black = Color(1.0f, 1.0f, 1.0f, 1.0f);
+Color Color::White = Color(1.0f, 1.0f, 1.0f, 1.0f);
+Color Color::Black = Color(0.0f, 0.0f, 0.0f, 1.0f);
 Color Color::Grey = Color(0.7f, 0.7f, 0.7f, 1.0f);
 Color Color::Gray = Color(0.7f, 0.7f, 0.7f, 1.0f);
 

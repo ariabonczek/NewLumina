@@ -29,6 +29,12 @@ void Camera::Initialize()
 void Camera::Destroy()
 {}
 
+void Camera::Update()
+{
+	if (dirty)
+		UpdateViewMatrix();
+}
+
 Vector3 Camera::GetLook()const
 {
 	return look;
@@ -85,10 +91,6 @@ Matrix Camera::GetProj()const
 {
 	return projection;
 }
-Matrix Camera::GetViewProj()const
-{
-	return viewProjection;
-}
 
 void Camera::SetLens(float fovY, float aspect, float zNear, float zFar)
 {
@@ -109,6 +111,7 @@ void Camera::LookAt(Vector3 target)
 	right = view.Right();
 	up = view.Up();
 	look = view.Forward();
+	dirty = false;
 	// TODO: Change the transform rotation based on new view 
 }
 
@@ -130,38 +133,73 @@ void Camera::UpdateViewMatrix()
 		float z = -Vector3::Dot(pos, look);
 
 		view = Matrix::CreateLookAt(pos, pos + look, Vector3::Up);
-
-		// Cache the viewProjection matrix
-		viewProjection = view * projection;
 	}
+}
+
+void Camera::Pitch(float angle)
+{
+	Quaternion q = Quaternion::CreateFromAxisAngle(cachedTransform->GetRight(), angle);
+	Matrix rotation = Matrix::CreateFromQuaternion(q);
+
+	right = Vector3::Normalize(right * rotation);
+	look = Vector3::Normalize(look * rotation);
+	up = Vector3::Cross(look, right);
+	dirty = true;
+}
+
+void Camera::Yaw(float angle)
+{
+	Quaternion q = Quaternion::CreateFromAxisAngle(cachedTransform->GetUp(), angle);
+	Matrix rotation = Matrix::CreateFromQuaternion(q);
+
+	right = Vector3::Normalize(right * rotation);
+	look = Vector3::Normalize(look * rotation);
+	up = Vector3::Cross(look, right);
+	dirty = true;
+}
+
+void Camera::Roll(float angle)
+{
+	Quaternion q = Quaternion::CreateFromAxisAngle(cachedTransform->GetForward(), angle);
+	Matrix rotation = Matrix::CreateFromQuaternion(q);
+
+	right = Vector3::Normalize(right * rotation);
+	look = Vector3::Normalize(look * rotation);
+	up = Vector3::Cross(look, right);
+	dirty = true;
 }
 
 void Camera::RotateX(float angle)
 {
-	Matrix rotation = Matrix::CreateRotationX(angle);
+	Quaternion q = Quaternion::CreateFromAxisAngle(Vector3::Right, angle);
+	Matrix rotation = Matrix::CreateFromQuaternion(q);
 
-	right = right * rotation;
-	look = look * rotation;
-	up = up * rotation;
+	right = Vector3::Normalize(right * rotation);
+	look = Vector3::Normalize(look * rotation);
+	up = Vector3::Cross(look, right);
+	dirty = true;
 }
 
 void Camera::RotateY(float angle)
 {
-	Matrix rotation = Matrix::CreateRotationY(angle);
+	Quaternion q = Quaternion::CreateFromAxisAngle(Vector3::Up, angle);
+	Matrix rotation = Matrix::CreateFromQuaternion(q);
 
-	right = right * rotation;
-	look = look * rotation;
-	up = up * rotation;
-
+	right = Vector3::Normalize(right * rotation);
+	look = Vector3::Normalize(look * rotation);
+	up = Vector3::Cross(look, right);
+	dirty = true;
 }
 
 void Camera::RotateZ(float angle)
 {
-	Matrix rotation = Matrix::CreateRotationZ(angle);
+	Quaternion q = Quaternion::CreateFromAxisAngle(Vector3::Forward, angle);
+	Matrix rotation = Matrix::CreateFromQuaternion(q);
 
-	right = right * rotation;
-	look = look * rotation;
-	up = up * rotation;
+	right = Vector3::Normalize(right * rotation);
+	look = Vector3::Normalize(look * rotation);
+	up = Vector3::Cross(look, right);
+	dirty = true;
 }
 
 NS_END

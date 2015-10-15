@@ -31,10 +31,6 @@ void WorldManager::Initialize()
 #if _DEBUG
 	Debug::Log("WorldManager Initialized");
 #endif
-
-	activeObjects.reserve(UPDATABLES_EXPECTED);
-	renderableObjects.reserve(RENDERABLES_EXPECTED);
-	physicsObjects.reserve(PHYSICS_EXPECTED);
 }
 
 void WorldManager::Shutdown()
@@ -47,9 +43,9 @@ DWORD WINAPI WorldManager::Update(void* param)
 	WorldManager* _this = static_cast<WorldManager*>(param);
 
 	float dt = Timer::GetFrameTime();
-	for (uint32 i = 0; i < _this->activeObjects.size(); ++i)
+	for (std::unordered_map<LGUID, GameObject*>::iterator it = _this->activeObjects.begin(); it != _this->activeObjects.end(); ++it)
 	{
-		_this->activeObjects[i]->Update(dt);
+		it->second->Update();
 	}
 	return 0;
 }
@@ -60,7 +56,7 @@ DWORD WINAPI WorldManager::Physics(void* param)
 
 	// TODO: Perform physics calculations at a fixed timestep
 	float dt = Timer::GetFrameTime();
-	for (uint32 i = 0; i < _this->physicsObjects.size(); ++i)
+	for (std::unordered_map<LGUID, PhysicsObject*>::iterator it = _this->physicsObjects.begin(); it != _this->physicsObjects.end(); ++it)
 	{
 		//physicsObjects[i]->Update(dt);
 	}
@@ -71,9 +67,9 @@ DWORD WINAPI WorldManager::Render(void* param)
 {
 	WorldManager* _this = static_cast<WorldManager*>(param);
 
-	for (uint32 i = 0; i < _this->renderableObjects.size(); ++i)
+	for (std::unordered_map<LGUID, BaseRenderer*>::iterator it = _this->renderableObjects.begin(); it != _this->renderableObjects.end(); ++it)
 	{
-		_this->renderableObjects[i]->Render(_this->p_DeviceContext);
+		it->second->Render(_this->p_DeviceContext);
 	}
 
 	return 0;
@@ -104,31 +100,31 @@ void WorldManager::LoadNewScene(Scene* scene)
 
 void WorldManager::AddActiveGameObject(GameObject* gameObject)
 {
-	activeObjects.push_back(gameObject);
+	activeObjects[gameObject->GetLGUID()] = gameObject;
 }
 
 void WorldManager::AddRenderableGameObject(BaseRenderer* renderer)
 {
-	renderableObjects.push_back(renderer);
+	renderableObjects[renderer->GetLGUID()] = renderer;
 }
 
 void WorldManager::AddPhysicsObject(PhysicsObject* physicsObject)
 {
-	physicsObjects.push_back(physicsObject);
+	physicsObjects[physicsObject->GetLGUID()] = physicsObject;
 }
 
 void WorldManager::RemoveInactiveGameObject(GameObject* gameObject)
 {
-	std::vector<GameObject*>::iterator it = activeObjects.begin();
-	for (it; *it != gameObject; ++it)
+	std::unordered_map<LGUID, GameObject*>::iterator it = activeObjects.begin();
+	for (it; it->second != gameObject; ++it)
 	{}
 
 	activeObjects.erase(it);
 }
 void WorldManager::RemoveRenderableGameObject(BaseRenderer* renderer)
 {
-	std::vector<BaseRenderer*>::iterator it = renderableObjects.begin();
-	for (it; *it != renderer; ++it)
+	std::unordered_map<LGUID, BaseRenderer*>::iterator it = renderableObjects.begin();
+	for (it; it->second != renderer; ++it)
 	{}
 
 	renderableObjects.erase(it);
@@ -136,8 +132,8 @@ void WorldManager::RemoveRenderableGameObject(BaseRenderer* renderer)
 
 void WorldManager::RemovePhysicsObject(PhysicsObject* physicsObject)
 {
-	std::vector<PhysicsObject*>::iterator it = physicsObjects.begin();
-	for (it; *it != physicsObject; ++it)
+	std::unordered_map<LGUID, PhysicsObject*>::iterator it = physicsObjects.begin();
+	for (it; it->second != physicsObject; ++it)
 	{}
 
 	physicsObjects.erase(it);

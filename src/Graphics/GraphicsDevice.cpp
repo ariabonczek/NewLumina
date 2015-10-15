@@ -86,7 +86,7 @@ void GraphicsDevice::Initialize(Window* window)
 		&immCon
 		);
 
-	ResourceManager::GetInstance().SetDevice(dev);
+	ResourceManager::SetDevice(dev);
 
 	DXGI_SWAP_CHAIN_DESC scd;
 	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));

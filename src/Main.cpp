@@ -1,7 +1,11 @@
 //--------------------------------------
 // LuminaEngine belongs to Aria Bonczek
 //--------------------------------------
-#include "Core/Game.hpp"
+#include "Core\Game.hpp"
+#include "Scenes\SceneManager.hpp"
+#include "Scenes\TestScene.hpp"
+
+using namespace Lumina;
 
 #if DX11 || DX12
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR cmdLine, int showCmd)
@@ -9,5 +13,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR cmdLine, i
 int main(int argc, char** argv)
 #endif
 {
-	return Lumina::Game::GetInstance().Run();
+	SceneManager::GetInstance()->AddScene(new TestScene());
+	return Game::GetInstance().Run();
 }

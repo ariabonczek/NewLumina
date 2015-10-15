@@ -1,18 +1,21 @@
-struct vin
-{
-	float3 position : POSITION;
-};
+//----------------------
+// Default Vertex Shader
+//----------------------
 
-struct toPixel
-{
-	float4 position : SV_POSITION;
-};
+#include "Lumina.hlsli"
 
-toPixel main(vin input)
+MeshVertexOutput main(MeshVertexInput input)
 {
-	toPixel o;
+	MeshVertexOutput o;
 
-	o.position = float4(input.position, 1.0);
+	matrix wvp = mul(world, mul(view, projection));
+
+	o.position = mul(float4(input.position, 1.0), wvp);
+	//o.position = float4(input.position, 1.0);
+	o.worldpos = input.position;
+	o.texcoord = input.texcoord;
+	o.normal = input.normal;
+	o.tangent = input.tangent;
 
 	return o;	
 }

@@ -58,6 +58,12 @@
     <Filter Include="Source Files\Objects">
       <UniqueIdentifier>{fbb29b72-7ff4-4c7a-96be-d93d6ce5af54}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Scenes">
+      <UniqueIdentifier>{0beb87bb-7b0a-4bf1-9773-62ef2c2b03f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scenes">
+      <UniqueIdentifier>{43611238-f86b-44d2-bf8d-22fd79014f52}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -161,6 +167,15 @@
     </ClCompile>
     <ClCompile Include="Utility\MeshBuilder.cpp">
       <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\Scene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\SceneManager.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\TestScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -275,6 +290,21 @@
     <ClInclude Include="Utility\MeshBuilder.hpp">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="Scenes\Scene.hpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\SceneManager.hpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\TestScene.hpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Lumina.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Core.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="P:\LuminaEngine\content\Shaders\DirectX\defaultPixel.hlsl">
@@ -290,6 +320,9 @@
     </None>
     <None Include="P:\LuminaEngine\content\Shaders\OpenGL\defaultVertex.glsl">
       <Filter>Resource Files\Shaders\OpenGL</Filter>
+    </None>
+    <None Include="..\content\Shaders\DirectX\Lumina.hlsli">
+      <Filter>Resource Files\Shaders\DirectX</Filter>
     </None>
   </ItemGroup>
 </Project>

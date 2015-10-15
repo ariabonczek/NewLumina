@@ -12,7 +12,7 @@ NS_BEGIN
 class MeshRenderer : public BaseRenderer
 {
 public:
-	MeshRenderer();
+	MeshRenderer(Mesh* mesh);
 	~MeshRenderer();
 
 	void Initialize();
@@ -20,6 +20,8 @@ public:
 	void Destroy();
 
 	bool OnAddToGameObject(GameObject* object);
+
+	void SetMaterial(Material* material);
 private:
 	Mesh* p_Mesh;
 	Material* p_Material;

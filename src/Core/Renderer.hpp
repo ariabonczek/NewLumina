@@ -59,11 +59,15 @@ private:
 	GraphicsDevice* mp_GraphicsDevice;
 
 	void SetupCommandLists();
+	void SetupFrame();
+	void CloseCommandLists();
 
 	GraphicsCommandList mp_OpaqueCommandList;
 	GraphicsCommandList mp_TransparentCommandList;
 	GraphicsCommandList mp_ParticlesCommandList;
 	GraphicsCommandList mp_LightingCommandList;
+
+	Camera* activeCamera;
 
 	ID3D11DeviceContext* p_ImmediateContext;
 	IDXGISwapChain3* p_SwapChain;

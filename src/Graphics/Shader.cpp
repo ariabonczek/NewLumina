@@ -10,11 +10,11 @@ Shader::Shader(LGUID guid):
 Shader::~Shader()
 {}
 
-bool Shader::LoadShaderFromFile(const char* filepath, ID3D11Device* device)
+bool Shader::LoadShaderFromFile(wchar_t* filepath, ID3D11Device* device)
 {
 	// Load the shader
 	shaderBlob = nullptr;
-	D3DReadFileToBlob(reinterpret_cast<LPCWSTR>(filepath), &shaderBlob);
+	HRESULT hr = D3DReadFileToBlob(reinterpret_cast<LPCWSTR>(filepath), &shaderBlob);
 
 	// Shader reflection object
 	ID3D11ShaderReflection* reflection;
@@ -41,10 +41,10 @@ bool Shader::LoadShaderFromFile(const char* filepath, ID3D11Device* device)
 		switch (rd.Type)
 		{
 		case D3D_SIT_TEXTURE:
-			textures.insert(std::pair<const char*, uint32>(rd.Name, rd.BindPoint));
+			textures.insert(std::pair<LGUID, uint32>(Hash(rd.Name), rd.BindPoint));
 			break;
 		case D3D_SIT_SAMPLER:
-			samplers.insert(std::pair<const char*, uint32>(rd.Name, rd.BindPoint));
+			samplers.insert(std::pair<LGUID, uint32>(Hash(rd.Name), rd.BindPoint));
 			break;
 		}
 	}
@@ -63,10 +63,10 @@ bool Shader::LoadShaderFromFile(const char* filepath, ID3D11Device* device)
 		// Grab its binding
 		D3D11_SHADER_INPUT_BIND_DESC sibd;
 		ZeroMemory(&sibd, sizeof(D3D11_SHADER_INPUT_BIND_DESC));
-		reflection->GetResourceBindingDescByName(sibd.Name, &sibd);
+		reflection->GetResourceBindingDescByName(sbd.Name, &sibd);
 
 		constantBuffers[i].index = sibd.BindPoint;
-		constantBuffersMap.insert(std::pair<const char*, ConstantBuffer*>(sibd.Name, &constantBuffers[i]));
+		constantBuffersMap.insert(std::pair<LGUID, ConstantBuffer*>(Hash(sbd.Name), &constantBuffers[i]));
 
 		// Create the D3D object
 		D3D11_BUFFER_DESC bfd;
@@ -79,7 +79,7 @@ bool Shader::LoadShaderFromFile(const char* filepath, ID3D11Device* device)
 		bfd.StructureByteStride = 0;
 		device->CreateBuffer(&bfd, 0, &constantBuffers[i].buffer);
 
-		constantBuffers[i].dataBuffer = new uint8[sbd.Size];
+		constantBuffers[i].dataBuffer = new unsigned char[sbd.Size];
 		ZeroMemory(constantBuffers[i].dataBuffer, sbd.Size);
 
 		// Foreach variable in the buffer
@@ -94,11 +94,11 @@ bool Shader::LoadShaderFromFile(const char* filepath, ID3D11Device* device)
 
 			// Store it
 			ShaderVariable variable;
-			variable.index = j;
+			variable.index = i;
 			variable.offset = svd.StartOffset;
 			variable.size = svd.Size;
 
-			variables.insert(std::pair<const char*, ShaderVariable>(svd.Name, variable));
+			variables.insert(std::pair<LGUID, ShaderVariable>(Hash(svd.Name), variable));
 		}
 	}
 
@@ -139,16 +139,22 @@ void Shader::UpdateResources(ID3D11DeviceContext* deviceContext)
 
 ShaderVariable* Shader::GetShaderVariable(const char* name, uint32 size)
 {
-	std::unordered_map<const char*, ShaderVariable>::iterator it = variables.find(name);
+	std::unordered_map<LGUID, ShaderVariable>::iterator it = variables.find(Hash(name));
 
 	if (it == variables.end())
 	{
+#if _DEBUG
+		Debug::LogError("[Shader] Could not find the requested shader variable.");
+#endif
 		return nullptr;
 	}
 
 	ShaderVariable* variable = &(it->second);
 	if (variable->size != size)
 	{
+#if _DEBUG
+		Debug::LogError("[Shader] Attempted to change a variable of incorrect size.");
+#endif
 		return nullptr;
 	}
 
@@ -157,7 +163,7 @@ ShaderVariable* Shader::GetShaderVariable(const char* name, uint32 size)
 
 ConstantBuffer* Shader::GetConstantBuffer(const char* name)
 {
-	std::unordered_map<const char*, ConstantBuffer*>::iterator it = constantBuffersMap.find(name);
+	std::unordered_map<LGUID, ConstantBuffer*>::iterator it = constantBuffersMap.find(Hash(name));
 
 	if (it == constantBuffersMap.end())
 	{
@@ -169,7 +175,7 @@ ConstantBuffer* Shader::GetConstantBuffer(const char* name)
 
 uint32 Shader::GetTextureIndex(const char* name)
 {
-	std::unordered_map<const char*, uint32>::iterator it = textures.find(name);
+	std::unordered_map<LGUID, uint32>::iterator it = textures.find(Hash(name));
 
 	if (it == textures.end())
 	{
@@ -181,7 +187,7 @@ uint32 Shader::GetTextureIndex(const char* name)
 
 uint32 Shader::GetSamplerIndex(const char* name)
 {
-	std::unordered_map<const char*, uint32>::iterator it = samplers.find(name);
+	std::unordered_map<LGUID, uint32>::iterator it = samplers.find(Hash(name));
 
 	if (it == samplers.end())
 	{
@@ -263,6 +269,8 @@ void VertexShader::SetSamplerState(const char* name, ID3D11SamplerState* sampler
 void VertexShader::BindShader(ID3D11DeviceContext* deviceContext)
 {
 	Shader::BindShader(deviceContext);
+	deviceContext->IASetInputLayout(inputLayout);
+
 	deviceContext->VSSetShader(vertexShader, 0, 0);
 
 	for (uint32 i = 0; i < numConstantBuffers; ++i)
@@ -333,8 +341,62 @@ void PixelShader::BindShader(ID3D11DeviceContext* deviceContext)
 void VertexShader::CreateShader(ID3D11Device* device)
 {
 	device->CreateVertexShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), 0, &vertexShader);
-	shaderBlob->Release();
 
+	ID3D11ShaderReflection* reflection;
+	D3DReflect(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), _uuidof(ID3D11ShaderReflection), (void**)&reflection);
+
+	D3D11_SHADER_DESC sd;
+	ZeroMemory(&sd, sizeof(D3D11_SHADER_DESC));
+	reflection->GetDesc(&sd);
+
+	std::vector<D3D11_INPUT_ELEMENT_DESC> ild;
+	for (uint32 i = 0; i < sd.InputParameters; ++i)
+	{
+		D3D11_SIGNATURE_PARAMETER_DESC sprd;
+		ZeroMemory(&sprd, sizeof(D3D11_SIGNATURE_PARAMETER_DESC));
+		reflection->GetInputParameterDesc(i, &sprd);
+
+		D3D11_INPUT_ELEMENT_DESC element;
+		ZeroMemory(&element, sizeof(D3D11_INPUT_ELEMENT_DESC));
+		element.SemanticName = sprd.SemanticName;
+		element.SemanticIndex = sprd.SemanticIndex;
+		element.InputSlot = 0;
+		element.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+		element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+		element.InstanceDataStepRate = 0;
+
+		if (sprd.Mask == 1)
+		{
+			if (sprd.ComponentType == D3D_REGISTER_COMPONENT_UINT32) element.Format = DXGI_FORMAT_R32_UINT;
+			else if (sprd.ComponentType == D3D_REGISTER_COMPONENT_SINT32) element.Format = DXGI_FORMAT_R32_SINT;
+			else if (sprd.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) element.Format = DXGI_FORMAT_R32_FLOAT;
+		}
+		else if (sprd.Mask <= 3)
+		{
+			if (sprd.ComponentType == D3D_REGISTER_COMPONENT_UINT32) element.Format = DXGI_FORMAT_R32G32_UINT;
+			else if (sprd.ComponentType == D3D_REGISTER_COMPONENT_SINT32) element.Format = DXGI_FORMAT_R32G32_SINT;
+			else if (sprd.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) element.Format = DXGI_FORMAT_R32G32_FLOAT;
+		}
+		else if (sprd.Mask <= 7)
+		{
+			if (sprd.ComponentType == D3D_REGISTER_COMPONENT_UINT32) element.Format = DXGI_FORMAT_R32G32B32_UINT;
+			else if (sprd.ComponentType == D3D_REGISTER_COMPONENT_SINT32) element.Format = DXGI_FORMAT_R32G32B32_SINT;
+			else if (sprd.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) element.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+		}
+		else if (sprd.Mask <= 15)
+		{
+			if (sprd.ComponentType == D3D_REGISTER_COMPONENT_UINT32) element.Format = DXGI_FORMAT_R32G32B32A32_UINT;
+			else if (sprd.ComponentType == D3D_REGISTER_COMPONENT_SINT32) element.Format = DXGI_FORMAT_R32G32B32A32_SINT;
+			else if (sprd.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) element.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		}
+
+		ild.push_back(element);
+	}
+
+	device->CreateInputLayout(&ild[0], ild.size(), shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), &inputLayout);
+
+	reflection->Release();
+	shaderBlob->Release();	
 }
 
 void GeometryShader::CreateShader(ID3D11Device* device)

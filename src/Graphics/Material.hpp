@@ -22,27 +22,24 @@ public:
 	{
 		switch (type)
 		{
-			switch (type)
-			{
-			case ShaderType::Vertex:
-				p_VertexShader->SetData(name, data);
-				break;
-			case ShaderType::Hull:
+		case ShaderType::Vertex:
+			p_VertexShader->SetData(name, data);
+			break;
+		case ShaderType::Hull:
 
-				break;
-			case ShaderType::Domain:
+			break;
+		case ShaderType::Domain:
 
-				break;
-			case ShaderType::Geometry:
-				p_GeometryShader->SetData(name, data);
-				break;
-			case ShaderType::GeometrySO:
-				p_GeometryShader->SetData(name, data);
-				break;
-			case ShaderType::Pixel:
-				p_PixelShader->SetData(name, data);
-				break;
-			}
+			break;
+		case ShaderType::Geometry:
+			p_GeometryShader->SetData(name, data);
+			break;
+		case ShaderType::GeometrySO:
+			p_GeometryShader->SetData(name, data);
+			break;
+		case ShaderType::Pixel:
+			p_PixelShader->SetData(name, data);
+			break;
 		}
 	}
 
@@ -51,6 +48,10 @@ public:
 	//void SetDomainShader(DomainShader* shader);
 	void SetGeometryShader(GeometryShader* shader);
 	void SetPixelShader(PixelShader* shader);
+
+	VertexShader* GetVertexShader()const;
+	GeometryShader* GetGeometryShader()const;
+	PixelShader* GetPixelShader()const;
 
 	void BindMaterial(ID3D11DeviceContext* devCon);
 private:

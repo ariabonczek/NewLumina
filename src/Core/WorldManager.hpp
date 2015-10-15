@@ -51,7 +51,6 @@ public:
 #elif GL43
 
 #endif
-	
 	void AddActiveGameObject(GameObject* gameObject);
 	void AddRenderableGameObject(BaseRenderer* renderer);
 	void AddPhysicsObject(PhysicsObject* physicsObject);
@@ -64,6 +63,19 @@ public:
 	/// Returns true if the application should quit
 	/// </summary>
 	bool ShouldQuit();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void UnloadCurrentScene();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void LoadNewScene(Scene* scene);
+
+	Camera* activeCamera;
+
 private:
 	WorldManager();
 
@@ -72,6 +84,7 @@ private:
 	std::vector<GameObject*> activeObjects;
 	std::vector<BaseRenderer*> renderableObjects;
 	std::vector<PhysicsObject*> physicsObjects;
+
 
 	bool shouldQuit;
 };

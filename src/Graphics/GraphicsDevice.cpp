@@ -109,6 +109,15 @@ void GraphicsDevice::Initialize(Window* window)
 
 	DELETECOM(factory);
 
+	D3D11_RASTERIZER_DESC rd;
+	ZeroMemory(&rd, sizeof(D3D11_RASTERIZER_DESC));
+	rd.FillMode = D3D11_FILL_SOLID;
+	rd.CullMode = D3D11_CULL_NONE;
+	rd.DepthClipEnable = true;
+
+	dev->CreateRasterizerState(&rd, &rasterizerState);
+	immCon->RSSetState(rasterizerState);
+
 	OnResize();
 #elif DX12
 
@@ -322,8 +331,8 @@ void GraphicsDevice::OnResize()
 		dsd.MiscFlags = NULL;
 		dsd.SampleDesc.Count = 4;
 
-		dev->CreateTexture2D(&dsd, NULL, &displayBuffers[i].depthBuffer);
-		dev->CreateDepthStencilView(displayBuffers[i].depthBuffer, NULL, &displayBuffers[i].depthStencilView);
+		HRESULT hr = dev->CreateTexture2D(&dsd, NULL, &displayBuffers[i].depthBuffer);
+		hr = dev->CreateDepthStencilView(displayBuffers[i].depthBuffer, NULL, &displayBuffers[i].depthStencilView);
 	}
 
 	viewport.TopLeftX = 0;

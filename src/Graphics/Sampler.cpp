@@ -115,4 +115,14 @@ void Sampler::InitializeSamplers(ID3D11Device* device)
 	WrapAnisotropic = new Sampler(device, AddressType::Wrap, FilterType::Anisotropic);
 }
 
+void Sampler::DestroySamplers()
+{
+	delete ClampLinear;
+	delete ClampPoint;
+	delete ClampAnisotropic;
+	delete WrapLinear;
+	delete WrapPoint;
+	delete WrapAnisotropic;
+}
+
 NS_END

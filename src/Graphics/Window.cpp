@@ -62,7 +62,7 @@ void Window::Initialize(GraphicsDevice* graphicsDevice)
 
 	RECT wr = { 0, 0, width, height };
 	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);
-
+	
 	window = CreateWindow(
 		"WindowClassMain",
 		title.c_str(),

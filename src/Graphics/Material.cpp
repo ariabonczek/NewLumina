@@ -50,10 +50,27 @@ void Material::SetPixelShader(PixelShader* shader)
 	p_PixelShader = shader;
 }
 
+VertexShader* Material::GetVertexShader()const
+{
+	return p_VertexShader;
+}
+
+GeometryShader* Material::GetGeometryShader()const
+{
+	return p_GeometryShader;
+}
+
+PixelShader* Material::GetPixelShader()const
+{
+	return p_PixelShader;
+}
+
 void Material::BindMaterial(ID3D11DeviceContext* deviceContext)
 {
 	if (p_VertexShader)
+	{
 		p_VertexShader->BindShader(deviceContext);
+	}
 	if (p_GeometryShader)
 		p_GeometryShader->BindShader(deviceContext);
 	if (p_PixelShader)

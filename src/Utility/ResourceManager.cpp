@@ -35,7 +35,7 @@ ResourceManager ResourceManager::GetInstance()
 }
 
 #if DX11
-Resource* ResourceManager::LoadTexture2D(char* filepath, ID3D11Device* device)
+Texture2D* ResourceManager::LoadTexture2D(char* filepath, ID3D11Device* device)
 #elif DX12
 Resource* ResourceManager::LoadTexture2D(char* filepath, ID3D12Device* device)
 #elif GL43
@@ -46,7 +46,7 @@ Resource* ResourceManager::LoadTexture2D(char* filepath, ID3D12Device* device)
 
 	if (resourceMap.find(guid) != resourceMap.end())
 	{
-		return resourceMap[guid];
+		return static_cast<Texture2D*>(resourceMap[guid]);
 	}
 
 	Image i = Filesystem::LoadTexture2D(filepath);
@@ -62,7 +62,7 @@ Resource* ResourceManager::LoadTexture2D(char* filepath, ID3D12Device* device)
 }
 
 #if DX11
-Resource* ResourceManager::LoadMesh(char* filepath, ID3D11Device* device)
+Mesh* ResourceManager::LoadMesh(char* filepath, ID3D11Device* device)
 #elif DX12
 Resource* ResourceManager::LoadMesh(char* filepath, ID3D12Device* device)
 
@@ -74,7 +74,7 @@ Resource* ResourceManager::LoadMesh(char* filepath, ID3D12Device* device)
 
 	if (resourceMap.find(guid) != resourceMap.end())
 	{
-		return resourceMap[guid];
+		return static_cast<Mesh*>(resourceMap[guid]);
 	}
 
 	MeshData m = Filesystem::LoadMesh(filepath);
@@ -88,7 +88,7 @@ Resource* ResourceManager::LoadMesh(char* filepath, ID3D12Device* device)
 	return mesh;
 }
 #if DX11
-Resource* ResourceManager::LoadShader(char* filepath, ShaderType type, ID3D11Device* device)
+Shader* ResourceManager::LoadShader(wchar_t* filepath, ShaderType type, ID3D11Device* device)
 #elif DX12
 Resource* ResourceManager::LoadShader(char* filepath, ID3D12Device* device)
 
@@ -96,34 +96,16 @@ Resource* ResourceManager::LoadShader(char* filepath, ID3D12Device* device)
 
 #endif
 {
-	LGUID guid = Hash(filepath);
+	LGUID guid = Hash(reinterpret_cast<const char*>(filepath));
 
 	if (resourceMap.find(guid) != resourceMap.end())
 	{
-		return resourceMap[guid];
+		return static_cast<Shader*>(resourceMap[guid]);
 	}
 
 	Shader* s = Filesystem::LoadShader(filepath, type, device);
 	s->SetLGUID(guid);
 	return s;
-}
-
-#if DX11
-Resource* ResourceManager::LoadMaterial(char* filepath, ID3D11Device* device)
-#elif DX12
-Resource* ResourceManager::LoadMaterial(char* filepath, ID3D12Device* device)
-#elif GL43
-
-#endif
-{
-	LGUID guid = Hash(filepath);
-
-	if (resourceMap.find(guid) != resourceMap.end())
-	{
-		return resourceMap[guid];
-	}
-
-	return Filesystem::LoadMaterial(filepath);
 }
 
 void ResourceManager::FreeAllResources()

@@ -10,6 +10,7 @@
 #include <Core\WorldManager.hpp>
 #include <Utility\ResourceManager.hpp>
 #include <Utility\Filesystem.hpp>
+#include <Scenes\SceneManager.hpp>
 
 NS_BEGIN
 

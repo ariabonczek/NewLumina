@@ -18,7 +18,7 @@ public:
 	
 	static Image LoadTexture2D(char* filepath);
 	static MeshData LoadMesh(char* filepath);
-	static Shader* LoadShader(char* filepath, ShaderType type, ID3D11Device* device);
+	static Shader* LoadShader(wchar_t* filepath, ShaderType type, ID3D11Device* device);
 	static Resource* LoadMaterial(char* filepath);
 private:
 	Filesystem();

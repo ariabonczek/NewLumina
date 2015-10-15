@@ -26,11 +26,11 @@ public:
 	void Disable();
 
 	template<class T>
-	Component* GetComponent()
+	T* GetComponent()
 	{
 		// TODO: Log the output of typeid(T).name() to make sure I'm using it write
 		// Also try raw_name();
-		return components[Hash(typeid(T).name())];
+		return static_cast<T*>(components[Hash(typeid(T).name())]);
 	}
 
 	template<class T>
@@ -44,7 +44,7 @@ public:
 #endif
 			return;
 		}
-
+ 
 		component->OnAddToGameObject(this);
 		components[guid] = component;
 	}
@@ -52,6 +52,7 @@ public:
 	// TODO: Template specialization for physics objects
 	
 protected:
+	LGUID guid;
 	char* name;
 	bool enabled;
 	std::unordered_map<LGUID, Component*> components;

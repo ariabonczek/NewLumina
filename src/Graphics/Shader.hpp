@@ -18,7 +18,7 @@ struct ConstantBuffer
 {
 	uint32 index;
 	ID3D11Buffer* buffer;
-	uint8* dataBuffer;
+	unsigned char* dataBuffer;
 };
 
 class Shader : public Resource
@@ -28,7 +28,7 @@ public:
 	Shader(LGUID guid);
 	~Shader();
 
-	bool LoadShaderFromFile(const char* filepath, ID3D11Device* device);
+	bool LoadShaderFromFile(wchar_t* filepath, ID3D11Device* device);
 	virtual void CreateShader(ID3D11Device* device) = 0;
 
 	virtual void Destroy();
@@ -38,7 +38,7 @@ public:
 	template<typename T>
 	void SetData(const char* name, T* data)
 	{
-		ShaderVariable* variable = GetShaderVariable(name, sizeof(T));;
+		ShaderVariable* variable = GetShaderVariable(name, sizeof(T));
 		memcpy(constantBuffers[variable->index].dataBuffer + variable->offset, data, sizeof(T));
 		dirty = true;
 	}
@@ -52,10 +52,10 @@ protected:
 	ConstantBuffer* constantBuffers;
 	uint32 numConstantBuffers;
 
-	std::unordered_map<const char*, ConstantBuffer*> constantBuffersMap;
-	std::unordered_map<const char*, ShaderVariable> variables;
-	std::unordered_map<const char*, uint32> textures;
-	std::unordered_map<const char*, uint32> samplers;
+	std::unordered_map<LGUID, ConstantBuffer*> constantBuffersMap;
+	std::unordered_map<LGUID, ShaderVariable> variables;
+	std::unordered_map<LGUID, uint32> textures;
+	std::unordered_map<LGUID, uint32> samplers;
 
 	void UpdateResources(ID3D11DeviceContext* deviceContext);
 

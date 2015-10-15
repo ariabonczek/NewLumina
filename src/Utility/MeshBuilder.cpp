@@ -322,47 +322,47 @@ MeshData MeshBuilder::CreateCube(float size, Color color)
 	data.vertices[v++] = cVert;
 
 	// INDICES
-	data.indices[i++] = (0);
-	data.indices[i++] = (1);
-	data.indices[i++] = (3);
-	data.indices[i++] = (3);
-	data.indices[i++] = (1);
-	data.indices[i++] = (2);
+	data.indices[i++] = (uint16)(0);
+	data.indices[i++] = (uint16)(1);
+	data.indices[i++] = (uint16)(3);
+	data.indices[i++] = (uint16)(3);
+	data.indices[i++] = (uint16)(1);
+	data.indices[i++] = (uint16)(2);
 
-	data.indices[i++] = (4);
-	data.indices[i++] = (6);
-	data.indices[i++] = (5);
-	data.indices[i++] = (6);
-	data.indices[i++] = (4);
-	data.indices[i++] = (7);
+	data.indices[i++] = (uint16)(4);
+	data.indices[i++] = (uint16)(6);
+	data.indices[i++] = (uint16)(5);
+	data.indices[i++] = (uint16)(6);
+	data.indices[i++] = (uint16)(4);
+	data.indices[i++] = (uint16)(7);
 
-	data.indices[i++] = (8);
-	data.indices[i++] = (9);
-	data.indices[i++] = (10);
-	data.indices[i++] = (10);
-	data.indices[i++] = (11);
-	data.indices[i++] = (8);
+	data.indices[i++] = (uint16)(8);
+	data.indices[i++] = (uint16)(9);
+	data.indices[i++] = (uint16)(10);
+	data.indices[i++] = (uint16)(10);
+	data.indices[i++] = (uint16)(11);
+	data.indices[i++] = (uint16)(8);
 
-	data.indices[i++] = (12);
-	data.indices[i++] = (13);
-	data.indices[i++] = (14);
-	data.indices[i++] = (14);
-	data.indices[i++] = (15);
-	data.indices[i++] = (12);
+	data.indices[i++] = (uint16)(12);
+	data.indices[i++] = (uint16)(13);
+	data.indices[i++] = (uint16)(14);
+	data.indices[i++] = (uint16)(14);
+	data.indices[i++] = (uint16)(15);
+	data.indices[i++] = (uint16)(12);
 
-	data.indices[i++] = (16);
-	data.indices[i++] = (17);
-	data.indices[i++] = (18);
-	data.indices[i++] = (18);
-	data.indices[i++] = (19);
-	data.indices[i++] = (16);
+	data.indices[i++] = (uint16)(16);
+	data.indices[i++] = (uint16)(17);
+	data.indices[i++] = (uint16)(18);
+	data.indices[i++] = (uint16)(18);
+	data.indices[i++] = (uint16)(19);
+	data.indices[i++] = (uint16)(16);
 
-	data.indices[i++] = (20);
-	data.indices[i++] = (22);
-	data.indices[i++] = (21);
-	data.indices[i++] = (20);
-	data.indices[i++] = (23);
-	data.indices[i++] = (22);
+	data.indices[i++] = (uint16)(20);
+	data.indices[i++] = (uint16)(22);
+	data.indices[i++] = (uint16)(21);
+	data.indices[i++] = (uint16)(20);
+	data.indices[i++] = (uint16)(23);
+	data.indices[i++] = (uint16)(22);
 
 	return data;
 }

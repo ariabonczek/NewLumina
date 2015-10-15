@@ -25,6 +25,8 @@ int32 Game::Run()
 	// Game loop
 	while (ShouldContinueRunning())
 	{
+		Timer::StartFrame();
+
 		// Start drawing the "previous" frame
 		m_Scheduler.StartRenderThread();
 
@@ -32,6 +34,8 @@ int32 Game::Run()
 
 		// Sync the threads
 		m_Scheduler.WaitForSync();
+
+		Timer::StopFrame();
 	}
 
 	// Safely shut down subsystems in order
@@ -43,6 +47,7 @@ int32 Game::Run()
 void Game::Initialize()
 {
 	Allocator::Initialize(PROGRAM_HEAP_MEMORY_IN_BYTES);
+	Timer::Initialize();
 #if _DEBUG
 	Debug::Initialize();
 	Debug::Log("Game Initialized");
@@ -55,10 +60,12 @@ void Game::Initialize()
 	p_Renderer->Initialize();						// Initializes
 	p_WorldManager->Initialize();
 	m_Scheduler.Initialize(p_Renderer, p_WorldManager);
+	SceneManager::GetInstance()->Initialize();
 }
 
 void Game::Shutdown()
 {
+	SceneManager::GetInstance()->Shutdown();
 	m_Scheduler.Shutdown();
 	p_Renderer->Shutdown();
 	p_WorldManager->Shutdown();

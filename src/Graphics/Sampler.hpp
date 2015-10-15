@@ -43,6 +43,7 @@ public:
 	static Sampler* WrapAnisotropic;
 
 	static void InitializeSamplers(ID3D11Device* device);
+	static void DestroySamplers();
 
 	ID3D11SamplerState* GetSamplerState()const;
 

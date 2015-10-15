@@ -5,6 +5,7 @@
 
 #include <Config.hpp>
 #include <Graphics\Sampler.hpp>
+#include <Graphics\Material.hpp>
 
 NS_BEGIN
 
@@ -50,6 +51,7 @@ void Renderer::Initialize()
 
 void Renderer::Shutdown()
 {
+	Sampler::DestroySamplers();
 	mp_Window->Shutdown();
 	mp_GraphicsDevice->Shutdown();
 }
@@ -66,29 +68,43 @@ bool Renderer::HandleWindowEvents()
 
 void Renderer::Clear()
 {
+	if (!p_BackBuffer)
+		return;
 	p_ImmediateContext->RSSetViewports(1, p_Viewport);
 	p_ImmediateContext->OMSetRenderTargets(1, &p_BackBuffer, p_DepthBuffer);
 
-	const float color[4] = { 0.392f, 0.584f, 0.929f, 1.0f };
+	static const float color[4] = { 0.392f, 0.584f, 0.929f, 1.0f };
 	p_ImmediateContext->ClearRenderTargetView(p_BackBuffer, color);
-	// TODO: ClearDepth is wrong
-	p_ImmediateContext->ClearDepthStencilView(p_DepthBuffer, 0, 0, 0);
+	p_ImmediateContext->ClearDepthStencilView(p_DepthBuffer, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 void Renderer::SetupCommandLists()
 {
 	mp_OpaqueCommandList.Create(mp_GraphicsDevice->immCon);
-	mp_TransparentCommandList.Create(mp_GraphicsDevice->immCon);
-	mp_ParticlesCommandList.Create(mp_GraphicsDevice->immCon);
-	mp_LightingCommandList.Create(mp_GraphicsDevice->immCon);
+	//mp_TransparentCommandList.Create(mp_GraphicsDevice->immCon);
+	//mp_ParticlesCommandList.Create(mp_GraphicsDevice->immCon);
+	//mp_LightingCommandList.Create(mp_GraphicsDevice->immCon);
+}
+
+void Renderer::SetupFrame()
+{
+	mp_OpaqueCommandList.SetupFrame();
+}
+
+void Renderer::CloseCommandLists()
+{
+	mp_OpaqueCommandList.Finish();
+	//mp_TransparentCommandList.Finish();
+	//mp_ParticlesCommandList.Finish();
+	//mp_LightingCommandList.Finish();
 }
 
 void Renderer::ExecuteCommandLists()
 {
 	mp_OpaqueCommandList.Execute();
-	mp_TransparentCommandList.Execute();
-	mp_ParticlesCommandList.Execute();
-	mp_LightingCommandList.Execute();
+	//mp_TransparentCommandList.Execute();
+	//mp_ParticlesCommandList.Execute();
+	//mp_LightingCommandList.Execute();
 }
 
 void Renderer::Flush()

@@ -26,6 +26,8 @@ void Scheduler::Initialize(Renderer* renderer, WorldManager* world)
 	p_Renderer = renderer;
 	p_WorldManager = world;
 	
+	p_WorldManager->p_DeviceContext = p_Renderer->mp_OpaqueCommandList.GetDeferredContext();
+
 	//numWorkerThreads = numCores - 2;
 
 	numWorkerThreads = 1;
@@ -43,6 +45,7 @@ void Scheduler::Shutdown()
 void Scheduler::StartRenderThread()
 {
 #if DX11 || DX12
+
 	renderThread = CreateThread(
 		NULL, 0, p_Renderer->FireThread, (void*)p_Renderer, 0, &renderThreadID);
 #elif GL43
@@ -68,18 +71,22 @@ void Scheduler::RunWorkerThreads()
 
 	WaitForMultipleObjects(numWorkerThreads, workerThreads, TRUE, INFINITE);
 
+	p_Renderer->SetupFrame();
+	// TODO: THis separation should smart-separate workerThreads into Opaque, Transparent, Particle, and Deferred Geometry
 	for (uint32 i = 0; i < numWorkerThreads; ++i)
 	{
 		// TODO: LOCKING NOT DONE YET, HARDCODE WORKER THREADS TO ONE
 		workerThreads[i] = CreateThread(NULL, 0, p_WorldManager->GetInstance()->Render, p_WorldManager, 0, &workerThreadIDs[i]);
 	}
+
+	WaitForMultipleObjects(numWorkerThreads, workerThreads, TRUE, INFINITE);
+	p_Renderer->CloseCommandLists();
 }
 
 void Scheduler::WaitForSync()
 {
 #if DX11 || DX12
 	WaitForSingleObject(renderThread, INFINITE);
-	WaitForMultipleObjects(numWorkerThreads, workerThreads, TRUE, INFINITE);
 #elif GL43
 	pthread_join(threadIDs[0], NULL);
 #endif

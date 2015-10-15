@@ -55,13 +55,14 @@ MeshData Filesystem::LoadMesh(char* filepath)
 	return AssimpProcessScene(scene->mRootNode, scene);
 }
 
-Shader* Filesystem::LoadShader(char* filepath, ShaderType type, ID3D11Device* device)
+Shader* Filesystem::LoadShader(wchar_t* filepath, ShaderType type, ID3D11Device* device)
 {
 	Shader* shader = nullptr;
 	switch (type)
 	{
 	case ShaderType::Vertex:
 		shader = new VertexShader(0);
+		shader->LoadShaderFromFile(filepath, device);
 		shader->CreateShader(device);
 		return shader;
 	case ShaderType::Hull:

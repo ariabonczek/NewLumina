@@ -54,6 +54,9 @@
     <ClCompile Include="Objects\GameObject.cpp" />
     <ClCompile Include="Objects\MeshRenderer.cpp" />
     <ClCompile Include="Objects\Transform.cpp" />
+    <ClCompile Include="Scenes\Scene.cpp" />
+    <ClCompile Include="Scenes\SceneManager.cpp" />
+    <ClCompile Include="Scenes\TestScene.cpp" />
     <ClCompile Include="Utility\Debug.cpp" />
     <ClCompile Include="Utility\Filesystem.cpp" />
     <ClCompile Include="Utility\MeshBuilder.cpp" />
@@ -65,6 +68,7 @@
   <ItemGroup>
     <ClInclude Include="Core\Allocator.hpp" />
     <ClInclude Include="Core\Common.hpp" />
+    <ClInclude Include="Core\Core.hpp" />
     <ClInclude Include="Core\Game.hpp" />
     <ClInclude Include="Core\MemoryRegion.hpp" />
     <ClInclude Include="Core\Renderer.hpp" />
@@ -80,6 +84,7 @@
     <ClInclude Include="Graphics\Shader.hpp" />
     <ClInclude Include="Graphics\Texture2D.hpp" />
     <ClInclude Include="Graphics\Window.hpp" />
+    <ClInclude Include="Lumina.hpp" />
     <ClInclude Include="Math\Math.hpp" />
     <ClInclude Include="Math\MathCommon.hpp" />
     <ClInclude Include="Math\Matrix.hpp" />
@@ -92,6 +97,9 @@
     <ClInclude Include="Objects\MeshRenderer.hpp" />
     <ClInclude Include="Objects\PhysicsObject.hpp" />
     <ClInclude Include="Objects\Transform.hpp" />
+    <ClInclude Include="Scenes\Scene.hpp" />
+    <ClInclude Include="Scenes\SceneManager.hpp" />
+    <ClInclude Include="Scenes\TestScene.hpp" />
     <ClInclude Include="Utility\Debug.hpp" />
     <ClInclude Include="Utility\Filesystem.hpp" />
     <ClInclude Include="Utility\MeshBuilder.hpp" />
@@ -103,10 +111,10 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="P:\LuminaEngine\content\Shaders\DirectX\defaultPixel.hlsl">
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">5.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">5.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">5.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">Pixel</ShaderType>
@@ -119,20 +127,20 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">false</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='GL_Release|Win32'">5.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='GL_Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='GL_Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='GL_Debug|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Debug|Win32'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="P:\LuminaEngine\content\Shaders\DirectX\defaultVertex.hlsl">
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">4.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
@@ -141,13 +149,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">false</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='GL_Release|Win32'">5.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='GL_Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='GL_Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='GL_Debug|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Debug|Win32'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\content\Shaders\DirectX\Lumina.hlsli" />
     <None Include="P:\LuminaEngine\content\Shaders\OpenGL\defaultFragment.glsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">true</ExcludedFromBuild>
@@ -273,6 +282,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GL43;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -292,6 +302,7 @@ xcopy "$(SolutionDir)bin\*" "$(OutDir)" /s /y</Command>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DX12;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -313,6 +324,7 @@ xcopy "$(SolutionDir)bin\*" "$(OutDir)" /s /y</Command>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DX11;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

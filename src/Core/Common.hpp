@@ -60,8 +60,46 @@ typedef long long int64;
 
 NS_BEGIN
 
-typedef long long LGUID;
+//------------------
+// Type declarations
+//------------------
+class Game;
+class MemoryRegion;
+class Renderer;
+class Scheduler;
+class WorldManager;
+class GraphicsCommandList;
+class GraphicsDevice;
+class Material;
+class Mesh;
+class Sampler;
+class Shader;
+class Texture2D;
+class Window;
+class Scene;
+class SceneManager;
+class BaseRenderer;
+class Component;
+class Camera;
+class GameObject;
+class MeshRenderer;
+class PhysicsObject;
+class Transform;
+class Resource;
+class Filesystem;
+class MeshBuilder;
+class ResourceManager;
+
+struct Color;
+struct MeshVertex;
+struct MeshData;
+struct Image;
+
+enum class ShaderType;
+
+typedef unsigned int LGUID;
 LGUID Hash(const char* key);
+LGUID Hash(long long key);
 
 NS_END
 

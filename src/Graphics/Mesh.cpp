@@ -8,6 +8,7 @@ Mesh::Mesh(MeshData& meshData, LGUID guid, ID3D11Device* device):
 {
 	MeshVertex* vertices = &meshData.vertices[0];
 	uint16* indices = &meshData.indices[0];
+	numIndices = meshData.indices.size();
 
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
@@ -23,7 +24,7 @@ Mesh::Mesh(MeshData& meshData, LGUID guid, ID3D11Device* device):
 	device->CreateBuffer(&bd, &srd, &vertexBuffer);
 
 	// Index Buffer
-	bd.ByteWidth = sizeof(uint16) * meshData.indices.size();
+	bd.ByteWidth = sizeof(uint16) * numIndices;
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	srd.pSysMem = indices;
 	device->CreateBuffer(&bd, &srd, &indexBuffer);

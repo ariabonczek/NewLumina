@@ -55,6 +55,7 @@ private:
 	ID3D11Device* dev;
 	ID3D11DeviceContext* immCon;
 	IDXGISwapChain3* swapChain;
+	ID3D11RasterizerState* rasterizerState;
 	DisplayBuffer displayBuffers[NUM_BUFFERS];
 	D3D11_VIEWPORT viewport;
 	D3D_FEATURE_LEVEL featureLevel;

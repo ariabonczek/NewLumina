@@ -323,6 +323,9 @@
     <ClInclude Include="TestGame\TransformRotator.hpp">
       <Filter>Header Files\TestGame</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\RenderTexture.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="P:\LuminaEngine\content\Shaders\DirectX\defaultPixel.hlsl">

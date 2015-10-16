@@ -9,7 +9,7 @@ public:
 	TestScene();
 	~TestScene();
 
-	void LoadAssets(ID3D11Device* device);
+	void LoadAssets();
 	void DestroyAssets();
 private:
 

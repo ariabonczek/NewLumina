@@ -13,6 +13,7 @@ NS_BEGIN
 class Scene
 {
 	friend class WorldManager;
+	friend class Renderer;
 public:
 	Scene(char* name);
 	~Scene();
@@ -30,7 +31,7 @@ public:
 	/// <summary>
 	///
 	/// </summary>
-	virtual void LoadAssets(ID3D11Device* dev) = 0;
+	virtual void LoadAssets() = 0;
 
 	/// <summary>
 	///

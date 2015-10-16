@@ -52,6 +52,22 @@ public:
 	/// Shuts down the renderer and its subsystems
 	/// </summary>
 	void Shutdown();
+
+	/// <summary>
+	/// Shuts down the renderer and its subsystems
+	/// </summary>
+	void AddRenderableGameObject(BaseRenderer* renderer);
+
+	/// <summary>
+	/// Shuts down the renderer and its subsystems
+	/// </summary>
+	void RemoveRenderableGameObject(BaseRenderer* renderer);
+
+	void UnloadCurrentScene();
+
+	Camera const* GetActiveCamera()const;
+	void SetActiveCamera(Camera* camera);
+
 private:
 	Renderer();
 
@@ -67,7 +83,8 @@ private:
 	GraphicsCommandList mp_ParticlesCommandList;
 	GraphicsCommandList mp_LightingCommandList;
 
-	Camera* activeCamera;
+	std::unordered_map<LGUID, BaseRenderer*> renderableObjects;
+	Camera const* activeCamera;
 
 	ID3D11DeviceContext* p_ImmediateContext;
 	IDXGISwapChain3* p_SwapChain;
@@ -80,7 +97,14 @@ private:
 	// Threading
 	//-----------
 #if DX11 || DX12
+	/// <summary>
+	/// Fires the command lists
+	/// </summary>   
 	static DWORD WINAPI FireThread(void* param);
+	/// <summary>
+	/// Registers draw calls to the command lists
+	/// </summary>   
+	static DWORD WINAPI Render(void* param);
 #elif GL43
 	static void* FireThread(void* param);
 #endif

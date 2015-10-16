@@ -4,11 +4,13 @@
 #include <Objects\Transform.hpp>
 #include <Utility\ResourceManager.hpp>
 #include <Objects\Camera.hpp>
+#include <Core\Renderer.hpp>
 
 NS_BEGIN
 
-MeshRenderer::MeshRenderer(Mesh* mesh):
-	p_Mesh(mesh)
+MeshRenderer::MeshRenderer(Mesh* mesh, Material* material):
+	p_Mesh(mesh),
+	p_Material(material)
 {}
 
 MeshRenderer::~MeshRenderer()
@@ -30,10 +32,9 @@ void MeshRenderer::Render(ID3D11DeviceContext* deviceContext)
 	deviceContext->GetDevice(&device);
 
 	p_Material->GetVertexShader()->SetData<Matrix>("world", &p_GameObject->GetComponent<Transform>()->GetWorldMatrix().Transpose());
-	p_Material->GetVertexShader()->SetData<Matrix>("view", &WorldManager::GetInstance()->activeCamera->GetView().Transpose());
-	p_Material->GetVertexShader()->SetData<Matrix>("projection", &WorldManager::GetInstance()->activeCamera->GetProj().Transpose());
-	p_Material->SetTexture2D("_Albedo", "_Sampler", ResourceManager::LoadTexture2D("Textures/MaidOfTime.png", device), ShaderType::Pixel, deviceContext);
-	//p_Material->SetTexture2D("_Normal", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_nor.jpg", device), ShaderType::Pixel, deviceContext);
+
+	p_Material->GetVertexShader()->SetData<Matrix>("view", &Renderer::GetInstance()->GetActiveCamera()->GetView().Transpose());
+	p_Material->GetVertexShader()->SetData<Matrix>("projection", &Renderer::GetInstance()->GetActiveCamera()->GetProj().Transpose());
 
 	p_Material->BindMaterial(deviceContext);
 
@@ -51,7 +52,7 @@ void MeshRenderer::Destroy()
 bool MeshRenderer::OnAddToGameObject(GameObject* object)
 {
 	Component::OnAddToGameObject(object);
-	WorldManager::GetInstance()->AddRenderableGameObject(this);
+	Renderer::GetInstance()->AddRenderableGameObject(this);
 	return true;
 }
 

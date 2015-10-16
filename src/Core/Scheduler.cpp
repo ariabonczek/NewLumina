@@ -26,8 +26,6 @@ void Scheduler::Initialize(Renderer* renderer, WorldManager* world)
 	p_Renderer = renderer;
 	p_WorldManager = world;
 	
-	p_WorldManager->p_DeviceContext = p_Renderer->mp_OpaqueCommandList.GetDeferredContext();
-
 	//numWorkerThreads = numCores - 2;
 
 	numWorkerThreads = 1;
@@ -76,7 +74,7 @@ void Scheduler::RunWorkerThreads()
 	for (uint32 i = 0; i < numWorkerThreads; ++i)
 	{
 		// TODO: LOCKING NOT DONE YET, HARDCODE WORKER THREADS TO ONE
-		workerThreads[i] = CreateThread(NULL, 0, p_WorldManager->GetInstance()->Render, p_WorldManager, 0, &workerThreadIDs[i]);
+		workerThreads[i] = CreateThread(NULL, 0, p_Renderer->GetInstance()->Render, p_Renderer, 0, &workerThreadIDs[i]);
 	}
 
 	WaitForMultipleObjects(numWorkerThreads, workerThreads, TRUE, INFINITE);

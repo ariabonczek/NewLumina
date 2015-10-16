@@ -56,7 +56,7 @@ MeshData MeshBuilder::CreatePlane(float width, float depth, uint32 n, uint32 m)
 			data.indices[t++] = (i + 1) * n + j;
 			data.indices[t++] = (i + 1) * n + j;
 			data.indices[t++] = i * n + j + 1;
-			data.indices[t++] = i*n + j;
+			data.indices[t++] = i * n + j;
 			k += 6;
 		}
 	}

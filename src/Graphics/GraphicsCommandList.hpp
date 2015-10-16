@@ -6,7 +6,7 @@
 NS_BEGIN
 
 /// <summary>
-///
+/// Encapsulates data for registering command lists for rendering
 /// </summary>
 class GraphicsCommandList
 {

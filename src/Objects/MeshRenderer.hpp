@@ -15,7 +15,7 @@ NS_BEGIN
 class MeshRenderer : public BaseRenderer
 {
 public:
-	MeshRenderer(Mesh* mesh);
+	MeshRenderer(Mesh* mesh, Material* material = nullptr);
 	~MeshRenderer();
 
 	/// <summary>

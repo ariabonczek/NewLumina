@@ -82,6 +82,7 @@
     <ClInclude Include="Graphics\GraphicsCommandList.hpp" />
     <ClInclude Include="Graphics\Material.hpp" />
     <ClInclude Include="Graphics\Mesh.hpp" />
+    <ClInclude Include="Graphics\RenderTexture.hpp" />
     <ClInclude Include="Graphics\Sampler.hpp" />
     <ClInclude Include="Graphics\Shader.hpp" />
     <ClInclude Include="Graphics\Texture2D.hpp" />

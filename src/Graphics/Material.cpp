@@ -8,29 +8,15 @@ Material::Material()
 Material::~Material()
 {}
 
-void Material::SetTexture2D(const char* textureName, const char* samplerName, Texture2D* tex, ShaderType type, ID3D11DeviceContext* deviceContext)
+void Material::SetTexture2D(const char* textureName, const char* samplerName, Texture2D* tex, ShaderType type)
 {
-	switch (type)
-	{
-	case ShaderType::Vertex:
-		p_VertexShader->SetShaderResourceView(textureName, tex->GetShaderResourceView(), deviceContext);
-		p_VertexShader->SetSamplerState(samplerName, tex->GetSampler()->GetSamplerState(), deviceContext);
-		break;
-	case ShaderType::Hull:
+	TextureInformation ti;
+	ti.texture = tex;
+	ti.textureName = textureName;
+	ti.samplerName = samplerName;
+	ti.type = type;
 
-		break;
-	case ShaderType::Domain:
-
-		break;
-	case ShaderType::Geometry:
-		p_GeometryShader->SetShaderResourceView(textureName, tex->GetShaderResourceView(), deviceContext);
-		p_GeometryShader->SetSamplerState(samplerName, tex->GetSampler()->GetSamplerState(), deviceContext);
-		break;
-	case ShaderType::Pixel:
-		p_PixelShader->SetShaderResourceView(textureName, tex->GetShaderResourceView(), deviceContext);
-		p_PixelShader->SetSamplerState(samplerName, tex->GetSampler()->GetSamplerState(), deviceContext);
-		break;
-	}
+	textures[Hash(textureName)] = ti;
 }
 
 void Material::SetVertexShader(VertexShader* shader)
@@ -67,6 +53,41 @@ PixelShader* Material::GetPixelShader()const
 
 void Material::BindMaterial(ID3D11DeviceContext* deviceContext)
 {
+	for (std::unordered_map<LGUID, TextureInformation>::iterator it = textures.begin(); it != textures.end(); ++it)
+	{
+		switch (it->second.type)
+		{
+		case ShaderType::Vertex:
+			if (p_VertexShader)
+			{
+				p_VertexShader->SetShaderResourceView(it->second.textureName, it->second.texture->GetShaderResourceView(), deviceContext);
+				p_VertexShader->SetSamplerState(it->second.samplerName, it->second.texture->GetSampler()->GetSamplerState(), deviceContext);
+			}
+			break;
+		case ShaderType::Geometry:
+			if (p_GeometryShader)
+			{
+				p_GeometryShader->SetShaderResourceView(it->second.textureName, it->second.texture->GetShaderResourceView(), deviceContext);
+				p_GeometryShader->SetSamplerState(it->second.samplerName, it->second.texture->GetSampler()->GetSamplerState(), deviceContext);
+			}
+			break;
+		case ShaderType::GeometrySO:
+			if (p_GeometryShader)
+			{
+				p_GeometryShader->SetShaderResourceView(it->second.textureName, it->second.texture->GetShaderResourceView(), deviceContext);
+				p_GeometryShader->SetSamplerState(it->second.samplerName, it->second.texture->GetSampler()->GetSamplerState(), deviceContext);
+			}
+			break;
+		case ShaderType::Pixel:
+			if (p_PixelShader)
+			{
+				p_PixelShader->SetShaderResourceView(it->second.textureName, it->second.texture->GetShaderResourceView(), deviceContext);
+				p_PixelShader->SetSamplerState(it->second.samplerName, it->second.texture->GetSampler()->GetSamplerState(), deviceContext);
+			}
+			break;
+		}
+	}
+
 	if (p_VertexShader)
 		p_VertexShader->BindShader(deviceContext);
 	if (p_GeometryShader)

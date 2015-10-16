@@ -6,6 +6,9 @@
 #include <Config.hpp>
 #include <Graphics\Sampler.hpp>
 #include <Graphics\Material.hpp>
+#include <Objects\BaseRenderer.hpp>
+#include <Scenes\Scene.hpp>
+#include <Objects\Camera.hpp>
 
 NS_BEGIN
 
@@ -81,30 +84,33 @@ void Renderer::Clear()
 void Renderer::SetupCommandLists()
 {
 	mp_OpaqueCommandList.Create(mp_GraphicsDevice->immCon);
-	//mp_TransparentCommandList.Create(mp_GraphicsDevice->immCon);
-	//mp_ParticlesCommandList.Create(mp_GraphicsDevice->immCon);
-	//mp_LightingCommandList.Create(mp_GraphicsDevice->immCon);
+	mp_TransparentCommandList.Create(mp_GraphicsDevice->immCon);
+	mp_ParticlesCommandList.Create(mp_GraphicsDevice->immCon);
+	mp_LightingCommandList.Create(mp_GraphicsDevice->immCon);
 }
 
 void Renderer::SetupFrame()
 {
 	mp_OpaqueCommandList.SetupFrame();
+	mp_TransparentCommandList.SetupFrame();
+	mp_ParticlesCommandList.SetupFrame();
+	mp_LightingCommandList.SetupFrame();
 }
 
 void Renderer::CloseCommandLists()
 {
 	mp_OpaqueCommandList.Finish();
-	//mp_TransparentCommandList.Finish();
-	//mp_ParticlesCommandList.Finish();
-	//mp_LightingCommandList.Finish();
+	mp_TransparentCommandList.Finish();
+	mp_ParticlesCommandList.Finish();
+	mp_LightingCommandList.Finish();
 }
 
 void Renderer::ExecuteCommandLists()
 {
 	mp_OpaqueCommandList.Execute();
-	//mp_TransparentCommandList.Execute();
-	//mp_ParticlesCommandList.Execute();
-	//mp_LightingCommandList.Execute();
+	mp_TransparentCommandList.Execute();
+	mp_ParticlesCommandList.Execute();
+	mp_LightingCommandList.Execute();
 }
 
 void Renderer::Flush()
@@ -113,6 +119,34 @@ void Renderer::Flush()
 	frameIndex = p_SwapChain->GetCurrentBackBufferIndex();
 	p_BackBuffer = mp_GraphicsDevice->displayBuffers[frameIndex].renderTargetView;
 	p_DepthBuffer = mp_GraphicsDevice->displayBuffers[frameIndex].depthStencilView;
+}
+
+void Renderer::AddRenderableGameObject(BaseRenderer* renderer)
+{
+	renderableObjects[renderer->GetLGUID()] = renderer;
+}
+
+void Renderer::RemoveRenderableGameObject(BaseRenderer* renderer)
+{
+	std::unordered_map<LGUID, BaseRenderer*>::iterator it = renderableObjects.begin();
+	for (it; it->second != renderer; ++it)
+	{}
+	renderableObjects.erase(it);
+}
+
+Camera const * Renderer::GetActiveCamera()const
+{
+	return activeCamera;
+}
+
+void Renderer::SetActiveCamera(Camera* camera)
+{
+	activeCamera = camera;
+}
+
+void Renderer::UnloadCurrentScene()
+{
+	renderableObjects.clear();
 }
 
 #if DX11 || DX12
@@ -134,5 +168,21 @@ void* Renderer::FireThread(void* param)
 	return 0;
 }
 #endif
+
+//--------------------------------
+// SCENE COMMANDS REGISTERED HERE!
+//--------------------------------
+DWORD WINAPI Renderer::Render(void* param)
+{
+	Renderer* _this = static_cast<Renderer*>(param);
+
+	// TODO: Separate renderableObjects into 4 lists: opaque, trans, particles and deferred
+	for (std::unordered_map<LGUID, BaseRenderer*>::iterator it = _this->renderableObjects.begin(); it != _this->renderableObjects.end(); ++it)
+	{
+		it->second->Render(_this->mp_OpaqueCommandList.GetDeferredContext());
+	}
+
+	return 0;
+}
 
 NS_END

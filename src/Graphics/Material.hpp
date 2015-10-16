@@ -8,6 +8,14 @@
 
 NS_BEGIN
 
+struct TextureInformation
+{
+	ShaderType type;
+	Texture2D* texture;
+	const char* textureName;
+	const char* samplerName;
+};
+
 class Material
 {
 public:
@@ -17,7 +25,7 @@ public:
 	/// <summary>
 	///
 	/// </summary>
-	void SetTexture2D(const char* textureName, const char* samplerName, Texture2D* tex, ShaderType type, ID3D11DeviceContext* deviceContext);
+	void SetTexture2D(const char* textureName, const char* samplerName, Texture2D* tex, ShaderType type);
 	//void SetRenderTexture(GraphicsShaderType type, RenderTexture* rt);
 
 	/// <summary>
@@ -86,6 +94,8 @@ public:
 	/// </summary>
 	void BindMaterial(ID3D11DeviceContext* devCon);
 private:
+	// TODO: moar generic
+	std::unordered_map<LGUID, TextureInformation> textures;
 	VertexShader* p_VertexShader;
 	//HullShader hShader;
 	//DomainShader dShader;

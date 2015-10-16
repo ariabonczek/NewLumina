@@ -1,6 +1,7 @@
 #include "Scene.hpp"
 
 #include <Objects\GameObject.hpp>
+#include <Core\Renderer.hpp>
 
 NS_BEGIN
 
@@ -13,6 +14,8 @@ Scene::~Scene()
 
 void Scene::Initialize()
 {
+	Renderer::GetInstance()->SetActiveCamera(activeCamera);
+
 	for (std::unordered_map<LGUID, GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
 	{
 		it->second->Initialize();

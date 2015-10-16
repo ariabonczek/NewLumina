@@ -1,5 +1,6 @@
 #include "SceneManager.hpp"
 #include <Scenes\Scene.hpp>
+#include <Core\Renderer.hpp>
 #include <Core\WorldManager.hpp>
 
 NS_BEGIN
@@ -35,8 +36,10 @@ void SceneManager::AddScene(Scene* scene)
 void SceneManager::LoadLevel(char* name)
 {
 	WorldManager::GetInstance()->UnloadCurrentScene();
+	Renderer::GetInstance()->UnloadCurrentScene();
 
-	WorldManager::GetInstance()->LoadNewScene(scenes[name]);
+	scenes[name]->LoadAssets();
+	scenes[name]->Initialize();
 }
 
 NS_END

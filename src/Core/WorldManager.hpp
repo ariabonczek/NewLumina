@@ -43,20 +43,13 @@ public:
 	///
 	/// </summary>
 	static DWORD WINAPI Physics(void* param);
-
-	/// <summary>
-	///
-	/// </summary>   
-	static DWORD WINAPI Render(void* param);
 #elif GL43
 
 #endif
 	void AddActiveGameObject(GameObject* gameObject);
-	void AddRenderableGameObject(BaseRenderer* renderer);
 	void AddPhysicsObject(PhysicsObject* physicsObject);
 
 	void RemoveInactiveGameObject(GameObject* gameObject);
-	void RemoveRenderableGameObject(BaseRenderer* renderer);
 	void RemovePhysicsObject(PhysicsObject* physicsObject);
 
 	/// <summary>
@@ -65,24 +58,13 @@ public:
 	bool ShouldQuit();
 
 	/// <summary>
-	/// 
+	/// Clears the lists of active objects
 	/// </summary>
 	void UnloadCurrentScene();
-
-	/// <summary>
-	/// 
-	/// </summary>
-	void LoadNewScene(Scene* scene);
-
-	Camera* activeCamera;
-
 private:
 	WorldManager();
 
-	ID3D11DeviceContext* p_DeviceContext;
-
 	std::unordered_map<LGUID, GameObject*> activeObjects;
-	std::unordered_map<LGUID, BaseRenderer*> renderableObjects;
 	std::unordered_map<LGUID, PhysicsObject*> physicsObjects;
 
 	bool shouldQuit;

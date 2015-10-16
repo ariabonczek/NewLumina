@@ -1,7 +1,7 @@
 #include <Objects\GameObject.hpp>
 #include <Core\WorldManager.hpp>
 #include <Objects\Transform.hpp>
-
+#include <Core\Renderer.hpp>
 #include <Objects\BaseRenderer.hpp>
 
 NS_BEGIN
@@ -54,7 +54,7 @@ void GameObject::Enable()
 	WorldManager::GetInstance()->AddActiveGameObject(this);
 	if (BaseRenderer* r = reinterpret_cast<BaseRenderer*>(GetComponent<MeshRenderer>()))
 	{
-		WorldManager::GetInstance()->AddRenderableGameObject(r);
+		Renderer::GetInstance()->AddRenderableGameObject(r);
 	}
 	// TODO: PhysicsObjects
 
@@ -69,7 +69,7 @@ void GameObject::Disable()
 	WorldManager::GetInstance()->RemoveInactiveGameObject(this);
 	if (BaseRenderer* r = reinterpret_cast<BaseRenderer*>(GetComponent<MeshRenderer>()))
 	{
-		WorldManager::GetInstance()->RemoveRenderableGameObject(r);
+		Renderer::GetInstance()->RemoveRenderableGameObject(r);
 	}
 }
 

@@ -51,7 +51,8 @@ public:
 	template<class T>
 	T* GetComponent()
 	{
-		if(components.find(Hash(typeid(T).name())) != components.end())
+		uint32 hash = Hash(typeid(T).name());
+		if(components.find(hash) != components.end())
 			return reinterpret_cast<T*>(components[Hash(typeid(T).name())]);
 		return nullptr;
 	}
@@ -63,6 +64,7 @@ public:
 	void AddComponent(Component* component)
 	{
 		LGUID guid = Hash(typeid(T).name());
+
 		if (components.find(guid) != components.end())
 		{
 #if _DEBUG

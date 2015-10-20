@@ -2,6 +2,8 @@
 #define TESTSCENE_HPP
 
 #include <Scenes\Scene.hpp>
+#include <Lumina.hpp>
+
 
 class TestScene : public Lumina::Scene
 {

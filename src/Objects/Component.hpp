@@ -13,12 +13,14 @@ public:
 	Component();
 	virtual ~Component();
 
-	virtual void Initialize() = 0;
-	virtual void Destroy() = 0;
+	virtual void Initialize();
+	virtual void Destroy();
 
-	virtual void Update() = 0;
+	virtual void Update();
 
 	virtual bool OnAddToGameObject(GameObject* gameObject);
+	virtual void OnEnable();
+	virtual void OnDisable();
 
 	LGUID GetLGUID()const;
 protected:

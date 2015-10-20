@@ -21,35 +21,17 @@ public:
 	/// <summary>
 	///
 	/// </summary>
-	void Initialize();
-
-	/// <summary>
-	///
-	/// </summary>
-	void Update();
-
-	/// <summary>
-	///
-	/// </summary>
 	void Render(ID3D11DeviceContext* deviceContext);
 
-	/// <summary>
-	///
-	/// </summary>
-	void Destroy();
+	void OnEnable();
+	void OnDisable();
 
 	/// <summary>
 	///
 	/// </summary>
 	bool OnAddToGameObject(GameObject* object);
-
-	/// <summary>
-	///
-	/// </summary>
-	void SetMaterial(Material* material);
 private:
 	Mesh* p_Mesh;
-	Material* p_Material;
 };
 
 NS_END

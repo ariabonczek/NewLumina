@@ -50,6 +50,24 @@ struct Color
 	static Color Gray;
 };
 
+enum class LightType
+{
+	Directional,
+	Point,
+	Spot
+};
+
+struct LightData
+{
+	Color color;
+	Vector3 direction;
+	float intensity;
+	Vector3 position;
+	float range;
+	float spot;
+	float pad[3];
+};
+
 enum class ShaderType
 {
 	Vertex,

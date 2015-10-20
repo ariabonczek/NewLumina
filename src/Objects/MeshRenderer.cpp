@@ -9,21 +9,21 @@
 NS_BEGIN
 
 MeshRenderer::MeshRenderer(Mesh* mesh, Material* material):
-	p_Mesh(mesh),
-	p_Material(material)
+	BaseRenderer(material),
+	p_Mesh(mesh)
 {}
 
 MeshRenderer::~MeshRenderer()
 {}
 
-void MeshRenderer::Initialize()
+void MeshRenderer::OnEnable()
 {
-
+	Renderer::GetInstance()->AddRenderableGameObject(this);
 }
 
-void MeshRenderer::Update()
+void MeshRenderer::OnDisable()
 {
-
+	Renderer::GetInstance()->RemoveRenderableGameObject(this);
 }
 
 void MeshRenderer::Render(ID3D11DeviceContext* deviceContext)
@@ -32,7 +32,6 @@ void MeshRenderer::Render(ID3D11DeviceContext* deviceContext)
 	deviceContext->GetDevice(&device);
 
 	p_Material->GetVertexShader()->SetData<Matrix>("world", &p_GameObject->GetComponent<Transform>()->GetWorldMatrix().Transpose());
-
 	p_Material->GetVertexShader()->SetData<Matrix>("view", &Renderer::GetInstance()->GetActiveCamera()->GetView().Transpose());
 	p_Material->GetVertexShader()->SetData<Matrix>("projection", &Renderer::GetInstance()->GetActiveCamera()->GetProj().Transpose());
 
@@ -44,11 +43,6 @@ void MeshRenderer::Render(ID3D11DeviceContext* deviceContext)
 	deviceContext->DrawIndexed(p_Mesh->GetNumberOfIndices(), 0, 0);
 }
 
-void MeshRenderer::Destroy()
-{
-
-}
-
 bool MeshRenderer::OnAddToGameObject(GameObject* object)
 {
 	Component::OnAddToGameObject(object);
@@ -56,8 +50,5 @@ bool MeshRenderer::OnAddToGameObject(GameObject* object)
 	return true;
 }
 
-void MeshRenderer::SetMaterial(Material* material)
-{
-	p_Material = material;
-}
+
 NS_END

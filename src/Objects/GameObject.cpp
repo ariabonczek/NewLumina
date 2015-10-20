@@ -35,6 +35,10 @@ void GameObject::Initialize()
 
 void GameObject::Destroy()
 {
+	for (std::unordered_map<LGUID, Component*>::iterator it = components.begin(); it != components.end(); ++it)
+	{
+		it->second->OnDisable();
+	}
 	components.clear();
 }
 
@@ -52,11 +56,10 @@ void GameObject::Enable()
 		return;
 
 	WorldManager::GetInstance()->AddActiveGameObject(this);
-	if (BaseRenderer* r = reinterpret_cast<BaseRenderer*>(GetComponent<MeshRenderer>()))
+	for (std::unordered_map<LGUID, Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
-		Renderer::GetInstance()->AddRenderableGameObject(r);
+		it->second->OnEnable();
 	}
-	// TODO: PhysicsObjects
 
 	enabled = true;
 }
@@ -67,10 +70,12 @@ void GameObject::Disable()
 		return;
 
 	WorldManager::GetInstance()->RemoveInactiveGameObject(this);
-	if (BaseRenderer* r = reinterpret_cast<BaseRenderer*>(GetComponent<MeshRenderer>()))
+	for (std::unordered_map<LGUID, Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
-		Renderer::GetInstance()->RemoveRenderableGameObject(r);
+		it->second->OnDisable();
 	}
+
+	enabled = false;
 }
 
 LGUID GameObject::GetLGUID()const

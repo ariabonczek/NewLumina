@@ -11,6 +11,21 @@ Component::Component()
 Component::~Component()
 {}
 
+void Component::Initialize()
+{
+
+}
+
+void Component::Destroy()
+{
+
+}
+
+void Component::Update()
+{
+
+}
+
 bool Component::OnAddToGameObject(GameObject* gameObject)
 {
 	if (p_GameObject)
@@ -22,6 +37,16 @@ bool Component::OnAddToGameObject(GameObject* gameObject)
 	}
 	p_GameObject = gameObject;
 	return true;
+
+}
+
+void Component::OnEnable()
+{
+
+}
+
+void Component::OnDisable()
+{
 
 }
 

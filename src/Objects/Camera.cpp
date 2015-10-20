@@ -26,9 +26,6 @@ void Camera::Initialize()
 	UpdateViewMatrix();
 }
 
-void Camera::Destroy()
-{}
-
 void Camera::Update()
 {
 	if (dirty)

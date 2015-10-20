@@ -12,9 +12,6 @@ void TransformRotator::Initialize()
 	p_Transform = p_GameObject->GetComponent<Transform>();
 }
 
-void TransformRotator::Destroy()
-{}
-
 void TransformRotator::Update()
 {
 	p_Transform->Rotate(Quaternion::CreateFromAxisAngle(axis, speed * Timer::GetFrameTime()));

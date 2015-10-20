@@ -134,6 +134,42 @@ void Renderer::RemoveRenderableGameObject(BaseRenderer* renderer)
 	renderableObjects.erase(it);
 }
 
+void Renderer::AddLight(Light* light)
+{
+	lights[light->GetLGUID()] = light;
+}
+
+void Renderer::RemoveLight(Light* light)
+{
+
+	std::unordered_map<LGUID, Light*>::iterator it = lights.begin();
+	for (it; it->second != light; ++it)
+	{
+	}
+	lights.erase(it);
+}
+
+void Renderer::SetLightData(Material* material)
+{
+	for (std::unordered_map<LGUID, Light*>::iterator it = lights.begin(); it != lights.end(); ++it)
+	{
+		Light* light = it->second;
+		switch (light->type)
+		{
+		case LightType::Directional:
+			material->SetShaderVariable<LightData>("directionalLight", &light->data, ShaderType::Pixel);
+			break;
+		case LightType::Point:
+			material->SetShaderVariable<LightData>("pointLight", &light->data, ShaderType::Pixel);
+			break;
+		case LightType::Spot:
+			material->SetShaderVariable<LightData>("spotLight", &light->data, ShaderType::Pixel);
+			break;
+		}
+	}
+	material->SetShaderVariable<Color>("ambientLight", &ambientLight, ShaderType::Pixel);
+}
+
 Camera const * Renderer::GetActiveCamera()const
 {
 	return activeCamera;
@@ -142,6 +178,11 @@ Camera const * Renderer::GetActiveCamera()const
 void Renderer::SetActiveCamera(Camera* camera)
 {
 	activeCamera = camera;
+}
+
+void Renderer::SetAmbientLight(Color color)
+{
+	ambientLight = color;
 }
 
 void Renderer::UnloadCurrentScene()
@@ -179,6 +220,7 @@ DWORD WINAPI Renderer::Render(void* param)
 	// TODO: Separate renderableObjects into 4 lists: opaque, trans, particles and deferred
 	for (std::unordered_map<LGUID, BaseRenderer*>::iterator it = _this->renderableObjects.begin(); it != _this->renderableObjects.end(); ++it)
 	{
+		_this->SetLightData(it->second->GetMaterial());
 		it->second->Render(_this->mp_OpaqueCommandList.GetDeferredContext());
 	}
 

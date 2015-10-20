@@ -39,6 +39,7 @@
     <ClCompile Include="Graphics\GraphicsDevice.cpp" />
     <ClCompile Include="Graphics\Material.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
+    <ClCompile Include="Graphics\RenderTexture.cpp" />
     <ClCompile Include="Graphics\Sampler.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
     <ClCompile Include="Graphics\Texture2D.cpp" />
@@ -52,6 +53,7 @@
     <ClCompile Include="Objects\Camera.cpp" />
     <ClCompile Include="Objects\Component.cpp" />
     <ClCompile Include="Objects\GameObject.cpp" />
+    <ClCompile Include="Objects\Light.cpp" />
     <ClCompile Include="Objects\MeshRenderer.cpp" />
     <ClCompile Include="Objects\Transform.cpp" />
     <ClCompile Include="Scenes\Scene.cpp" />
@@ -97,6 +99,7 @@
     <ClInclude Include="Objects\Camera.hpp" />
     <ClInclude Include="Objects\Component.hpp" />
     <ClInclude Include="Objects\GameObject.hpp" />
+    <ClInclude Include="Objects\Light.hpp" />
     <ClInclude Include="Objects\MeshRenderer.hpp" />
     <ClInclude Include="Objects\Transform.hpp" />
     <ClInclude Include="Scenes\Scene.hpp" />
@@ -114,6 +117,22 @@
     <ClInclude Include="Utility\Timer.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\content\Shaders\DirectX\sampleCubemapPixel.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="..\content\Shaders\DirectX\sampleCubemapVertex.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="P:\LuminaEngine\content\Shaders\DirectX\defaultPixel.hlsl">
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">4.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">4.0</ShaderModel>

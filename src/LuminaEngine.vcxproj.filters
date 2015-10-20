@@ -73,6 +73,15 @@
     <Filter Include="Header Files\Physics">
       <UniqueIdentifier>{f952c321-708e-487f-bef0-ce2db597d1ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders\DirectX\Vertex">
+      <UniqueIdentifier>{71357ccc-690d-48b2-b10b-4719205f33d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\DirectX\Pixel">
+      <UniqueIdentifier>{c450bbba-a881-4c92-b22f-7733f6b50b28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\DirectX\Include">
+      <UniqueIdentifier>{6ad843fd-2411-477d-87a4-ec250fc0e3db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -191,6 +200,12 @@
     </ClCompile>
     <ClCompile Include="TestGame\TransformRotator.cpp">
       <Filter>Source Files\TestGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\RenderTexture.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Light.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -326,13 +341,22 @@
     <ClInclude Include="Graphics\RenderTexture.hpp">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Objects\Light.hpp">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="P:\LuminaEngine\content\Shaders\DirectX\defaultPixel.hlsl">
-      <Filter>Resource Files\Shaders\DirectX</Filter>
-    </FxCompile>
     <FxCompile Include="P:\LuminaEngine\content\Shaders\DirectX\defaultVertex.hlsl">
-      <Filter>Resource Files\Shaders\DirectX</Filter>
+      <Filter>Resource Files\Shaders\DirectX\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="..\content\Shaders\DirectX\sampleCubemapVertex.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="P:\LuminaEngine\content\Shaders\DirectX\defaultPixel.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="..\content\Shaders\DirectX\sampleCubemapPixel.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -343,7 +367,7 @@
       <Filter>Resource Files\Shaders\OpenGL</Filter>
     </None>
     <None Include="..\content\Shaders\DirectX\Lumina.hlsli">
-      <Filter>Resource Files\Shaders\DirectX</Filter>
+      <Filter>Resource Files\Shaders\DirectX\Include</Filter>
     </None>
   </ItemGroup>
 </Project>

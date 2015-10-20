@@ -15,7 +15,6 @@ public:
 	~TransformRotator();
 
 	void Initialize();
-	void Destroy();
 
 	void Update();
 	bool OnAddToGameObject(GameObject* object);

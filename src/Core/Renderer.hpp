@@ -8,6 +8,7 @@
 #include <Graphics\Window.hpp>
 #include <Graphics\GraphicsDevice.hpp>
 #include <Graphics\GraphicsCommandList.hpp>
+#include <Objects\Light.hpp>
 
 NS_BEGIN
 
@@ -54,19 +55,30 @@ public:
 	void Shutdown();
 
 	/// <summary>
-	/// Shuts down the renderer and its subsystems
+	/// 
 	/// </summary>
 	void AddRenderableGameObject(BaseRenderer* renderer);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void AddLight(Light* light);
 
 	/// <summary>
 	/// Shuts down the renderer and its subsystems
 	/// </summary>
 	void RemoveRenderableGameObject(BaseRenderer* renderer);
 
+	/// <summary>
+	///
+	/// </summary>
+	void RemoveLight(Light* light);
+
 	void UnloadCurrentScene();
 
 	Camera const* GetActiveCamera()const;
 	void SetActiveCamera(Camera* camera);
+	void SetAmbientLight(Color color);
 
 private:
 	Renderer();
@@ -84,7 +96,11 @@ private:
 	GraphicsCommandList mp_LightingCommandList;
 
 	std::unordered_map<LGUID, BaseRenderer*> renderableObjects;
+	std::unordered_map<LGUID, Light*> lights;
 	Camera const* activeCamera;
+	Color ambientLight;
+
+	void SetLightData(Material* material);
 
 	ID3D11DeviceContext* p_ImmediateContext;
 	IDXGISwapChain3* p_SwapChain;

@@ -19,9 +19,6 @@ public:
 	/// 
 	/// </summary>
 	void Initialize();
-
-	void Destroy();
-
 	void Update();
 
 	/// <summary>

@@ -8,6 +8,7 @@
 #include <Objects\Camera.hpp>
 #include <Objects\Transform.hpp>
 #include <Objects\MeshRenderer.hpp>
+#include <Objects\Light.hpp>
 
 #include <Utility\Timer.hpp>
 #include <Utility\MeshBuilder.hpp>

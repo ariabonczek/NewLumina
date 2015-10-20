@@ -15,6 +15,7 @@ Scene::~Scene()
 void Scene::Initialize()
 {
 	Renderer::GetInstance()->SetActiveCamera(activeCamera);
+	Renderer::GetInstance()->SetAmbientLight(ambientLight);
 
 	for (std::unordered_map<LGUID, GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
 	{

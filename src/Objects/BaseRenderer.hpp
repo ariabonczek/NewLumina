@@ -9,12 +9,8 @@ NS_BEGIN
 class BaseRenderer : public Component
 {
 public:
-	BaseRenderer();
+	BaseRenderer(Material* material = nullptr);
 	~BaseRenderer();
-
-	virtual void Initialize() = 0;
-	virtual void Destroy() = 0;
-	virtual void Update() = 0;
 
 #if DX11
 	virtual void Render(ID3D11DeviceContext* deviceContext) = 0;
@@ -23,8 +19,12 @@ public:
 #elif GL43
 	virtual void Render() = 0;
 #endif
-private:
-	
+
+	void SetMaterial(Material* material);
+
+	Material* GetMaterial()const;
+protected:
+	Material* p_Material;
 };
 
 NS_END

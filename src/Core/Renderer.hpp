@@ -9,9 +9,15 @@
 #include <Graphics\GraphicsDevice.hpp>
 #include <Graphics\GraphicsCommandList.hpp>
 #include <Objects\Light.hpp>
+#include <Graphics\PostProcess.hpp>
 
 NS_BEGIN
 
+enum class RenderPassType
+{
+	OpaqueGeometry,
+	Shadows
+};
 
 /// <summary>
 /// Engine subsystem for handling rendering
@@ -25,9 +31,16 @@ public:
 	static Renderer* GetInstance();
 
 	/// <summary>
+	///
+	/// </summary>
+	void SetupRenderTarget(ID3D11DeviceContext* deferredContext);
+
+	/// <summary>
 	/// 
 	/// </summary>
-	void Clear();
+	void ClearBackBuffer(ID3D11DeviceContext* deferredContext);
+
+	void RenderToBackBuffer(ID3D11DeviceContext* deferredContext);
 
 	/// <summary>
 	/// 
@@ -49,10 +62,14 @@ public:
 	/// </summary>
 	void Initialize();
 
+	void InitializeRenderTarget();
+
 	/// <summary>
 	/// Shuts down the renderer and its subsystems
 	/// </summary>
 	void Shutdown();
+
+	void RenderPass(RenderPassType type);
 
 	/// <summary>
 	/// 
@@ -79,6 +96,7 @@ public:
 	Camera const* GetActiveCamera()const;
 	void SetActiveCamera(Camera* camera);
 	void SetAmbientLight(Color color);
+	void AddPostProcess(PostProcess* postProcess);
 
 private:
 	Renderer();
@@ -97,6 +115,8 @@ private:
 
 	std::unordered_map<LGUID, BaseRenderer*> renderableObjects;
 	std::unordered_map<LGUID, Light*> lights;
+	std::vector<PostProcess*> postProcesses;
+	std::unordered_map<LGUID, RenderTexture*> shadowMaps;
 	Camera const* activeCamera;
 	Color ambientLight;
 
@@ -108,6 +128,8 @@ private:
 	ID3D11DepthStencilView* p_DepthBuffer;
 	D3D11_VIEWPORT* p_Viewport;
 	uint32 frameIndex;
+	RenderTexture* render_Target;
+	PostProcess finalRender;
 	
 	//-----------
 	// Threading

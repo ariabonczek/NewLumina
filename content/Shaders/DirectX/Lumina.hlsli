@@ -20,6 +20,18 @@ struct MeshVertexOutput
 	float3 tangent  : TANGENT;
 };
 
+struct FullScreenQuadInput
+{
+	float3 position : POSITION;
+	float2 texcoord : TEXCOORD0;
+};
+
+struct FullScreenQuadOutput
+{
+	float4 position : SV_POSITION;
+	float2 texcoord : TEXCOORD0;
+};
+
 struct LightData
 {
 	float4 color;

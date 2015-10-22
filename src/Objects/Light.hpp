@@ -17,11 +17,12 @@ public:
 
 	bool OnAddToGameObject(GameObject* object);
 
-	void SetDirection(Vector3 direction);
-
+	void SetShadowTexture(RenderTexture* texture);
 	LightData data;
 	LightType type;
 private:
+	RenderTexture* shadowTexture;
+	bool hasShadows;
 };
 
 NS_END

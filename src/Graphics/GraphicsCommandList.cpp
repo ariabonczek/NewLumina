@@ -28,13 +28,12 @@ void GraphicsCommandList::Create(ID3D12Device* device)
 
 #endif
 
-void GraphicsCommandList::SetupFrame(
-	)
+void GraphicsCommandList::SetupFrame()
 {
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
-	p_ImmediateContext->OMGetRenderTargets(1, &renderTarget, &depthStencil);
-	context->OMSetRenderTargets(1, &renderTarget, depthStencil);
+	//p_ImmediateContext->OMGetRenderTargets(1, &renderTarget, &depthStencil);
+	//context->OMSetRenderTargets(1, &renderTarget, depthStencil);
 	
 	uint x = 1;
 	p_ImmediateContext->RSGetViewports(&x, &viewport);

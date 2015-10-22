@@ -8,7 +8,7 @@ Material::Material()
 Material::~Material()
 {}
 
-void Material::SetTexture2D(const char* textureName, const char* samplerName, Texture2D* tex, ShaderType type)
+void Material::SetTexture(const char* textureName, const char* samplerName, Texture* tex, ShaderType type)
 {
 	TextureInformation ti;
 	ti.texture = tex;

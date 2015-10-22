@@ -21,6 +21,12 @@ void Scene::Initialize()
 	{
 		it->second->Initialize();
 	}
+
+	for (uint i = 0; i < postProcesses.size(); ++i)
+	{
+		Renderer::GetInstance()->AddPostProcess(postProcesses.front());
+		postProcesses.pop();
+	}
 }
 
 void Scene::Shutdown()
@@ -47,6 +53,11 @@ void Scene::SetActiveCamera(Camera* camera)
 void Scene::SetAmbientLight(Color color)
 {
 	ambientLight = color;
+}
+
+void Scene::AddPostProcess(PostProcess* postProcess)
+{
+	postProcesses.push(postProcess);
 }
 
 char* Scene::GetName()const

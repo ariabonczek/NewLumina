@@ -7,7 +7,7 @@
 NS_BEGIN
 
 Light::Light(LightType type, Color color, float intensity):
-type(type)
+type(type), hasShadows(false), shadowTexture(nullptr)
 {
 	data.color = color;
 	data.intensity = intensity;
@@ -31,9 +31,11 @@ bool Light::OnAddToGameObject(GameObject* object)
 	return true;
 }
 
-void Light::SetDirection(Vector3 direction)
+void Light::SetShadowTexture(RenderTexture* texture)
 {
-	data.direction = Vector3::Normalize(direction);
+	shadowTexture = texture;
+
+	hasShadows = texture == nullptr;	
 }
 
 NS_END

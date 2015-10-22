@@ -69,7 +69,7 @@ void Scheduler::RunWorkerThreads()
 
 	WaitForMultipleObjects(numWorkerThreads, workerThreads, TRUE, INFINITE);
 
-	p_Renderer->SetupFrame();
+	//p_Renderer->SetupFrame();
 	// TODO: THis separation should smart-separate workerThreads into Opaque, Transparent, Particle, and Deferred Geometry
 	for (uint32 i = 0; i < numWorkerThreads; ++i)
 	{

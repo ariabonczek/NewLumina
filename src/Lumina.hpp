@@ -19,5 +19,7 @@
 #include <Graphics\Mesh.hpp>
 #include <Graphics\Material.hpp>
 #include <Graphics\Texture2D.hpp>
+#include <Graphics\RenderTexture.hpp>
+#include <Graphics\PostProcess.hpp>
 
 #endif

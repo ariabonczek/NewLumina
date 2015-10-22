@@ -316,6 +316,7 @@ void GraphicsDevice::OnResize()
 
 		ID3D11Texture2D* backBuffer;
 		swapChain->GetBuffer(NULL, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
+
 		dev->CreateRenderTargetView(backBuffer, 0, &displayBuffers[i].renderTargetView);
 		DELETECOM(backBuffer);
 

@@ -9,6 +9,8 @@
 #include <Objects\BaseRenderer.hpp>
 #include <Scenes\Scene.hpp>
 #include <Objects\Camera.hpp>
+#include <Utility\ResourceManager.hpp>
+#include <Graphics\RenderTexture.hpp>
 
 NS_BEGIN
 
@@ -41,6 +43,7 @@ void Renderer::Initialize()
 	p_SwapChain = mp_GraphicsDevice->swapChain;
 	p_ImmediateContext = mp_GraphicsDevice->immCon;
 
+	InitializeRenderTarget();
 	SetupCommandLists();
 
 #elif DX12
@@ -67,49 +70,80 @@ bool Renderer::HandleWindowEvents()
 	return true;
 }
 
-void Renderer::Clear()
+void Renderer::InitializeRenderTarget()
 {
-	if (!p_BackBuffer)
+	ID3D11Device* device;
+	p_ImmediateContext->GetDevice(&device);
+
+	render_Target = ResourceManager::CreateRenderTexture(p_Viewport->Width, p_Viewport->Height, true);
+
+	finalRender.Initialize(device);
+}
+
+void Renderer::SetupRenderTarget(ID3D11DeviceContext* deferredContext)
+{
+	if (!render_Target->GetRenderTargetView())
 		return;
-	p_ImmediateContext->RSSetViewports(1, p_Viewport);
-	p_ImmediateContext->OMSetRenderTargets(1, &p_BackBuffer, p_DepthBuffer);
+	deferredContext->RSSetViewports(1, p_Viewport);
+	ID3D11RenderTargetView* rtv = render_Target->GetRenderTargetView();
+	deferredContext->OMSetRenderTargets(1, &rtv, render_Target->GetDepthStencilView());
 
 	//static const float color[4] = { 0.392f, 0.584f, 0.929f, 1.0f };
 	static const float color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	p_ImmediateContext->ClearRenderTargetView(p_BackBuffer, color);
-	p_ImmediateContext->ClearDepthStencilView(p_DepthBuffer, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	//static const float color[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
+	deferredContext->ClearRenderTargetView(rtv, color);
+	deferredContext->ClearDepthStencilView(render_Target->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+}
+
+void Renderer::ClearBackBuffer(ID3D11DeviceContext* deferredContext)
+{
+	if (!p_BackBuffer)
+		return;
+	deferredContext->RSSetViewports(1, p_Viewport);
+	deferredContext->OMSetRenderTargets(1, &p_BackBuffer, p_DepthBuffer);
+
+	static const float color[4] = { 0.392f, 0.584f, 0.929f, 1.0f };
+	//static const float color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	deferredContext->ClearRenderTargetView(p_BackBuffer, color);
+	deferredContext->ClearDepthStencilView(p_DepthBuffer, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+}
+
+void Renderer::RenderToBackBuffer(ID3D11DeviceContext* deferredContext)
+{
+	finalRender.GetMaterial()->SetTexture("_Source", "_Sampler", render_Target, ShaderType::Pixel);
+	finalRender.Render(deferredContext);
 }
 
 void Renderer::SetupCommandLists()
 {
 	mp_OpaqueCommandList.Create(mp_GraphicsDevice->immCon);
-	mp_TransparentCommandList.Create(mp_GraphicsDevice->immCon);
-	mp_ParticlesCommandList.Create(mp_GraphicsDevice->immCon);
-	mp_LightingCommandList.Create(mp_GraphicsDevice->immCon);
+	//mp_TransparentCommandList.Create(mp_GraphicsDevice->immCon);
+	//mp_ParticlesCommandList.Create(mp_GraphicsDevice->immCon);
+	//mp_LightingCommandList.Create(mp_GraphicsDevice->immCon);
 }
 
 void Renderer::SetupFrame()
 {
 	mp_OpaqueCommandList.SetupFrame();
-	mp_TransparentCommandList.SetupFrame();
-	mp_ParticlesCommandList.SetupFrame();
-	mp_LightingCommandList.SetupFrame();
+	//mp_TransparentCommandList.SetupFrame();
+	//mp_ParticlesCommandList.SetupFrame();
+	//mp_LightingCommandList.SetupFrame();
 }
 
 void Renderer::CloseCommandLists()
 {
 	mp_OpaqueCommandList.Finish();
-	mp_TransparentCommandList.Finish();
-	mp_ParticlesCommandList.Finish();
-	mp_LightingCommandList.Finish();
+	//mp_TransparentCommandList.Finish();
+	//mp_ParticlesCommandList.Finish();
+	//mp_LightingCommandList.Finish();
 }
 
 void Renderer::ExecuteCommandLists()
 {
 	mp_OpaqueCommandList.Execute();
-	mp_TransparentCommandList.Execute();
-	mp_ParticlesCommandList.Execute();
-	mp_LightingCommandList.Execute();
+	//mp_TransparentCommandList.Execute();
+	//mp_ParticlesCommandList.Execute();
+	//mp_LightingCommandList.Execute();
 }
 
 void Renderer::Flush()
@@ -190,6 +224,11 @@ void Renderer::SetAmbientLight(Color color)
 	ambientLight = color;
 }
 
+void Renderer::AddPostProcess(PostProcess* postProcess)
+{
+	postProcesses.push_back(postProcess);
+}
+
 void Renderer::UnloadCurrentScene()
 {
 	renderableObjects.clear();
@@ -199,8 +238,7 @@ void Renderer::UnloadCurrentScene()
 DWORD WINAPI Renderer::FireThread(void* param)
 {
 	Renderer* _this = static_cast<Renderer*>(param);
-	
-	_this->Clear();
+
 	_this->ExecuteCommandLists();
 	_this->Flush();
 
@@ -222,14 +260,34 @@ DWORD WINAPI Renderer::Render(void* param)
 {
 	Renderer* _this = static_cast<Renderer*>(param);
 
-	// TODO: Separate renderableObjects into 4 lists: opaque, trans, particles and deferred
-	for (std::unordered_map<LGUID, BaseRenderer*>::iterator it = _this->renderableObjects.begin(); it != _this->renderableObjects.end(); ++it)
-	{
-		_this->SetLightData(it->second->GetMaterial());
-		it->second->Render(_this->mp_OpaqueCommandList.GetDeferredContext());
-	}
+	_this->SetupRenderTarget(_this->mp_OpaqueCommandList.GetDeferredContext());
+
+	_this->RenderPass(RenderPassType::Shadows);
+	_this->RenderPass(RenderPassType::OpaqueGeometry);
+
+	_this->ClearBackBuffer(_this->mp_OpaqueCommandList.GetDeferredContext());
+	_this->RenderToBackBuffer(_this->mp_OpaqueCommandList.GetDeferredContext());
 
 	return 0;
+}
+
+void Renderer::RenderPass(RenderPassType type)
+{
+	switch (type)
+	{
+		case RenderPassType::OpaqueGeometry:
+			mp_OpaqueCommandList.GetDeferredContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			mp_OpaqueCommandList.GetDeferredContext()->RSSetState(mp_GraphicsDevice->rasterizerState);
+			for (std::unordered_map<LGUID, BaseRenderer*>::iterator it = renderableObjects.begin(); it != renderableObjects.end(); ++it)
+			{
+				SetLightData(it->second->GetMaterial());
+				it->second->Render(mp_OpaqueCommandList.GetDeferredContext());
+			}
+			break;
+		case RenderPassType::Shadows:
+			
+			break;
+	}
 }
 
 NS_END

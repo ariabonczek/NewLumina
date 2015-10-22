@@ -11,7 +11,7 @@ NS_BEGIN
 struct TextureInformation
 {
 	ShaderType type;
-	Texture2D* texture;
+	Texture* texture;
 	const char* textureName;
 	const char* samplerName;
 };
@@ -33,8 +33,7 @@ public:
 	/// <summary>
 	///
 	/// </summary>
-	void SetTexture2D(const char* textureName, const char* samplerName, Texture2D* tex, ShaderType type);
-	//void SetRenderTexture(GraphicsShaderType type, RenderTexture* rt);
+	void SetTexture(const char* textureName, const char* samplerName, Texture* tex, ShaderType type);
 
 	/// <summary>
 	///

@@ -210,6 +210,12 @@
     <ClCompile Include="Graphics\Texture.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\FullScreenQuad.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\PostProcess.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Game.hpp">
@@ -350,6 +356,12 @@
     <ClInclude Include="Graphics\Texture.hpp">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\FullScreenQuad.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\PostProcess.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="P:\LuminaEngine\content\Shaders\DirectX\defaultVertex.hlsl">
@@ -362,6 +374,15 @@
       <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="..\content\Shaders\DirectX\sampleCubemapPixel.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="..\content\Shaders\DirectX\fullScreenQuadVertex.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="..\content\Shaders\DirectX\postFXTint.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="..\content\Shaders\DirectX\copyTexture.hlsl">
       <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
     </FxCompile>
   </ItemGroup>

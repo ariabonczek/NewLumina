@@ -109,7 +109,7 @@ Resource* ResourceManager::LoadShader(char* filepath, ID3D12Device* device)
 	return s;
 }
 
-RenderTexture* ResourceManager::CreateRenderTexture(uint32 width, uint32 height)
+RenderTexture* ResourceManager::CreateRenderTexture(uint32 width, uint32 height, bool hasDepth)
 {
 	LGUID guid = Hash(Timer::GetTimeSinceEpoch());
 
@@ -118,7 +118,7 @@ RenderTexture* ResourceManager::CreateRenderTexture(uint32 width, uint32 height)
 		return static_cast<RenderTexture*>(resourceMap[guid]);
 	}
 
-	RenderTexture* r = new RenderTexture(width, height, guid, p_Device);
+	RenderTexture* r = new RenderTexture(width, height, guid, p_Device, hasDepth);
 	resourceMap[guid] = r;
 	return r;
 }

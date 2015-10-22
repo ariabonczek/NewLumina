@@ -91,6 +91,8 @@ class Filesystem;
 class MeshBuilder;
 class ResourceManager;
 class RenderTexture;
+class FullScreenQuad;
+class PostProcess;
 
 struct Color;
 struct MeshVertex;

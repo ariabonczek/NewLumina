@@ -4,6 +4,7 @@
 #include <Core\Common.hpp>
 #include <Graphics\Data.hpp>
 #include <unordered_map>
+#include <queue>
 
 NS_BEGIN
 
@@ -57,8 +58,14 @@ protected:
 	///
 	/// </summary>
 	void SetAmbientLight(Color color);
+
+	/// <summary>
+	///
+	/// </summary>
+	void AddPostProcess(PostProcess* postProcess);
 private:
 	std::unordered_map<LGUID,GameObject*> objects;
+	std::queue<PostProcess*> postProcesses;
 	Camera* activeCamera;
 	Color ambientLight;
 	char* name;

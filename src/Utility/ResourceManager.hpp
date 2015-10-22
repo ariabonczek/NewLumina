@@ -34,7 +34,7 @@ public:
 	static Mesh* LoadMesh(char* filepath);
 	static Shader* LoadShader(wchar_t* filepath, ShaderType type);
 
-	static RenderTexture* CreateRenderTexture(uint32 width = 256, uint32 height = 256);
+	static RenderTexture* CreateRenderTexture(uint32 width = 256, uint32 height = 256, bool hasDepth = false);
 
 	static Mesh* CreatePlane(float width = 5.0f, float depth = 5.0f, uint32 n = 10, uint32 m = 10);
 	static Mesh* CreateSphere(float radius = 1.0f, uint32 numSubdivisions = 3);

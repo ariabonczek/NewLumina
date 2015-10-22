@@ -17,6 +17,9 @@ void TestScene::LoadAssets()
 	VertexShader* vs = static_cast<VertexShader*>(ResourceManager::LoadShader(L"Shaders/DirectX/defaultVertex.cso", ShaderType::Vertex));
 	PixelShader* ps = static_cast<PixelShader*>(ResourceManager::LoadShader(L"Shaders/DirectX/defaultPixel.cso", ShaderType::Pixel));
 	
+	VertexShader* quadVS = (VertexShader*)ResourceManager::LoadShader(L"Shaders/DirectX/fullScreenQuadVertex.cso", ShaderType::Vertex);
+	PixelShader* tintPS = (PixelShader*)ResourceManager::LoadShader(L"Shaders/DirectX/postFXTint.cso", ShaderType::Pixel);
+
 	Material* mat = new Material();
 	mat->SetVertexShader(vs);
 	mat->SetPixelShader(ps);
@@ -25,8 +28,8 @@ void TestScene::LoadAssets()
 	mat->SetShaderVariable<float>("metalness", 0.04f, ShaderType::Pixel);
 	mat->SetShaderVariable<uint32>("tileX", 1, ShaderType::Pixel);
 	mat->SetShaderVariable<uint32>("tileY", 1, ShaderType::Pixel);
-	mat->SetTexture2D("_Albedo", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_diff.jpg"), ShaderType::Pixel);
-	mat->SetTexture2D("_Normal", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_nor.jpg"), ShaderType::Pixel);
+	mat->SetTexture("_Albedo", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_diff.jpg"), ShaderType::Pixel);
+	mat->SetTexture("_Normal", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_nor.jpg"), ShaderType::Pixel);
 
 	Material* mat2 = new Material();
 	mat2->SetVertexShader(vs);
@@ -34,10 +37,15 @@ void TestScene::LoadAssets()
 	mat2->SetShaderVariable<Color>("tint", &Color::White, ShaderType::Pixel);
 	mat2->SetShaderVariable<float>("roughness", 1.0f, ShaderType::Pixel);
 	mat2->SetShaderVariable<float>("metalness", 0.04f, ShaderType::Pixel);
-	mat2->SetShaderVariable<uint32>("tileX", 4, ShaderType::Pixel);
-	mat2->SetShaderVariable<uint32>("tileY", 4, ShaderType::Pixel);
-	mat2->SetTexture2D("_Albedo", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_diff.jpg"), ShaderType::Pixel);
-	mat2->SetTexture2D("_Normal", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_nor.jpg"), ShaderType::Pixel);
+	mat2->SetShaderVariable<uint32>("tileX", 2, ShaderType::Pixel);
+	mat2->SetShaderVariable<uint32>("tileY", 2, ShaderType::Pixel);
+	mat2->SetTexture("_Albedo", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_diff.jpg"), ShaderType::Pixel);
+	mat2->SetTexture("_Normal", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_nor.jpg"), ShaderType::Pixel);
+
+	Material* ppMat = new Material();
+	ppMat->SetVertexShader(quadVS);
+	ppMat->SetPixelShader(tintPS);
+	ppMat->SetShaderVariable<Color>("tint", Color::Green, ShaderType::Pixel);
 
 	Mesh* cube = ResourceManager::CreateCube();
 	Mesh* plane = ResourceManager::CreatePlane(25.0f, 25.0f, 10, 10);
@@ -53,7 +61,7 @@ void TestScene::LoadAssets()
 	GameObject* twoObject = new GameObject("Two");
 
 	twoObject->AddComponent<MeshRenderer>(new MeshRenderer(plane, mat2));
-	twoObject->GetComponent<Transform>()->SetLocalPosition(Vector3(0.0f, -2.0f, 0.0f));
+	twoObject->GetComponent<Transform>()->SetLocalPosition(Vector3(0.0f, -3.0f, 0.0f));
 
 	GameObject* camera = new GameObject("Camera");
 	camera->AddComponent<Camera>(new Camera());
@@ -61,16 +69,20 @@ void TestScene::LoadAssets()
 	camera->AddComponent<CameraDebug>(new CameraDebug());
 
 	GameObject* light = new GameObject("Light");
-	light->AddComponent<Light>(new Light(LightType::Point, Color::White, 1.0f));
+	light->AddComponent<Light>(new Light(LightType::Spot, Color::White, 1.0f));
 	light->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(0.0f, -1.0f, 0.0f));
 	light->GetComponent<Light>()->data.range = 40.0f;
 	light->GetComponent<Light>()->data.spot = 10.0f;
-	light->GetComponent<Transform>()->SetLocalPosition(0.0, 5.0f, 0.0f);
+	light->GetComponent<Transform>()->SetLocalPosition(0.0, 10.0f, 0.0f);
 	
 	AddObject(testObject);
 	AddObject(twoObject);
 	AddObject(camera);
 	AddObject(light);
+
+	PostProcess* postProcess = new PostProcess();
+	postProcess->SetMaterial(ppMat);
+	AddPostProcess(postProcess);
 
 	SetActiveCamera(camera->GetComponent<Camera>());
 	SetAmbientLight(Color(0.05f, 0.05f, 0.05f, 1.0f));

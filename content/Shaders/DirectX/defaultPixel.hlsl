@@ -38,5 +38,6 @@ float4 main(MeshVertexOutput i) : SV_Target0
 	//return PBRCalculateFinalColor(_Albedo.Sample(_Sampler, i.texcoord), bumpedNormal, 
 	//	roughness, metalness, view, directionalLight[0].direction, directionalLight[0]);
 
-    return _Albedo.Sample(_Sampler, i.texcoord* float2(tileX, tileY)) *  tint * lightFactor + ambientLight;
+	float4 diffuse = _Albedo.Sample(_Sampler, i.texcoord * float2(tileX, tileY));
+    return diffuse *  tint * lightFactor + (diffuse * ambientLight);
 }

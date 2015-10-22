@@ -2,15 +2,14 @@
 #define TEXTURE2D_HPP
 
 #include <Core\Common.hpp>
-#include <Graphics\Sampler.hpp>
-#include <Utility\Resources\Resource.hpp>
+#include <Graphics\Texture.hpp>
 
 NS_BEGIN
 
 /// <summary>
 ///
 /// </summary>
-class Texture2D : public Resource
+class Texture2D : public Texture
 {
 public:
 #if DX11
@@ -21,22 +20,8 @@ public:
 	Texture2D(Image& imageData, LGUID guid);
 #endif
 	~Texture2D();
-
-	/// <summary>
-	///
-	/// </summary>
-	Sampler* GetSampler()const;
-
-	/// <summary>
-	///
-	/// </summary>
-	ID3D11ShaderResourceView* GetShaderResourceView()const;
-
 private:
-	Sampler* sampler;
-#if DX11
-	ID3D11ShaderResourceView* srv;
-#elif DX12
+#if DX12
 	ID3D12Resource* texture;
 	ID3D12DescriptorHeap* srvHeap;
 #endif

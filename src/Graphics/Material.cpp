@@ -88,6 +88,37 @@ void Material::BindMaterial(ID3D11DeviceContext* deviceContext)
 		}
 	}
 
+	for (std::unordered_map<LGUID, VariableInformation>::iterator it = variables.begin(); it != variables.end(); ++it)
+	{
+		switch (it->second.type)
+		{
+		case ShaderType::Vertex:
+			if (p_VertexShader)
+			{
+				p_VertexShader->SetDataSize(it->second.variableName, it->second.data, it->second.size);
+			}
+			break;
+		case ShaderType::Geometry:
+			if (p_GeometryShader)
+			{
+				p_GeometryShader->SetDataSize(it->second.variableName, it->second.data, it->second.size);
+			}
+			break;
+		case ShaderType::GeometrySO:
+			if (p_GeometryShader)
+			{
+				p_GeometryShader->SetDataSize(it->second.variableName, it->second.data, it->second.size);
+			}
+			break;
+		case ShaderType::Pixel:
+			if (p_PixelShader)
+			{
+				p_PixelShader->SetDataSize(it->second.variableName, it->second.data, it->second.size);
+			}
+			break;
+		}
+	}
+
 	if (p_VertexShader)
 		p_VertexShader->BindShader(deviceContext);
 	if (p_GeometryShader)

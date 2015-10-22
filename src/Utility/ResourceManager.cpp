@@ -5,6 +5,7 @@
 #include <Utility\Murmur3\MurmurHash.h>
 
 #include <Graphics\Texture2D.hpp>
+#include <Graphics\RenderTexture.hpp>
 #include <Graphics\Mesh.hpp>
 #include <Graphics\Shader.hpp>
 #include <sstream>
@@ -106,6 +107,20 @@ Resource* ResourceManager::LoadShader(char* filepath, ID3D12Device* device)
 	s->SetLGUID(guid);
 	//resourceMap[guid] = s;
 	return s;
+}
+
+RenderTexture* ResourceManager::CreateRenderTexture(uint32 width, uint32 height)
+{
+	LGUID guid = Hash(Timer::GetTimeSinceEpoch());
+
+	if (resourceMap.find(guid) != resourceMap.end())
+	{
+		return static_cast<RenderTexture*>(resourceMap[guid]);
+	}
+
+	RenderTexture* r = new RenderTexture(width, height, guid, p_Device);
+	resourceMap[guid] = r;
+	return r;
 }
 
 Mesh* ResourceManager::CreatePlane(float width, float depth, uint32 n, uint32 m)

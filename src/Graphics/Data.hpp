@@ -65,6 +65,7 @@ struct LightData
 	Vector3 position;
 	float range;
 	float spot;
+private:
 	float pad[3];
 };
 

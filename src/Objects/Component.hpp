@@ -23,6 +23,7 @@ public:
 	virtual void OnDisable();
 
 	LGUID GetLGUID()const;
+	GameObject* GetGameObject()const;
 protected:
 	GameObject* p_GameObject;
 	LGUID guid;

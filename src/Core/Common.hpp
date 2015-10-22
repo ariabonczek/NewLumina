@@ -90,6 +90,7 @@ class Resource;
 class Filesystem;
 class MeshBuilder;
 class ResourceManager;
+class RenderTexture;
 
 struct Color;
 struct MeshVertex;

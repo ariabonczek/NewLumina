@@ -13,6 +13,8 @@ public:
 	Light(LightType type, Color color = Color::White, float intensity = 1.0f);
 	~Light();
 
+	void Update();
+
 	bool OnAddToGameObject(GameObject* object);
 
 	void SetDirection(Vector3 direction);

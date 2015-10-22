@@ -19,9 +19,7 @@ Renderer::Renderer()
 }
 
 Renderer::~Renderer()
-{
-	
-}
+{}
 
 Renderer* Renderer::GetInstance()
 {
@@ -76,7 +74,8 @@ void Renderer::Clear()
 	p_ImmediateContext->RSSetViewports(1, p_Viewport);
 	p_ImmediateContext->OMSetRenderTargets(1, &p_BackBuffer, p_DepthBuffer);
 
-	static const float color[4] = { 0.392f, 0.584f, 0.929f, 1.0f };
+	//static const float color[4] = { 0.392f, 0.584f, 0.929f, 1.0f };
+	static const float color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	p_ImmediateContext->ClearRenderTargetView(p_BackBuffer, color);
 	p_ImmediateContext->ClearDepthStencilView(p_DepthBuffer, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
@@ -151,19 +150,25 @@ void Renderer::RemoveLight(Light* light)
 
 void Renderer::SetLightData(Material* material)
 {
+	uint32 numDL = 0;
+	uint32 numPL = 0;
+	uint32 numSL = 0;
 	for (std::unordered_map<LGUID, Light*>::iterator it = lights.begin(); it != lights.end(); ++it)
 	{
 		Light* light = it->second;
 		switch (light->type)
 		{
 		case LightType::Directional:
-			material->SetShaderVariable<LightData>("directionalLight", &light->data, ShaderType::Pixel);
+			material->SetShaderVariable<LightData>("directionalLight", &light->data, numDL++, ShaderType::Pixel);
+			material->SetShaderVariable<uint32>("numDirectionalLights", numDL, ShaderType::Pixel);
 			break;
 		case LightType::Point:
-			material->SetShaderVariable<LightData>("pointLight", &light->data, ShaderType::Pixel);
+			material->SetShaderVariable<LightData>("pointLight", &light->data, numPL++, ShaderType::Pixel);
+			material->SetShaderVariable<uint32>("numPointLights", numPL, ShaderType::Pixel);
 			break;
 		case LightType::Spot:
-			material->SetShaderVariable<LightData>("spotLight", &light->data, ShaderType::Pixel);
+			material->SetShaderVariable<LightData>("spotLight", &light->data, numSL++, ShaderType::Pixel);
+			material->SetShaderVariable<uint32>("numSpotLights", numSL, ShaderType::Pixel);
 			break;
 		}
 	}

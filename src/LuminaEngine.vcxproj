@@ -42,6 +42,7 @@
     <ClCompile Include="Graphics\RenderTexture.cpp" />
     <ClCompile Include="Graphics\Sampler.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
+    <ClCompile Include="Graphics\Texture.cpp" />
     <ClCompile Include="Graphics\Texture2D.cpp" />
     <ClCompile Include="Graphics\Window.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -87,6 +88,7 @@
     <ClInclude Include="Graphics\RenderTexture.hpp" />
     <ClInclude Include="Graphics\Sampler.hpp" />
     <ClInclude Include="Graphics\Shader.hpp" />
+    <ClInclude Include="Graphics\Texture.hpp" />
     <ClInclude Include="Graphics\Texture2D.hpp" />
     <ClInclude Include="Graphics\Window.hpp" />
     <ClInclude Include="Lumina.hpp" />

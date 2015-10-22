@@ -50,6 +50,11 @@ void Component::OnDisable()
 
 }
 
+GameObject* Component::GetGameObject()const
+{
+	return p_GameObject;
+}
+
 LGUID Component::GetLGUID()const
 {
 	return guid;

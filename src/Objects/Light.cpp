@@ -1,6 +1,8 @@
 #include <Objects\Light.hpp>
 
 #include <Core\Renderer.hpp>
+#include <Objects\GameObject.hpp>
+#include <Objects\Transform.hpp>
 
 NS_BEGIN
 
@@ -11,10 +13,16 @@ type(type)
 	data.intensity = intensity;
 	data.range = 10.0f;
 	data.direction = Vector3(0.0f, 0.0f, 1.0f);
+	data.spot = 45.0f;
 }
 
 Light::~Light()
 {}
+
+void Light::Update()
+{
+	data.position = p_GameObject->GetComponent<Transform>()->GetWorldPosition();
+}
 
 bool Light::OnAddToGameObject(GameObject* object)
 {

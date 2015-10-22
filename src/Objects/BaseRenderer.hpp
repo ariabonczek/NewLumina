@@ -26,7 +26,7 @@ public:
 protected:
 	Material* p_Material;
 };
-
+	
 NS_END
 
 #endif

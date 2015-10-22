@@ -16,6 +16,14 @@ struct TextureInformation
 	const char* samplerName;
 };
 
+struct VariableInformation
+{
+	ShaderType type;
+	const char* variableName;
+	unsigned char* data;
+	uint32 size;
+};
+
 class Material
 {
 public:
@@ -34,10 +42,29 @@ public:
 	template<typename T>
 	void SetShaderVariable(const char* name, T* data, ShaderType type)
 	{
+		LGUID guid;
+		std::unordered_map<LGUID, VariableInformation>::iterator it;
+		VariableInformation vi;
 		switch (type)
 		{
 		case ShaderType::Vertex:
-			p_VertexShader->SetData(name, data);
+			guid = Hash(name);
+			if ((it = variables.find(guid)) != variables.end())
+			{
+				if (it->second.type == ShaderType::Vertex)
+				{
+					memcpy(it->second.data, data, it->second.size);
+				}
+			}
+			else
+			{
+				vi.type = type;
+				vi.variableName = name;
+				vi.data = new unsigned char[sizeof(T)];
+				vi.size = sizeof(T);
+				memcpy(vi.data, data, vi.size);
+				variables[guid] = vi;
+			}
 			break;
 		case ShaderType::Hull:
 
@@ -46,13 +73,214 @@ public:
 
 			break;
 		case ShaderType::Geometry:
-			p_GeometryShader->SetData(name, data);
+			guid = Hash(name);
+			if ((it = variables.find(guid)) != variables.end())
+			{
+				if (it->second.type == ShaderType::Geometry)
+				{
+					memcpy(it->second.data, data, it->second.size);
+				}
+			}
+			else
+			{
+				vi.type = type;
+				vi.variableName = name;
+				vi.data = new unsigned char[sizeof(T)];
+				vi.size = sizeof(T);
+				memcpy(vi.data, data, vi.size);
+				variables[guid] = vi;
+			}			
 			break;
 		case ShaderType::GeometrySO:
-			p_GeometryShader->SetData(name, data);
+			guid = Hash(name);
+			if ((it = variables.find(guid)) != variables.end())
+			{
+				if (it->second.type == ShaderType::GeometrySO)
+				{
+					memcpy(it->second.data, data, it->second.size);
+				}
+			}
+			else
+			{
+				vi.type = type;
+				vi.variableName = name;
+				vi.data = new unsigned char[sizeof(T)];
+				vi.size = sizeof(T);
+				memcpy(vi.data, data, vi.size);
+				variables[guid] = vi;
+			}
 			break;
 		case ShaderType::Pixel:
-			p_PixelShader->SetData(name, data);
+			guid = Hash(name);
+			if ((it = variables.find(guid)) != variables.end())
+			{
+				if (it->second.type == ShaderType::Pixel)
+				{
+					memcpy(it->second.data, data, it->second.size);
+				}
+			}
+			else
+			{
+				vi.type = type;
+				vi.variableName = name;
+				vi.data = new unsigned char[sizeof(T)];
+				vi.size = sizeof(T);
+				memcpy(vi.data, data, vi.size);
+				variables[guid] = vi;
+			}			break;
+		}
+	}
+
+	/// <summary>
+	///
+	/// </summary>
+	template<typename T>
+	void SetShaderVariable(const char* name, T data, ShaderType type)
+	{
+		LGUID guid;
+		std::unordered_map<LGUID, VariableInformation>::iterator it;
+		VariableInformation vi;
+		switch (type)
+		{
+		case ShaderType::Vertex:
+			guid = Hash(name);
+			if ((it = variables.find(guid)) != variables.end())
+			{
+				if (it->second.type == ShaderType::Vertex)
+				{
+					memcpy(it->second.data, &data, it->second.size);
+				}
+			}
+			else
+			{
+				vi.type = type;
+				vi.variableName = name;
+				vi.data = new unsigned char[sizeof(T)];
+				vi.size = sizeof(T);
+				memcpy(vi.data, &data, vi.size);
+				variables[guid] = vi;
+			}
+			break;
+		case ShaderType::Hull:
+
+			break;
+		case ShaderType::Domain:
+
+			break;
+		case ShaderType::Geometry:
+			guid = Hash(name);
+			if ((it = variables.find(guid)) != variables.end())
+			{
+				if (it->second.type == ShaderType::Geometry)
+				{
+					memcpy(it->second.data, &data, it->second.size);
+				}
+			}
+			else
+			{
+				vi.type = type;
+				vi.variableName = name;
+				vi.data = new unsigned char[sizeof(T)];
+				vi.size = sizeof(T);
+				memcpy(vi.data, &data, vi.size);
+				variables[guid] = vi;
+			}
+			break;
+		case ShaderType::GeometrySO:
+			guid = Hash(name);
+			if ((it = variables.find(guid)) != variables.end())
+			{
+				if (it->second.type == ShaderType::GeometrySO)
+				{
+					memcpy(it->second.data, &data, it->second.size);
+				}
+			}
+			else
+			{
+				vi.type = type;
+				vi.variableName = name;
+				vi.data = new unsigned char[sizeof(T)];
+				vi.size = sizeof(T);
+				memcpy(vi.data, &data, vi.size);
+				variables[guid] = vi;
+			}
+			break;
+		case ShaderType::Pixel:
+			guid = Hash(name);
+			if ((it = variables.find(guid)) != variables.end())
+			{
+				if (it->second.type == ShaderType::Pixel)
+				{
+					memcpy(it->second.data, &data, it->second.size);
+				}
+			}
+			else
+			{
+				vi.type = type;
+				vi.variableName = name;
+				vi.data = new unsigned char[sizeof(T)];
+				vi.size = sizeof(T);
+				memcpy(vi.data, &data, vi.size);
+				variables[guid] = vi;
+			}			
+			break;
+		}
+	}
+	
+	/// <summary>
+	/// Sets the variable at the give index in an array
+	/// </summary>
+	template<typename T>
+	void SetShaderVariable(const char* name, T* data, uint32 index, ShaderType type)
+	{
+		switch (type)
+		{
+		case ShaderType::Vertex:
+			p_VertexShader->SetData(name, data, index);
+			break;
+		case ShaderType::Hull:
+
+			break;
+		case ShaderType::Domain:
+
+			break;
+		case ShaderType::Geometry:
+			p_GeometryShader->SetData(name, data, index);
+			break;
+		case ShaderType::GeometrySO:
+			p_GeometryShader->SetData(name, data, index);
+			break;
+		case ShaderType::Pixel:
+			p_PixelShader->SetData(name, data, index);
+			break;
+		}
+	}
+
+	/// <summary>
+	///
+	/// </summary>
+	template<typename T>
+	void SetShaderVariable(const char* name, T data, uint32 index, ShaderType type)
+	{
+		switch (type)
+		{
+		case ShaderType::Vertex:
+			p_VertexShader->SetData(name, data, index);
+			break;
+		case ShaderType::Hull:
+
+			break;
+		case ShaderType::Domain:
+
+			break;
+		case ShaderType::Geometry:
+			p_GeometryShader->SetData(name, data, index);
+			break;
+		case ShaderType::GeometrySO:
+			p_GeometryShader->SetData(name, data, index);
+			break;
+		case ShaderType::Pixel:
+			p_PixelShader->SetData(name, data, index);
 			break;
 		}
 	}
@@ -94,8 +322,9 @@ public:
 	/// </summary>
 	void BindMaterial(ID3D11DeviceContext* devCon);
 private:
-	// TODO: moar generic
 	std::unordered_map<LGUID, TextureInformation> textures;
+	std::unordered_map<LGUID, VariableInformation> variables;
+
 	VertexShader* p_VertexShader;
 	//HullShader hShader;
 	//DomainShader dShader;

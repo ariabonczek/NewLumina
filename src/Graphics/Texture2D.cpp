@@ -9,10 +9,10 @@ NS_BEGIN
 #elif GL43
 	Texture2D::Texture2D(Image& imageData, LGUID guid)
 #endif
-	: Resource(guid)
+	: Texture(guid)
 {
 #if DX11
-	sampler = Sampler::ClampLinear;
+	sampler = Sampler::WrapLinear;
 	ID3D11Texture2D* texture;
 	// Create the texture
 
@@ -183,18 +183,7 @@ NS_BEGIN
 
 Texture2D::~Texture2D()
 {
-
+	DELETECOM(srv);
 }
-
-Sampler* Texture2D::GetSampler()const
-{
-	return sampler;
-}
-
-ID3D11ShaderResourceView* Texture2D::GetShaderResourceView()const
-{
-	return srv;
-}
-
 
 NS_END

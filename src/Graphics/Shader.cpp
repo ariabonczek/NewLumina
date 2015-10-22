@@ -8,7 +8,9 @@ Shader::Shader(LGUID guid):
 {}
 
 Shader::~Shader()
-{}
+{
+	Destroy();
+}
 
 bool Shader::LoadShaderFromFile(wchar_t* filepath, ID3D11Device* device)
 {
@@ -64,7 +66,7 @@ bool Shader::LoadShaderFromFile(wchar_t* filepath, ID3D11Device* device)
 		D3D11_SHADER_INPUT_BIND_DESC sibd;
 		ZeroMemory(&sibd, sizeof(D3D11_SHADER_INPUT_BIND_DESC));
 		reflection->GetResourceBindingDescByName(sbd.Name, &sibd);
-
+		
 		constantBuffers[i].index = sibd.BindPoint;
 		constantBuffersMap.insert(std::pair<LGUID, ConstantBuffer*>(Hash(sbd.Name), &constantBuffers[i]));
 
@@ -144,19 +146,19 @@ ShaderVariable* Shader::GetShaderVariable(const char* name, uint32 size)
 	if (it == variables.end())
 	{
 #if _DEBUG
-		Debug::LogError("[Shader] Could not find the requested shader variable.");
+		Debug::LogError("[Shader] Could not find the requested shader variable: " + std::string(name));
 #endif
 		return nullptr;
 	}
 
 	ShaderVariable* variable = &(it->second);
-	if (variable->size != size)
-	{
-#if _DEBUG
-		Debug::LogError("[Shader] Attempted to change a variable of incorrect size.");
-#endif
-		return nullptr;
-	}
+//	if (variable->size != size)
+//	{
+//#if _DEBUG
+//		Debug::LogWarning("[Shader] Warning: Shader variable sizes do not match.");
+//#endif
+//		return nullptr;
+//	}
 
 	return variable;
 }
@@ -173,30 +175,24 @@ ConstantBuffer* Shader::GetConstantBuffer(const char* name)
 	return it->second;
 }
 
-uint32 Shader::GetTextureIndex(const char* name)
+int32 Shader::GetTextureIndex(const char* name)
 {
 	std::unordered_map<LGUID, uint32>::iterator it = textures.find(Hash(name));
 
 	if (it == textures.end())
 	{
-#if _DEBUG
-		Debug::LogError("[Shader] Could not locate texture index.");
-#endif
 		return -1;
 	}
 
 	return it->second;
 }
 
-uint32 Shader::GetSamplerIndex(const char* name)
+int32 Shader::GetSamplerIndex(const char* name)
 {
 	std::unordered_map<LGUID, uint32>::iterator it = samplers.find(Hash(name));
 
 	if (it == samplers.end())
 	{
-#if _DEBUG
-		Debug::LogError("[Shader] Could not locate sampler index.");
-#endif
 		return -1;
 	}
 
@@ -318,14 +314,20 @@ void GeometryShader::BindShader(ID3D11DeviceContext* deviceContext)
 
 void PixelShader::SetShaderResourceView(const char* name, ID3D11ShaderResourceView* srv, ID3D11DeviceContext* deviceContext)
 {
-	uint32 index = GetTextureIndex(name);
+	int32 index = GetTextureIndex(name);
+	
+	if (index < 0)
+		return;
 
 	deviceContext->PSSetShaderResources(index, 1, &srv);
 }
 
 void PixelShader::SetSamplerState(const char* name, ID3D11SamplerState* sampler, ID3D11DeviceContext* deviceContext)
 {
-	uint32 index = GetSamplerIndex(name);
+	int32 index = GetSamplerIndex(name);
+
+	if (index < 0)
+		return;
 
 	deviceContext->PSSetSamplers(index, 1, &sampler);
 }

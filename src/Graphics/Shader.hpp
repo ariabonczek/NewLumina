@@ -39,7 +39,48 @@ public:
 	void SetData(const char* name, T* data)
 	{
 		ShaderVariable* variable = GetShaderVariable(name, sizeof(T));
+		if (!variable)
+			return;
 		memcpy(constantBuffers[variable->index].dataBuffer + variable->offset, data, sizeof(T));
+		dirty = true;
+	}
+
+	template<typename T>
+	void SetData(const char* name, T data)
+	{
+		ShaderVariable* variable = GetShaderVariable(name, sizeof(T));
+		if (!variable)
+			return;
+		memcpy(constantBuffers[variable->index].dataBuffer + variable->offset, &data, sizeof(T));
+		dirty = true;
+	}
+
+	template<typename T>
+	void SetData(const char* name, T* data, uint32 index)
+	{
+		ShaderVariable* variable = GetShaderVariable(name, sizeof(T));
+		if (!variable)
+			return;
+		memcpy(constantBuffers[variable->index].dataBuffer + variable->offset + index * sizeof(T), data, sizeof(T));
+		dirty = true;
+	}
+
+	template<typename T>
+	void SetData(const char* name, T data, uint32 index)
+	{
+		ShaderVariable* variable = GetShaderVariable(name, sizeof(T));
+		if (!variable)
+			return;
+		memcpy(constantBuffers[variable->index].dataBuffer + variable->offset + index * sizeof(T), &data, sizeof(T));
+		dirty = true;
+	}
+
+	void SetDataSize(const char* name, unsigned char* data, uint32 size)
+	{
+		ShaderVariable* variable = GetShaderVariable(name, size);
+		if (!variable)
+			return;
+		memcpy(constantBuffers[variable->index].dataBuffer + variable->offset, data, size);
 		dirty = true;
 	}
 
@@ -61,8 +102,8 @@ protected:
 
 	ShaderVariable* GetShaderVariable(const char* name, uint32 size);
 	ConstantBuffer* GetConstantBuffer(const char* name);
-	uint32 GetTextureIndex(const char* name);
-	uint32 GetSamplerIndex(const char* name);
+	int32 GetTextureIndex(const char* name);
+	int32 GetSamplerIndex(const char* name);
 
 	/// <summary>
 	/// Used only by the ResourceManager to set the GUID after filesystem creates the allocated shaders

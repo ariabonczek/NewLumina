@@ -21,6 +21,10 @@ void TestScene::LoadAssets()
 	mat->SetVertexShader(vs);
 	mat->SetPixelShader(ps);
 	mat->SetShaderVariable<Color>("tint", &Color::White, ShaderType::Pixel);
+	mat->SetShaderVariable<float>("roughness", 1.0f, ShaderType::Pixel);
+	mat->SetShaderVariable<float>("metalness", 0.04f, ShaderType::Pixel);
+	mat->SetShaderVariable<uint32>("tileX", 1, ShaderType::Pixel);
+	mat->SetShaderVariable<uint32>("tileY", 1, ShaderType::Pixel);
 	mat->SetTexture2D("_Albedo", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_diff.jpg"), ShaderType::Pixel);
 	mat->SetTexture2D("_Normal", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_nor.jpg"), ShaderType::Pixel);
 
@@ -28,11 +32,17 @@ void TestScene::LoadAssets()
 	mat2->SetVertexShader(vs);
 	mat2->SetPixelShader(ps);
 	mat2->SetShaderVariable<Color>("tint", &Color::White, ShaderType::Pixel);
+	mat2->SetShaderVariable<float>("roughness", 1.0f, ShaderType::Pixel);
+	mat2->SetShaderVariable<float>("metalness", 0.04f, ShaderType::Pixel);
+	mat2->SetShaderVariable<uint32>("tileX", 4, ShaderType::Pixel);
+	mat2->SetShaderVariable<uint32>("tileY", 4, ShaderType::Pixel);
 	mat2->SetTexture2D("_Albedo", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_diff.jpg"), ShaderType::Pixel);
 	mat2->SetTexture2D("_Normal", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_nor.jpg"), ShaderType::Pixel);
 
 	Mesh* cube = ResourceManager::CreateCube();
-	Mesh* plane = ResourceManager::CreatePlane();
+	Mesh* plane = ResourceManager::CreatePlane(25.0f, 25.0f, 10, 10);
+
+	RenderTexture* tex = ResourceManager::CreateRenderTexture();
 
 	GameObject* testObject = new GameObject("Test");
 
@@ -43,7 +53,7 @@ void TestScene::LoadAssets()
 	GameObject* twoObject = new GameObject("Two");
 
 	twoObject->AddComponent<MeshRenderer>(new MeshRenderer(plane, mat2));
-	twoObject->GetComponent<Transform>()->SetLocalPosition(Vector3(0.0f, -10.0f, 0.0f));
+	twoObject->GetComponent<Transform>()->SetLocalPosition(Vector3(0.0f, -2.0f, 0.0f));
 
 	GameObject* camera = new GameObject("Camera");
 	camera->AddComponent<Camera>(new Camera());
@@ -51,8 +61,11 @@ void TestScene::LoadAssets()
 	camera->AddComponent<CameraDebug>(new CameraDebug());
 
 	GameObject* light = new GameObject("Light");
-	light->AddComponent<Light>(new Light(LightType::Directional, Color::White, 1.0f));
-	light->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
+	light->AddComponent<Light>(new Light(LightType::Point, Color::White, 1.0f));
+	light->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(0.0f, -1.0f, 0.0f));
+	light->GetComponent<Light>()->data.range = 40.0f;
+	light->GetComponent<Light>()->data.spot = 10.0f;
+	light->GetComponent<Transform>()->SetLocalPosition(0.0, 5.0f, 0.0f);
 	
 	AddObject(testObject);
 	AddObject(twoObject);
@@ -60,7 +73,7 @@ void TestScene::LoadAssets()
 	AddObject(light);
 
 	SetActiveCamera(camera->GetComponent<Camera>());
-	SetAmbientLight(Color(0.2f, 0.2f, 0.2f, 1.0f));
+	SetAmbientLight(Color(0.05f, 0.05f, 0.05f, 1.0f));
 }
 
 void TestScene::DestroyAssets()

@@ -55,6 +55,7 @@ void Renderer::Initialize()
 
 void Renderer::Shutdown()
 {
+	delete finalRenderMaterial;
 	Sampler::DestroySamplers();
 	mp_Window->Shutdown();
 	mp_GraphicsDevice->Shutdown();
@@ -78,6 +79,10 @@ void Renderer::InitializeRenderTarget()
 	render_Target = ResourceManager::CreateRenderTexture(p_Viewport->Width, p_Viewport->Height, true);
 
 	finalRender.Initialize(device);
+	finalRenderMaterial = new Material();
+	finalRenderMaterial->SetVertexShader((VertexShader*)ResourceManager::LoadShader(L"Shaders/DirectX/fullScreenQuadVertex.cso", ShaderType::Vertex));
+	finalRenderMaterial->SetPixelShader((PixelShader*)ResourceManager::LoadShader(L"Shaders/DirectX/copyTexture.cso", ShaderType::Pixel));
+	finalRender.SetMaterial(finalRenderMaterial);
 }
 
 void Renderer::SetupRenderTarget(ID3D11DeviceContext* deferredContext)
@@ -174,7 +179,6 @@ void Renderer::AddLight(Light* light)
 
 void Renderer::RemoveLight(Light* light)
 {
-
 	std::unordered_map<LGUID, Light*>::iterator it = lights.begin();
 	for (it; it->second != light; ++it)
 	{
@@ -227,6 +231,7 @@ void Renderer::SetAmbientLight(Color color)
 void Renderer::AddPostProcess(PostProcess* postProcess)
 {
 	postProcesses.push_back(postProcess);
+	postProcess->Initialize(mp_GraphicsDevice->dev);
 }
 
 void Renderer::UnloadCurrentScene()
@@ -266,6 +271,13 @@ DWORD WINAPI Renderer::Render(void* param)
 	_this->RenderPass(RenderPassType::OpaqueGeometry);
 
 	_this->ClearBackBuffer(_this->mp_OpaqueCommandList.GetDeferredContext());
+
+	for (uint i = 0; i < _this->postProcesses.size(); ++i)
+	{
+		_this->postProcesses[i]->GetMaterial()->SetTexture("_Source", "_Sampler", _this->render_Target, ShaderType::Pixel);
+		_this->postProcesses[i]->Render(_this->mp_OpaqueCommandList.GetDeferredContext());
+	}
+
 	_this->RenderToBackBuffer(_this->mp_OpaqueCommandList.GetDeferredContext());
 
 	return 0;

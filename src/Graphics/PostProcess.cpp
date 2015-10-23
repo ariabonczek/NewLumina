@@ -1,5 +1,6 @@
 #include <Graphics\PostProcess.hpp>
 #include <Utility\ResourceManager.hpp>
+#include <Graphics\RenderTexture.hpp>
 
 NS_BEGIN
 
@@ -10,15 +11,12 @@ PostProcess::PostProcess()
 
 PostProcess::~PostProcess()
 {
-	delete p_Material;
+	delete renderTexture;
 }
 
 void PostProcess::Initialize(ID3D11Device* device)
 {
-	p_Material = new Material();
-	p_Material->SetVertexShader((VertexShader*)ResourceManager::LoadShader(L"Shaders/DirectX/fullScreenQuadVertex.cso", ShaderType::Vertex));
-	p_Material->SetPixelShader((PixelShader*)ResourceManager::LoadShader(L"Shaders/DirectX/copyTexture.cso", ShaderType::Pixel));
-
+	renderTexture = new RenderTexture(1280, 720, 0, device, true);
 	quad.Initialize(device);
 }
 
@@ -34,6 +32,8 @@ void PostProcess::SetMaterial(Material* material)
 
 void PostProcess::Render(ID3D11DeviceContext* deviceContext)
 {
+	//ID3D11RenderTargetView* rtv = renderTexture->GetRenderTargetView();
+	//deviceContext->OMSetRenderTargets(1, &rtv, renderTexture->GetDepthStencilView());
 	p_Material->BindMaterial(deviceContext);
 	quad.Render(deviceContext);
 }

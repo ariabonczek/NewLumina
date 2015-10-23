@@ -45,7 +45,7 @@ void TestScene::LoadAssets()
 	Material* ppMat = new Material();
 	ppMat->SetVertexShader(quadVS);
 	ppMat->SetPixelShader(tintPS);
-	ppMat->SetShaderVariable<Color>("tint", Color::Green, ShaderType::Pixel);
+	ppMat->SetShaderVariable<Color>("tint", Color::White, ShaderType::Pixel);
 
 	Mesh* cube = ResourceManager::CreateCube();
 	Mesh* plane = ResourceManager::CreatePlane(25.0f, 25.0f, 10, 10);
@@ -69,7 +69,7 @@ void TestScene::LoadAssets()
 	camera->AddComponent<CameraDebug>(new CameraDebug());
 
 	GameObject* light = new GameObject("Light");
-	light->AddComponent<Light>(new Light(LightType::Spot, Color::White, 1.0f));
+	light->AddComponent<Light>(new Light(LightType::Spot, Color::White, 2.0f));
 	light->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(0.0f, -1.0f, 0.0f));
 	light->GetComponent<Light>()->data.range = 40.0f;
 	light->GetComponent<Light>()->data.spot = 10.0f;

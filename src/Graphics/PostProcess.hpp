@@ -22,6 +22,7 @@ public:
 private:
 	FullScreenQuad quad;
 	Material* p_Material;
+	RenderTexture* renderTexture;
 };
 
 NS_END

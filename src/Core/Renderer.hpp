@@ -130,6 +130,7 @@ private:
 	uint32 frameIndex;
 	RenderTexture* render_Target;
 	PostProcess finalRender;
+	Material* finalRenderMaterial;
 	
 	//-----------
 	// Threading

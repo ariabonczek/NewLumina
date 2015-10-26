@@ -20,6 +20,12 @@ struct MeshVertexOutput
 	float3 tangent  : TANGENT;
 };
 
+struct GBuffer
+{
+	float4 albedo	: SV_Target0;
+	float4 normal	: SV_Target1;
+};
+
 struct FullScreenQuadInput
 {
 	float3 position : POSITION;
@@ -39,8 +45,8 @@ struct LightData
 	float  intensity;
 	float3 position;
 	float  range;
+	float3 bidirectionalColor;
 	float  spot;
-	float3 pad;
 };
 
 cbuffer perFrame : register(b0)
@@ -59,18 +65,21 @@ cbuffer perObject : register(b2)
 
 cbuffer lighting : register(b3)
 {
-	float4 ambientLight;
-	LightData directionalLight[1];
-	LightData pointLight[3];
-	LightData spotLight[3];
-	uint numDirectionalLights;
-	uint numPointLights;
-	uint numSpotLights;
+	//float4 ambientLight;
+	//LightData directionalLight[1];
+	//LightData pointLight[3];
+	//LightData spotLight[3];
+	//uint numDirectionalLights;
+	//uint numPointLights;
+	//uint numSpotLights;
+
+	LightData light;
+
 }
 
 float3 UnpackNormals(float3 samplevalue)
 {
-	return samplevalue * 2.0f - 1.0f;
+	return saturate(samplevalue * 2.0f - 1.0f);
 }
 
 //------------------//
@@ -83,14 +92,16 @@ float4 CalculateDirectionalLight(LightData dLight, float3 normal, float3 view)
 	
 	// Diffuse
 	float diffuseFactor = max(0.0f, dot(lightVector, normal));
+	float bidirectionalFactor = max(0.0f, dot(-lightVector, normal));
 	float4 diffuseLight = saturate(dLight.color * dLight.intensity * diffuseFactor);
+	float4 bidirectionalLight = saturate(float4(dLight.bidirectionalColor, 1.0) * dLight.intensity * bidirectionalFactor);
 
 	// Specular
 	float3 halfVec = normalize(reflect(lightVector, normal));
-	float specularFactor = pow(max(0.0f, dot(view, halfVec)), 64);		// hardcoded specular factor
+	float specularFactor = pow(max(0.0f, dot(view, halfVec)), 32);		// hardcoded specular factor
 	float4 specularLight = saturate(dLight.color * dLight.intensity * specularFactor);
 
-	return diffuseLight + specularLight;
+	return diffuseLight + bidirectionalLight;// +specularLight;
 }
 
 float4 CalculatePointLight(LightData pLight, float3 position, float3 normal, float3 view)
@@ -116,7 +127,7 @@ float4 CalculatePointLight(LightData pLight, float3 position, float3 normal, flo
 	diffuseLight *= attenuation;
 	specularLight *= attenuation;
 
-	return diffuseLight +specularLight;
+	return diffuseLight;// +specularLight;
 }
 
 float4 CalculateSpotLight(LightData sLight, float3 position, float3 normal, float3 view)
@@ -146,51 +157,54 @@ float4 CalculateSpotLight(LightData sLight, float3 position, float3 normal, floa
 	return diffuseLight + specularLight;
 }
 
-float4 CalculateAllLights(
-	LightData directionalLights[1], uint numDL,
-	LightData pointLights[3], uint numPL,
-	LightData spotLights[3], uint numSL,
-	float3 position, float3 normal, float3 view)
-{
-	float4 ret = float4(0.0f, 0.0f, 0.0f, 1.0f);
-
-	for (uint i = 0; i < numDL; i++)
-	{
-		ret += CalculateDirectionalLight(directionalLights[i], normal, view);
-	}
-
-	for (uint j = 0; j < numPL; j++)
-	{
-		ret += CalculatePointLight(pointLights[j], position, normal, view);
-	}
-
-	for (uint k = 0; k < numSL; k++)
-	{
-		ret += CalculateSpotLight(spotLight[k], position, normal, view);
-	}
-
-	return ret;
-}
+//float4 CalculateAllLights(
+//	LightData directionalLights[1], uint numDL,
+//	LightData pointLights[3], uint numPL,
+//	LightData spotLights[3], uint numSL,
+//	float3 position, float3 normal, float3 view)
+//{
+//	float4 ret = float4(0.0f, 0.0f, 0.0f, 1.0f);
+//
+//	for (uint i = 0; i < numDL; i++)
+//	{
+//		ret += CalculateDirectionalLight(directionalLights[i], normal, view);
+//	}
+//
+//	for (uint j = 0; j < numPL; j++)
+//	{
+//		ret += CalculatePointLight(pointLights[j], position, normal, view);
+//	}
+//
+//	for (uint k = 0; k < numSL; k++)
+//	{
+//		ret += CalculateSpotLight(spotLight[k], position, normal, view);
+//	}
+//
+//	return ret;
+//}
 
 //---------------------------//
 // Physically-Based Lighting //
 //---------------------------//
 
+float4 LambertDiffuse(float4 diffuse)
+{
+	return diffuse / 3.141592;
+}
+
 float NormalDistribution(float roughness, float3 normal, float3 halfvector)
 {
 	float alpha = roughness * roughness;
 	float alpha2 = alpha*alpha;
-	float ndotd = dot(normal, halfvector);
+	float ndotd = saturate(dot(normal, halfvector));
 	float denom = ((ndotd*ndotd) * (alpha2 - 1) + 1);
 
-	return alpha2 / denom*denom;
+	return alpha2 / 3.141592 * denom*denom;
 }
 
-float GaussianFresnelReflectance(float metalness, float3 viewvector, float3 halfvector)
+float GaussianFresnelReflectance(float metalness, float3 normal, float3 halfvector)
 {
-	float vdoth = saturate(dot(viewvector, halfvector));
-
-	return metalness + (1 - metalness) * exp2((5.55473 * vdoth - 6.98316) * vdoth);
+	return metalness + (1 - metalness) * pow((1 - dot(normal, halfvector)), 5);
 }
 
 float GeometricAttenuationInternal(float k, float3 normal, float3 _vector)
@@ -210,7 +224,7 @@ float GeometricAttenuation(float roughness, float3 normal, float3 viewvector, fl
 float CookTorrenceMicrofacetSpecular(float roughness, float metalness, float3 normal, float3 viewvector, float3 halfvector, float3 lightvector)
 {
 	return
-		(NormalDistribution(roughness, normal, halfvector) * GaussianFresnelReflectance(metalness, viewvector, halfvector) * GeometricAttenuation(roughness, normal, viewvector, lightvector)) /
+		(NormalDistribution(roughness, normal, halfvector) * GaussianFresnelReflectance(metalness, normal, halfvector) * GeometricAttenuation(roughness, normal, viewvector, lightvector)) /
 		(4 * saturate(dot(normal, lightvector)) * saturate(dot(normal, viewvector)));
 }
 
@@ -218,7 +232,9 @@ float4 PBRCalculateFinalColor(float4 diffuse, float3 normal, float roughness, fl
 {
 	float3 halfvector = normalize(lightVector + viewvector);
 
-	float4 specular = CookTorrenceMicrofacetSpecular(roughness, metalness, normal, viewvector, halfvector, lightVector);
+	float alpha = exp2(10 * (1 - roughness) + 1);
 
-	return (diffuse /*+ specular*/) * (light.color * light.intensity * dot(normal, lightVector));
+	return (diffuse * (dot(normal, lightVector)) +
+		GaussianFresnelReflectance(metalness, lightVector, halfvector) * ((alpha + 2) / 8) * 
+		pow(saturate(dot(normal, halfvector)), alpha) * dot(normal, lightVector));
 }

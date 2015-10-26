@@ -48,6 +48,13 @@ struct Color
 	static Color Black;
 	static Color Grey;
 	static Color Gray;
+
+	static Color Yellow;
+	static Color Magenta;
+	static Color Cyan;
+	static Color Purple;
+	static Color Orange;
+	static Color CornflowerBlue;
 };
 
 enum class LightType
@@ -64,9 +71,8 @@ struct LightData
 	float intensity;
 	Vector3 position;
 	float range;
+	Vector3 bidirectionalColor;
 	float spot;
-private:
-	float pad[3];
 };
 
 enum class ShaderType

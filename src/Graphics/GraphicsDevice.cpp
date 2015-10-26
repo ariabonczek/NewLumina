@@ -110,15 +110,6 @@ void GraphicsDevice::Initialize(Window* window)
 
 	DELETECOM(factory);
 
-	D3D11_RASTERIZER_DESC rd;
-	ZeroMemory(&rd, sizeof(D3D11_RASTERIZER_DESC));
-	rd.FillMode = D3D11_FILL_SOLID;
-	rd.CullMode = D3D11_CULL_BACK;
-	rd.DepthClipEnable = true;
-
-	dev->CreateRasterizerState(&rd, &rasterizerState);
-	immCon->RSSetState(rasterizerState);
-
 	OnResize();
 #elif DX12
 
@@ -314,6 +305,8 @@ void GraphicsDevice::OnResize()
 		DELETECOM(displayBuffers[i].depthStencilView);
 		DELETECOM(displayBuffers[i].depthBuffer);
 
+		HRESULT hr;
+
 		ID3D11Texture2D* backBuffer;
 		swapChain->GetBuffer(NULL, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
 
@@ -326,15 +319,50 @@ void GraphicsDevice::OnResize()
 		dsd.Height = window->GetHeight();
 		dsd.MipLevels = 1;
 		dsd.ArraySize = 1;
-		dsd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		dsd.Format = DXGI_FORMAT_R24G8_TYPELESS;
 		dsd.Usage = D3D11_USAGE_DEFAULT;
-		dsd.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		dsd.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 		dsd.CPUAccessFlags = NULL;
 		dsd.MiscFlags = NULL;
 		dsd.SampleDesc.Count = 4;
+		dsd.SampleDesc.Quality = 0;
 
-		HRESULT hr = dev->CreateTexture2D(&dsd, NULL, &displayBuffers[i].depthBuffer);
-		hr = dev->CreateDepthStencilView(displayBuffers[i].depthBuffer, NULL, &displayBuffers[i].depthStencilView);
+		hr = dev->CreateTexture2D(&dsd, NULL, &displayBuffers[i].depthBuffer);
+
+		D3D11_DEPTH_STENCIL_VIEW_DESC dsvd;
+		ZeroMemory(&dsvd, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
+		dsvd.Flags = 0;
+		dsvd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+		dsvd.Texture2D.MipSlice = 0;
+
+		hr = dev->CreateDepthStencilView(displayBuffers[i].depthBuffer, &dsvd, &displayBuffers[i].depthStencilView);
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvd2;
+		ZeroMemory(&srvd2, sizeof(srvd2));
+
+		srvd2.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		srvd2.Texture2D.MipLevels = dsd.MipLevels;
+		srvd2.Texture2D.MostDetailedMip = 0;
+		srvd2.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMS;
+
+		hr = dev->CreateShaderResourceView(displayBuffers[i].depthBuffer, &srvd2, &displayBuffers[i].depthSrv);
+
+		//D3D11_TEXTURE2D_DESC dsd;
+		//ZeroMemory(&dsd, sizeof(D3D11_TEXTURE2D_DESC));
+		//dsd.Width = window->GetWidth();
+		//dsd.Height = window->GetHeight();
+		//dsd.MipLevels = 1;
+		//dsd.ArraySize = 1;
+		//dsd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		//dsd.Usage = D3D11_USAGE_DEFAULT;
+		//dsd.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		//dsd.CPUAccessFlags = NULL;
+		//dsd.MiscFlags = NULL;
+		//dsd.SampleDesc.Count = 4;
+		//
+		//HRESULT hr = dev->CreateTexture2D(&dsd, NULL, &displayBuffers[i].depthBuffer);
+		//hr = dev->CreateDepthStencilView(displayBuffers[i].depthBuffer, NULL, &displayBuffers[i].depthStencilView);
 	}
 
 	viewport.TopLeftX = 0;

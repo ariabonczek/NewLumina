@@ -27,11 +27,6 @@ public:
 	/// <summary>
 	///
 	/// </summary>
-	void SetupFrame();
-
-	/// <summary>
-	///
-	/// </summary>
 	void Finish();
 
 	/// <summary>

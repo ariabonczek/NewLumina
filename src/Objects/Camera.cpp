@@ -88,7 +88,10 @@ Matrix Camera::GetProj()const
 {
 	return projection;
 }
-
+Matrix Camera::GetViewProjection()const
+{
+	return viewProjection;
+}
 void Camera::SetLens(float fovY, float aspect, float zNear, float zFar)
 {
 	this->fovY = fovY;
@@ -130,6 +133,8 @@ void Camera::UpdateViewMatrix()
 		float z = -Vector3::Dot(pos, look);
 
 		view = Matrix::CreateLookAt(pos, pos + look, up);
+
+		viewProjection = view * projection;
 	}
 }
 

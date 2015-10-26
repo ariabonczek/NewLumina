@@ -13,10 +13,19 @@
 
 NS_BEGIN
 
+struct GBuffer
+{
+	RenderTexture* albedo;
+	RenderTexture* normals;
+	RenderTexture* lit;
+};
+
 enum class RenderPassType
 {
 	OpaqueGeometry,
-	Shadows
+	Shadows,
+	DeferredLighting,
+	StencilPass,
 };
 
 /// <summary>
@@ -33,7 +42,7 @@ public:
 	/// <summary>
 	///
 	/// </summary>
-	void SetupRenderTarget(ID3D11DeviceContext* deferredContext);
+	void SetupGBuffer(ID3D11DeviceContext* deferredContext);
 
 	/// <summary>
 	/// 
@@ -105,7 +114,6 @@ private:
 	GraphicsDevice* mp_GraphicsDevice;
 
 	void SetupCommandLists();
-	void SetupFrame();
 	void CloseCommandLists();
 
 	GraphicsCommandList mp_OpaqueCommandList;
@@ -126,12 +134,17 @@ private:
 	IDXGISwapChain3* p_SwapChain;
 	ID3D11RenderTargetView* p_BackBuffer;
 	ID3D11DepthStencilView* p_DepthBuffer;
+	ID3D11ShaderResourceView* p_DepthSrv;
 	D3D11_VIEWPORT* p_Viewport;
 	uint32 frameIndex;
-	RenderTexture* render_Target;
+	GBuffer gbuffer;
 	PostProcess finalRender;
 	Material* finalRenderMaterial;
-	
+	Material* lightMaterial;
+	Material* nullMaterial;
+#if _DEBUG
+	uint32 deferredIndex;
+#endif
 	//-----------
 	// Threading
 	//-----------

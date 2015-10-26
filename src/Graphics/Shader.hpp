@@ -36,32 +36,12 @@ public:
 	virtual void BindShader(ID3D11DeviceContext* deviceContext);
 
 	template<typename T>
-	void SetData(const char* name, T* data)
-	{
-		ShaderVariable* variable = GetShaderVariable(name, sizeof(T));
-		if (!variable)
-			return;
-		memcpy(constantBuffers[variable->index].dataBuffer + variable->offset, data, sizeof(T));
-		dirty = true;
-	}
-
-	template<typename T>
 	void SetData(const char* name, T data)
 	{
 		ShaderVariable* variable = GetShaderVariable(name, sizeof(T));
 		if (!variable)
 			return;
 		memcpy(constantBuffers[variable->index].dataBuffer + variable->offset, &data, sizeof(T));
-		dirty = true;
-	}
-
-	template<typename T>
-	void SetData(const char* name, T* data, uint32 index)
-	{
-		ShaderVariable* variable = GetShaderVariable(name, sizeof(T));
-		if (!variable)
-			return;
-		memcpy(constantBuffers[variable->index].dataBuffer + variable->offset + index * sizeof(T), data, sizeof(T));
 		dirty = true;
 	}
 

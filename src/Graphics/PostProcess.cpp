@@ -5,18 +5,13 @@
 NS_BEGIN
 
 PostProcess::PostProcess()
-{
-	
-}
+{}
 
 PostProcess::~PostProcess()
-{
-	delete renderTexture;
-}
+{}
 
 void PostProcess::Initialize(ID3D11Device* device)
 {
-	renderTexture = new RenderTexture(1280, 720, 0, device, true);
 	quad.Initialize(device);
 }
 

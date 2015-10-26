@@ -93,6 +93,9 @@ class ResourceManager;
 class RenderTexture;
 class FullScreenQuad;
 class PostProcess;
+class Cubemap;
+class Texture;
+class RasterizerState;
 
 struct Color;
 struct MeshVertex;

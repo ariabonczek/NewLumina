@@ -31,10 +31,10 @@ void MeshRenderer::Render(ID3D11DeviceContext* deviceContext)
 	ID3D11Device* device;
 	deviceContext->GetDevice(&device);
 
-	p_Material->GetVertexShader()->SetData<Matrix>("world", p_GameObject->GetComponent<Transform>()->GetWorldMatrix().Transpose());
-	p_Material->GetVertexShader()->SetData<Matrix>("view", Renderer::GetInstance()->GetActiveCamera()->GetView().Transpose());
-	p_Material->GetVertexShader()->SetData<Matrix>("projection", Renderer::GetInstance()->GetActiveCamera()->GetProj().Transpose());
-	p_Material->GetVertexShader()->SetData<Vector3>("eyePos", Renderer::GetInstance()->GetActiveCamera()->GetGameObject()->GetComponent<Transform>()->GetWorldPosition());
+	p_Material->SetShaderVariable<Matrix>("world", p_GameObject->GetComponent<Transform>()->GetWorldMatrix().Transpose(), ShaderType::Vertex);
+	p_Material->SetShaderVariable<Matrix>("view", Renderer::GetInstance()->GetActiveCamera()->GetView().Transpose(), ShaderType::Vertex);
+	p_Material->SetShaderVariable<Matrix>("projection", Renderer::GetInstance()->GetActiveCamera()->GetProj().Transpose(), ShaderType::Vertex);
+	p_Material->SetShaderVariable<Vector3>("eyePos", Renderer::GetInstance()->GetActiveCamera()->GetGameObject()->GetComponent<Transform>()->GetWorldPosition(), ShaderType::Vertex);
 
 	p_Material->BindMaterial(deviceContext);
 

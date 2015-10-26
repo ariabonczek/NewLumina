@@ -5,6 +5,7 @@
 #include <Utility\Murmur3\MurmurHash.h>
 
 #include <Graphics\Texture2D.hpp>
+#include <Graphics\Cubemap.hpp>
 #include <Graphics\RenderTexture.hpp>
 #include <Graphics\Mesh.hpp>
 #include <Graphics\Shader.hpp>
@@ -61,6 +62,27 @@ Resource* ResourceManager::LoadTexture2D(char* filepath, ID3D12Device* device)
 	return tex;
 }
 
+Cubemap* ResourceManager::LoadCubemap(char** filepaths)
+{
+	LGUID guid = Hash(filepaths[0]);
+
+	if (resourceMap.find(guid) != resourceMap.end())
+	{
+		return static_cast<Cubemap*>(resourceMap[guid]);
+	}
+
+	Image images[6];
+	for (uint i = 0; i < 6; ++i)
+	{
+		images[i] = Filesystem::LoadTexture2D(filepaths[i]);
+	}
+
+	Cubemap* cb = new Cubemap(guid, true);
+	cb->SetTextures(images, p_Device);
+
+	return cb;
+
+}
 #if DX11
 Mesh* ResourceManager::LoadMesh(char* filepath)
 #elif DX12
@@ -144,9 +166,11 @@ Mesh* ResourceManager::CreatePlane(float width, float depth, uint32 n, uint32 m)
 Mesh* ResourceManager::CreateSphere(float radius, uint32 numSubdivisions)
 {
 	std::ostringstream str;
-	str << "Sphere" << radius << numSubdivisions;
+	str << "Sphere" << std::to_string(radius) << std::to_string(numSubdivisions);
 
 	LGUID guid = Hash(str.str().c_str());
+
+	std::string n = str.str().c_str();
 
 	if (resourceMap.find(guid) != resourceMap.end())
 	{

@@ -52,6 +52,7 @@ void CameraDebug::Update()
 		transform->Rotate(Quaternion::CreateFromAxisAngle(Vector3::Up, dt));
 	if (GetAsyncKeyState(VK_DOWN) & 0x8000)
 		transform->Rotate(Quaternion::CreateFromAxisAngle(transform->GetRight(), dt));
+
 }
 
 bool CameraDebug::OnAddToGameObject(Lumina::GameObject* gameObject)

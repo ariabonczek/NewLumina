@@ -10,6 +10,13 @@ Color Color::Black = Color(0.0f, 0.0f, 0.0f, 1.0f);
 Color Color::Grey = Color(0.7f, 0.7f, 0.7f, 1.0f);
 Color Color::Gray = Color(0.7f, 0.7f, 0.7f, 1.0f);
 
+Color Color::Yellow = Color(1.0f, 1.0f, 0.0f, 1.0f);
+Color Color::Magenta = Color(1.0f, 0.0f, 1.0f, 1.0f);
+Color Color::Cyan = Color(0.0f, 1.0f, 1.0f, 1.0f);
+Color Color::Purple = Color(0.5f, 0.0f, 0.5f, 1.0f);
+Color Color::Orange = Color(1.0f, 0.5f, 0.0f, 1.0f);
+Color Color::CornflowerBlue = Color(0.392f, 0.584f, 0.929f, 1.0f);
+
 Color::Color()
 {}
 

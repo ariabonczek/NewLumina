@@ -17,6 +17,7 @@ struct DisplayBuffer
 	ID3D11Texture2D* depthBuffer;
 	ID3D11RenderTargetView* renderTargetView;
 	ID3D11DepthStencilView* depthStencilView;
+	ID3D11ShaderResourceView* depthSrv;
 };
 #elif DX12
 
@@ -55,7 +56,6 @@ private:
 	ID3D11Device* dev;
 	ID3D11DeviceContext* immCon;
 	IDXGISwapChain3* swapChain;
-	ID3D11RasterizerState* rasterizerState;
 	DisplayBuffer displayBuffers[NUM_BUFFERS];
 	D3D11_VIEWPORT viewport;
 	D3D_FEATURE_LEVEL featureLevel;

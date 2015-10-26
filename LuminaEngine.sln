@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LuminaEngine", "src\LuminaEngine.vcxproj", "{A49BB2D6-6670-48DF-8EA3-58FA9A100A55}"
 EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		DX11_Debug|Win32 = DX11_Debug|Win32
 		DX11_Release|Win32 = DX11_Release|Win32

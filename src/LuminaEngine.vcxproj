@@ -34,13 +34,17 @@
     <ClCompile Include="Core\Renderer.cpp" />
     <ClCompile Include="Core\Scheduler.cpp" />
     <ClCompile Include="Core\WorldManager.cpp" />
+    <ClCompile Include="Graphics\BlendState.cpp" />
+    <ClCompile Include="Graphics\Cubemap.cpp" />
     <ClCompile Include="Graphics\Data.cpp" />
+    <ClCompile Include="Graphics\DepthStencilState.cpp" />
     <ClCompile Include="Graphics\FullScreenQuad.cpp" />
     <ClCompile Include="Graphics\GraphicsCommandList.cpp" />
     <ClCompile Include="Graphics\GraphicsDevice.cpp" />
     <ClCompile Include="Graphics\Material.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
     <ClCompile Include="Graphics\PostProcess.cpp" />
+    <ClCompile Include="Graphics\RasterizerState.cpp" />
     <ClCompile Include="Graphics\RenderTexture.cpp" />
     <ClCompile Include="Graphics\Sampler.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
@@ -82,13 +86,17 @@
     <ClInclude Include="Config.hpp" />
     <ClInclude Include="Core\Scheduler.hpp" />
     <ClInclude Include="Core\WorldManager.hpp" />
+    <ClInclude Include="Graphics\BlendState.hpp" />
+    <ClInclude Include="Graphics\Cubemap.hpp" />
     <ClInclude Include="Graphics\Data.hpp" />
+    <ClInclude Include="Graphics\DepthStencilState.hpp" />
     <ClInclude Include="Graphics\FullScreenQuad.hpp" />
     <ClInclude Include="Graphics\GraphicsDevice.hpp" />
     <ClInclude Include="Graphics\GraphicsCommandList.hpp" />
     <ClInclude Include="Graphics\Material.hpp" />
     <ClInclude Include="Graphics\Mesh.hpp" />
     <ClInclude Include="Graphics\PostProcess.hpp" />
+    <ClInclude Include="Graphics\RasterizerState.hpp" />
     <ClInclude Include="Graphics\RenderTexture.hpp" />
     <ClInclude Include="Graphics\Sampler.hpp" />
     <ClInclude Include="Graphics\Shader.hpp" />
@@ -134,6 +142,42 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="..\content\Shaders\DirectX\deferredLightPixel.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="..\content\Shaders\DirectX\deferredLightVertex.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">4.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="..\content\Shaders\DirectX\fullScreenQuadVertex.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">Vertex</ShaderType>
@@ -146,16 +190,52 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="..\content\Shaders\DirectX\nullPixel.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="..\content\Shaders\DirectX\nullVertex.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="..\content\Shaders\DirectX\postFXTint.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">4.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
@@ -172,6 +252,10 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">4.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="..\content\Shaders\DirectX\sampleCubemapVertex.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">Vertex</ShaderType>
@@ -184,6 +268,10 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">$(OutDir)Shaders/DirectX/%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">4.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="P:\LuminaEngine\content\Shaders\DirectX\defaultPixel.hlsl">
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">4.0</ShaderModel>
@@ -405,6 +493,7 @@ xcopy "$(SolutionDir)bin\*" "$(OutDir)" /s /y</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>assimpd.lib;dxgi.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <Profile>true</Profile>
     </Link>
     <CustomBuildStep>
       <Command>xcopy "$(SolutionDir)content\*" "$(OutDir)" /s /y

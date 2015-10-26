@@ -11,7 +11,20 @@ Material::~Material()
 void Material::SetTexture(const char* textureName, const char* samplerName, Texture* tex, ShaderType type)
 {
 	TextureInformation ti;
-	ti.texture = tex;
+	ti.srv = tex->GetShaderResourceView();
+	ti.sampler = tex->GetSampler()->GetSamplerState();
+	ti.textureName = textureName;
+	ti.samplerName = samplerName;
+	ti.type = type;
+
+	textures[Hash(textureName)] = ti;
+}
+
+void Material::SetTextureEX(const char* textureName, const char* samplerName, ID3D11ShaderResourceView* srv, ID3D11SamplerState* sampler, ShaderType type)
+{
+	TextureInformation ti;
+	ti.srv = srv;
+	ti.sampler = sampler;
 	ti.textureName = textureName;
 	ti.samplerName = samplerName;
 	ti.type = type;
@@ -60,29 +73,29 @@ void Material::BindMaterial(ID3D11DeviceContext* deviceContext)
 		case ShaderType::Vertex:
 			if (p_VertexShader)
 			{
-				p_VertexShader->SetShaderResourceView(it->second.textureName, it->second.texture->GetShaderResourceView(), deviceContext);
-				p_VertexShader->SetSamplerState(it->second.samplerName, it->second.texture->GetSampler()->GetSamplerState(), deviceContext);
+				p_VertexShader->SetShaderResourceView(it->second.textureName, it->second.srv, deviceContext);
+				p_VertexShader->SetSamplerState(it->second.samplerName, it->second.sampler, deviceContext);
 			}
 			break;
 		case ShaderType::Geometry:
 			if (p_GeometryShader)
 			{
-				p_GeometryShader->SetShaderResourceView(it->second.textureName, it->second.texture->GetShaderResourceView(), deviceContext);
-				p_GeometryShader->SetSamplerState(it->second.samplerName, it->second.texture->GetSampler()->GetSamplerState(), deviceContext);
+				p_GeometryShader->SetShaderResourceView(it->second.textureName, it->second.srv, deviceContext);
+				p_GeometryShader->SetSamplerState(it->second.samplerName, it->second.sampler, deviceContext);
 			}
 			break;
 		case ShaderType::GeometrySO:
 			if (p_GeometryShader)
 			{
-				p_GeometryShader->SetShaderResourceView(it->second.textureName, it->second.texture->GetShaderResourceView(), deviceContext);
-				p_GeometryShader->SetSamplerState(it->second.samplerName, it->second.texture->GetSampler()->GetSamplerState(), deviceContext);
+				p_GeometryShader->SetShaderResourceView(it->second.textureName, it->second.srv, deviceContext);
+				p_GeometryShader->SetSamplerState(it->second.samplerName, it->second.sampler, deviceContext);
 			}
 			break;
 		case ShaderType::Pixel:
 			if (p_PixelShader)
 			{
-				p_PixelShader->SetShaderResourceView(it->second.textureName, it->second.texture->GetShaderResourceView(), deviceContext);
-				p_PixelShader->SetSamplerState(it->second.samplerName, it->second.texture->GetSampler()->GetSamplerState(), deviceContext);
+				p_PixelShader->SetShaderResourceView(it->second.textureName, it->second.srv, deviceContext);
+				p_PixelShader->SetSamplerState(it->second.samplerName, it->second.sampler, deviceContext);
 			}
 			break;
 		}
@@ -118,7 +131,6 @@ void Material::BindMaterial(ID3D11DeviceContext* deviceContext)
 			break;
 		}
 	}
-
 	if (p_VertexShader)
 		p_VertexShader->BindShader(deviceContext);
 	if (p_GeometryShader)

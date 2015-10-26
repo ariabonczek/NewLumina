@@ -16,8 +16,10 @@ public:
 
 	ID3D11RenderTargetView* GetRenderTargetView()const;
 	ID3D11DepthStencilView* GetDepthStencilView()const;
+	ID3D11ShaderResourceView* GetDepthShaderResourceView()const;
 private:
 	ID3D11RenderTargetView* rtv;
+	ID3D11ShaderResourceView* depthSrv;
 	ID3D11DepthStencilView* dsv;
 	ID3D11Texture2D* depthBuffer;
 };

@@ -61,6 +61,7 @@ public:
 
 	Matrix GetView()const;
 	Matrix GetProj()const;
+	Matrix GetViewProjection()const;
 
 #pragma endregion
 
@@ -83,6 +84,7 @@ private:
 
 	Matrix view;
 	Matrix projection;
+	Matrix viewProjection;
 	bool dirty;
 };
 

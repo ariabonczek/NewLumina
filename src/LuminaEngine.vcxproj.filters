@@ -216,6 +216,18 @@
     <ClCompile Include="Graphics\PostProcess.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Cubemap.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\RasterizerState.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\BlendState.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DepthStencilState.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Game.hpp">
@@ -362,6 +374,18 @@
     <ClInclude Include="Graphics\PostProcess.hpp">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Cubemap.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\RasterizerState.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\BlendState.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DepthStencilState.hpp">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="P:\LuminaEngine\content\Shaders\DirectX\defaultVertex.hlsl">
@@ -384,6 +408,18 @@
     </FxCompile>
     <FxCompile Include="..\content\Shaders\DirectX\copyTexture.hlsl">
       <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="..\content\Shaders\DirectX\deferredLightPixel.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="..\content\Shaders\DirectX\deferredLightVertex.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="..\content\Shaders\DirectX\nullPixel.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="..\content\Shaders\DirectX\nullVertex.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Vertex</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -151,6 +151,8 @@ LRESULT Window::HandleMessages(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		return 0;
 	case WM_SIZE:
 		return 0;
+	case WM_MOUSEMOVE:
+
 	case WM_ENTERSIZEMOVE:
 		return 0;
 	case WM_EXITSIZEMOVE:

@@ -231,6 +231,9 @@
     <ClCompile Include="TestGame\DancingFlames.cpp">
       <Filter>Source Files\TestGame</Filter>
     </ClCompile>
+    <ClCompile Include="Objects\PhysicsObject.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Game.hpp">
@@ -392,6 +395,9 @@
     <ClInclude Include="TestGame\DancingFlames.hpp">
       <Filter>Header Files\TestGame</Filter>
     </ClInclude>
+    <ClInclude Include="Objects\PhysicsObject.hpp">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\DirectX\copyTexture.hlsl">
@@ -428,6 +434,9 @@
       <Filter>Resource Files\Shaders\DirectX\Vertex</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\DirectX\postFXTint.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DirectX\gammaCorrection.hlsl">
       <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
     </FxCompile>
   </ItemGroup>

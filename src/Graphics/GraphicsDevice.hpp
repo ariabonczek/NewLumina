@@ -6,6 +6,8 @@
 
 #include <Core\Common.hpp>
 #include <Config.hpp>
+#include <dxgi1_4.h>
+
 
 NS_BEGIN
 

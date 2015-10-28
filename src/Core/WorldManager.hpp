@@ -5,12 +5,20 @@
 #define WORLD_MANAGER_HPP
 
 #include <Core\Common.hpp>
+#include <PhysX\PxPhysicsAPI.h>
 
 NS_BEGIN
 
 class GameObject;
 class BaseRenderer;
 class PhysicsObject;
+
+using namespace physx;
+
+//static PxDefaultErrorCallback g_DefaultErrorCallback;
+//static PxDefaultAllocator g_DefaultAllocator;
+
+#define STEP_SIZE 0.0167
 
 /// <summary>
 /// Manages the world and what is in it
@@ -61,11 +69,29 @@ public:
 	/// Clears the lists of active objects
 	/// </summary>
 	void UnloadCurrentScene();
+
 private:
 	WorldManager();
 
 	std::unordered_map<LGUID, GameObject*> activeObjects;
 	std::unordered_map<LGUID, PhysicsObject*> physicsObjects;
+
+	void CreatePhysicsScene();
+
+	//PxFoundation* foundation;
+	//PxPhysics* physics;
+	//PxScene* scene;
+	//float accumulator;
+	//
+	//// HARDCODED SCENE CHANGE THIS LATER
+	//PxMaterial* material;
+	//
+	//PxRigidDynamic* cubeRB;
+	//PxShape* cubeShape;
+	//
+	//PxRigidStatic* planeRB;
+	//PxShape* planeShape;
+
 
 	bool shouldQuit;
 };

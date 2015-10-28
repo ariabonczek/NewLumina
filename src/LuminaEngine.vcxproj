@@ -62,6 +62,7 @@
     <ClCompile Include="Objects\GameObject.cpp" />
     <ClCompile Include="Objects\Light.cpp" />
     <ClCompile Include="Objects\MeshRenderer.cpp" />
+    <ClCompile Include="Objects\PhysicsObject.cpp" />
     <ClCompile Include="Objects\Transform.cpp" />
     <ClCompile Include="Scenes\Scene.cpp" />
     <ClCompile Include="Scenes\SceneManager.cpp" />
@@ -116,6 +117,7 @@
     <ClInclude Include="Objects\GameObject.hpp" />
     <ClInclude Include="Objects\Light.hpp" />
     <ClInclude Include="Objects\MeshRenderer.hpp" />
+    <ClInclude Include="Objects\PhysicsObject.hpp" />
     <ClInclude Include="Objects\Transform.hpp" />
     <ClInclude Include="Scenes\Scene.hpp" />
     <ClInclude Include="Scenes\SceneManager.hpp" />
@@ -216,6 +218,15 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">$(OutDir)Shaders/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">$(OutDir)Shaders/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">$(OutDir)Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Shaders\DirectX\gammaCorrection.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='GL_Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">$(OutDir)Shaders/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Shaders\DirectX\nullPixel.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">Pixel</ShaderType>
@@ -429,12 +440,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GL43;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalDependencies>assimpd.lib;opengl32.lib;glfw3.lib;glew32d.lib;pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimpd.lib;PhysX3DEBUG_x86.lib;PhysX3CommonDEBUG_x86.lib;PxTaskDEBUG.lib;PhysX3ExtensionsDEBUG.lib;opengl32.lib;glfw3.lib;glew32d.lib;pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Outputs>dummy.txt;%(Outputs)</Outputs>
@@ -449,11 +460,11 @@ xcopy "$(SolutionDir)bin\*" "$(OutDir)" /s /y</Command>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DX12;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>assimpd.lib;dxgi.lib;d3d12.lib;d3dcompiler.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimpd.lib;PhysX3DEBUG_x86.lib;PhysX3CommonDEBUG_x86.lib;PxTaskDEBUG.lib;PhysX3ExtensionsDEBUG.lib;dxgi.lib;d3d12.lib;d3dcompiler.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <CustomBuildStep>
@@ -471,11 +482,11 @@ xcopy "$(SolutionDir)bin\*" "$(OutDir)" /s /y</Command>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DX11;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>assimpd.lib;dxgi.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimpd.lib;PhysX3DEBUG_x86.lib;PhysX3CommonDEBUG_x86.lib;PxTaskDEBUG.lib;dxgi.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <Profile>true</Profile>
     </Link>
@@ -501,7 +512,7 @@ xcopy "$(SolutionDir)bin\*" "$(OutDir)" /s /y</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>assimp.lib;opengl32.lib;glfw3.lib;glew32d.lib;pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib;opengl32.lib;glfw3.lib;glew32d.lib;pthreadVC2.lib;%(AdditionalDependencies);PhysX3_x86.lib;PhysX3Common_x86.lib;PxTask.lib;PhysX3Extensions.lib</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Outputs>dummy.txt;%(Outputs)</Outputs>
@@ -523,7 +534,7 @@ xcopy "$(SolutionDir)bin\*" "$(OutDir)" /s /y</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>assimp.lib;dxgi.lib;d3d12.lib;d3dcompiler.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib;dxgi.lib;d3d12.lib;d3dcompiler.lib;dxgi.lib;%(AdditionalDependencies);PhysX3_x86.lib;PhysX3Common_x86.lib;PxTask.lib;PhysX3Extensions.lib</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>xcopy "$(SolutionDir)content\*" "$(OutDir)" /s /y
@@ -547,7 +558,7 @@ xcopy "$(SolutionDir)bin\*" "$(OutDir)" /s /y</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>assimp.lib;dxgi.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp.lib;dxgi.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies);PhysX3_x86.lib;PhysX3Common_x86.lib;PxTask.lib;PhysX3Extensions.lib</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>xcopy "$(SolutionDir)content\*" "$(OutDir)" /s /y

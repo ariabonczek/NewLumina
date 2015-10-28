@@ -19,6 +19,7 @@ void TestScene::LoadAssets()
 	
 	VertexShader* quadVS = (VertexShader*)ResourceManager::LoadShader(L"Shaders/fullScreenQuadVertex.cso", ShaderType::Vertex);
 	PixelShader* tintPS = (PixelShader*)ResourceManager::LoadShader(L"Shaders/postFXTint.cso", ShaderType::Pixel);
+	PixelShader* gammaPS = (PixelShader*)ResourceManager::LoadShader(L"Shaders/gammaCorrection.cso", ShaderType::Pixel);
 
 	Material* mat = new Material();
 	mat->SetVertexShader(vs);
@@ -45,7 +46,11 @@ void TestScene::LoadAssets()
 	Material* ppMat = new Material();
 	ppMat->SetVertexShader(quadVS);
 	ppMat->SetPixelShader(tintPS);
-	ppMat->SetShaderVariable<Color>("tint", Color::Green, ShaderType::Pixel);
+	ppMat->SetShaderVariable<Color>("tint", Color::White, ShaderType::Pixel);
+
+	Material* gammaMat = new Material();
+	gammaMat->SetVertexShader(quadVS);
+	gammaMat->SetPixelShader(gammaPS);
 
 	Mesh* cube = ResourceManager::CreateCube();
 	Mesh* plane = ResourceManager::CreatePlane(25.0f, 25.0f, 10, 10);
@@ -70,7 +75,7 @@ void TestScene::LoadAssets()
 	camera->AddComponent<CameraDebug>(new CameraDebug());
 
 	GameObject* light = new GameObject("Light");
-	light->AddComponent<Light>(new Light(LightType::Point, Color::White, 1.0f));
+	light->AddComponent<Light>(new Light(LightType::Point, Color::White, 2.0f));
 	light->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
 	light->GetComponent<Light>()->data.range = 25.0f;
 	light->GetComponent<Light>()->data.spot = 5.0f;
@@ -79,7 +84,7 @@ void TestScene::LoadAssets()
 	AddObject(light);
 
 	GameObject* light2 = new GameObject("Light");
-	light2->AddComponent<Light>(new Light(LightType::Point, Color::Blue, 1.0f));
+	light2->AddComponent<Light>(new Light(LightType::Point, Color::Blue, 2.0f));
 	light2->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
 	light2->GetComponent<Light>()->data.range = 25.0f;
 	light2->GetComponent<Light>()->data.spot = 5.0f;
@@ -88,7 +93,7 @@ void TestScene::LoadAssets()
 	AddObject(light2);
 
 	GameObject* light3 = new GameObject("Light");
-	light3->AddComponent<Light>(new Light(LightType::Point, Color::Green, 1.0f));
+	light3->AddComponent<Light>(new Light(LightType::Point, Color::Green, 2.0f));
 	light3->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
 	light3->GetComponent<Light>()->data.range = 25.0f;
 	light3->GetComponent<Light>()->data.spot = 5.0f;
@@ -97,7 +102,7 @@ void TestScene::LoadAssets()
 	AddObject(light3);
 
 	GameObject* light4 = new GameObject("Light");
-	light4->AddComponent<Light>(new Light(LightType::Point, Color::Red, 1.0f));
+	light4->AddComponent<Light>(new Light(LightType::Point, Color::Red, 2.0f));
 	light4->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
 	light4->GetComponent<Light>()->data.range = 25.0f;
 	light4->GetComponent<Light>()->data.spot = 5.0f;
@@ -106,7 +111,7 @@ void TestScene::LoadAssets()
 	AddObject(light4);
 
 	GameObject* light5 = new GameObject("Light");
-	light5->AddComponent<Light>(new Light(LightType::Point, Color::Purple, 1.0f));
+	light5->AddComponent<Light>(new Light(LightType::Point, Color::Purple, 2.0f));
 	light5->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
 	light5->GetComponent<Light>()->data.range = 25.0f;
 	light5->GetComponent<Light>()->data.spot = 5.0f;
@@ -115,7 +120,7 @@ void TestScene::LoadAssets()
 	AddObject(light5);
 
 	GameObject* light6 = new GameObject("Light");
-	light6->AddComponent<Light>(new Light(LightType::Point, Color::Orange, 1.0f));
+	light6->AddComponent<Light>(new Light(LightType::Point, Color::Orange, 2.0f));
 	light6->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
 	light6->GetComponent<Light>()->data.range = 25.0f;
 	light6->GetComponent<Light>()->data.spot = 5.0f;
@@ -124,7 +129,7 @@ void TestScene::LoadAssets()
 	AddObject(light6);
 
 	GameObject* light7 = new GameObject("Light");
-	light7->AddComponent<Light>(new Light(LightType::Point, Color::Yellow, 1.0f));
+	light7->AddComponent<Light>(new Light(LightType::Point, Color::Yellow, 2.0f));
 	light7->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
 	light7->GetComponent<Light>()->data.range = 25.0f;
 	light7->GetComponent<Light>()->data.spot = 5.0f;
@@ -133,7 +138,7 @@ void TestScene::LoadAssets()
 	AddObject(light7);
 
 	GameObject* light8 = new GameObject("Light");
-	light8->AddComponent<Light>(new Light(LightType::Point, Color::Magenta, 1.0f));
+	light8->AddComponent<Light>(new Light(LightType::Point, Color::Magenta, 2.0f));
 	light8->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
 	light8->GetComponent<Light>()->data.range = 25.0f;
 	light8->GetComponent<Light>()->data.spot = 5.0f;
@@ -142,7 +147,7 @@ void TestScene::LoadAssets()
 	AddObject(light8);
 
 	GameObject* light9 = new GameObject("Light");
-	light9->AddComponent<Light>(new Light(LightType::Directional, Color::Cyan, 1.0f));
+	light9->AddComponent<Light>(new Light(LightType::Point, Color::Cyan, 2.0f));
 	light9->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
 	light9->GetComponent<Light>()->data.range = 25.0f;
 	light9->GetComponent<Light>()->data.spot = 5.0f;
@@ -153,10 +158,6 @@ void TestScene::LoadAssets()
 	AddObject(testObject);
 	AddObject(twoObject);	
 	AddObject(camera);
-
-	//PostProcess* postProcess = new PostProcess();
-    //postProcess->SetMaterial(ppMat);
-	//AddPostProcess(postProcess);
 
 	SetActiveCamera(camera->GetComponent<Camera>());
 	//SetAmbientLight(Color(0.05f, 0.05f, 0.05f, 1.0f));

@@ -8,11 +8,14 @@ PostProcess::PostProcess()
 {}
 
 PostProcess::~PostProcess()
-{}
+{
+	delete renderTexture;
+}
 
 void PostProcess::Initialize(ID3D11Device* device)
 {
 	quad.Initialize(device);
+	renderTexture = new RenderTexture(WINDOW_WIDTH, WINDOW_HEIGHT, 0, device);
 }
 
 Material* PostProcess::GetMaterial()const
@@ -25,10 +28,18 @@ void PostProcess::SetMaterial(Material* material)
 	p_Material = material;
 }
 
-void PostProcess::Render(ID3D11DeviceContext* deviceContext)
+RenderTexture* PostProcess::GetTexture()const
 {
-	//ID3D11RenderTargetView* rtv = renderTexture->GetRenderTargetView();
-	//deviceContext->OMSetRenderTargets(1, &rtv, renderTexture->GetDepthStencilView());
+	return renderTexture;
+}
+
+void PostProcess::Render(ID3D11DeviceContext* deviceContext, bool useRenderTarget)
+{
+	if (useRenderTarget)
+	{
+		ID3D11RenderTargetView* rtv = renderTexture->GetRenderTargetView();
+		deviceContext->OMSetRenderTargets(1, &rtv, renderTexture->GetDepthStencilView());
+	}
 	p_Material->BindMaterial(deviceContext);
 	quad.Render(deviceContext);
 }

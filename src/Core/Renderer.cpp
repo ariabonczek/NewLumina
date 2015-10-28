@@ -250,6 +250,7 @@ DWORD WINAPI Renderer::Render(void* param)
 	Renderer* _this = static_cast<Renderer*>(param);
 
 	_this->SetupGBuffer(_this->mp_OpaqueCommandList.GetDeferredContext());
+
 	_this->RenderPass(RenderPassType::OpaqueGeometry);
 	_this->RenderPass(RenderPassType::StencilPass);
 	_this->RenderPass(RenderPassType::DeferredLighting);
@@ -405,8 +406,19 @@ void Renderer::RenderToBackBuffer(ID3D11DeviceContext* deferredContext)
 	deferredContext->RSSetState(RasterizerState::FrontSolid->GetState());
 	deferredContext->OMSetDepthStencilState(DepthStencilState::Default->GetState(), 0);
 
-	finalRender.GetMaterial()->SetTexture("_Source", "_Sampler", gbuffer.lit, ShaderType::Pixel);
-	finalRender.Render(deferredContext);
+	RenderTexture* finalTexture = gbuffer.lit;
+	for (uint i = 0; i < postProcesses.size(); ++i)
+	{
+		postProcesses[i]->GetMaterial()->SetTexture("_Source", "_Sampler", finalTexture, ShaderType::Pixel);
+		postProcesses[i]->Render(deferredContext, true);
+		finalTexture = postProcesses[i]->GetTexture();
+	}
+
+	deferredContext->RSSetViewports(1, p_Viewport);
+	deferredContext->OMSetRenderTargets(1, &p_BackBuffer, p_DepthBuffer);
+
+	finalRender.GetMaterial()->SetTexture("_Source", "_Sampler", finalTexture, ShaderType::Pixel);
+	finalRender.Render(deferredContext, false);
 }
 
 NS_END

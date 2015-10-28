@@ -64,6 +64,13 @@ PixelShader* Material::GetPixelShader()const
 	return p_PixelShader;
 }
 
+ID3D11ShaderResourceView* Material::GetTextureSRV(const char* name)const
+{
+	LGUID guid = Hash(name);
+	return textures.at(guid).srv;
+}
+
+
 void Material::BindMaterial(ID3D11DeviceContext* deviceContext)
 {
 	for (std::unordered_map<LGUID, TextureInformation>::iterator it = textures.begin(); it != textures.end(); ++it)

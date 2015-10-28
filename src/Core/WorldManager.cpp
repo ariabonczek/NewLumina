@@ -9,8 +9,8 @@
 
 NS_BEGIN
 
-WorldManager::WorldManager():
-	shouldQuit(false)
+WorldManager::WorldManager() :
+	shouldQuit(false)//accumulator(0.0f)
 {}
 
 WorldManager::~WorldManager()
@@ -27,6 +27,10 @@ void WorldManager::Initialize()
 #if _DEBUG
 	Debug::Log("WorldManager Initialized");
 #endif
+
+	//foundation = PxCreateFoundation(PX_PHYSICS_VERSION, g_DefaultAllocator, g_DefaultErrorCallback);
+	//physics = PxCreatePhysics(PX_PHYSICS_VERSION, *foundation, PxTolerancesScale(), true);
+
 }
 
 void WorldManager::Shutdown()
@@ -34,6 +38,9 @@ void WorldManager::Shutdown()
 #if _DEBUG
 	Debug::Log("WorldManager Shutdown");
 #endif
+
+	//physics->release();
+//	foundation->release();
 }
 
 DWORD WINAPI WorldManager::Update(void* param)
@@ -54,10 +61,15 @@ DWORD WINAPI WorldManager::Physics(void* param)
 
 	// TODO: Perform physics calculations at a fixed timestep
 	float dt = Timer::GetFrameTime();
-	for (std::unordered_map<LGUID, PhysicsObject*>::iterator it = _this->physicsObjects.begin(); it != _this->physicsObjects.end(); ++it)
-	{
-		//physicsObjects[i]->Update(dt);
-	}
+	//_this->accumulator += dt;
+	//
+	//if (_this->accumulator < STEP_SIZE)
+	//	return 0;
+	//
+	//_this->scene->simulate(STEP_SIZE);
+	//
+	//_this->scene->fetchResults(true);
+
 	return 0;
 }
 
@@ -72,7 +84,26 @@ void WorldManager::UnloadCurrentScene()
 	physicsObjects.clear();
 }
 
-// TODO: Optimize this by expanding LGUID system and storing these in an unordered_map
+void WorldManager::CreatePhysicsScene()
+{
+	//PxSceneDesc sd(physics->getTolerancesScale());
+	//sd.gravity = PxVec3(0.0f, -9.8f, 0.0f);
+	//
+	//if (!sd.cpuDispatcher)
+	//{
+	//	sd.cpuDispatcher = PxDefaultCpuDispatcherCreate(1);
+	//}
+	//if (!sd.filterShader)
+	//{
+	//	// TODO
+	//	//sd.filterShader = PxDefaultSimulationFilterShader();
+	//}
+	//
+	//scene = physics->createScene(sd);
+	//
+	//// HARDCODED SCENE CHANGE THIS LATER
+	//material = physics->createMaterial(0.5f, 0.5f, 0.1f);
+}
 
 void WorldManager::AddActiveGameObject(GameObject* gameObject)
 {
@@ -101,4 +132,5 @@ void WorldManager::RemovePhysicsObject(PhysicsObject* physicsObject)
 
 	physicsObjects.erase(it);
 }
+
 NS_END

@@ -127,6 +127,8 @@ public:
 	/// </summary>
 	PixelShader* GetPixelShader()const;
 
+	ID3D11ShaderResourceView* GetTextureSRV(const char* name)const;
+
 	/// <summary>
 	///
 	/// </summary>

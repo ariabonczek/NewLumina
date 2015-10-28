@@ -47,7 +47,6 @@ void MeshRenderer::Render(ID3D11DeviceContext* deviceContext)
 bool MeshRenderer::OnAddToGameObject(GameObject* object)
 {
 	Component::OnAddToGameObject(object);
-	Renderer::GetInstance()->AddRenderableGameObject(this);
 	return true;
 }
 

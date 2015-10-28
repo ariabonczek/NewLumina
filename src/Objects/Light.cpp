@@ -25,13 +25,13 @@ void Light::Initialize()
 	switch (type)
 	{
 	case LightType::Directional:
-
+		SetMesh(ResourceManager::CreateFullScreenQuad());
 		break;
 	case LightType::Point:
-		SetMesh(ResourceManager::CreateSphere(data.range, 2));
+		SetMesh(ResourceManager::CreateSphere(1.0f, 2));
 		break;
 	case LightType::Spot:
-		//light->SetMesh(ResourceManager::CreateCone(light->data.spot)
+		//SetMesh(ResourceManager::CreateCone(data.spot);
 		break;
 	}
 }

@@ -228,6 +228,9 @@
     <ClCompile Include="Graphics\DepthStencilState.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="TestGame\DancingFlames.cpp">
+      <Filter>Source Files\TestGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Game.hpp">
@@ -386,40 +389,46 @@
     <ClInclude Include="Graphics\DepthStencilState.hpp">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="TestGame\DancingFlames.hpp">
+      <Filter>Header Files\TestGame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="P:\LuminaEngine\content\Shaders\DirectX\defaultVertex.hlsl">
+    <FxCompile Include="Shaders\DirectX\copyTexture.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DirectX\defaultPixel.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DirectX\deferredLightPixel.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DirectX\nullPixel.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DirectX\sampleCubemapPixel.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DirectX\singleColorPixel.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DirectX\defaultVertex.hlsl">
       <Filter>Resource Files\Shaders\DirectX\Vertex</Filter>
     </FxCompile>
-    <FxCompile Include="..\content\Shaders\DirectX\sampleCubemapVertex.hlsl">
+    <FxCompile Include="Shaders\DirectX\deferredLightVertex.hlsl">
       <Filter>Resource Files\Shaders\DirectX\Vertex</Filter>
     </FxCompile>
-    <FxCompile Include="P:\LuminaEngine\content\Shaders\DirectX\defaultPixel.hlsl">
-      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="..\content\Shaders\DirectX\sampleCubemapPixel.hlsl">
-      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="..\content\Shaders\DirectX\fullScreenQuadVertex.hlsl">
+    <FxCompile Include="Shaders\DirectX\fullScreenQuadVertex.hlsl">
       <Filter>Resource Files\Shaders\DirectX\Vertex</Filter>
     </FxCompile>
-    <FxCompile Include="..\content\Shaders\DirectX\postFXTint.hlsl">
-      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="..\content\Shaders\DirectX\copyTexture.hlsl">
-      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="..\content\Shaders\DirectX\deferredLightPixel.hlsl">
-      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="..\content\Shaders\DirectX\deferredLightVertex.hlsl">
+    <FxCompile Include="Shaders\DirectX\nullVertex.hlsl">
       <Filter>Resource Files\Shaders\DirectX\Vertex</Filter>
     </FxCompile>
-    <FxCompile Include="..\content\Shaders\DirectX\nullPixel.hlsl">
-      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="..\content\Shaders\DirectX\nullVertex.hlsl">
+    <FxCompile Include="Shaders\DirectX\sampleCubemapVertex.hlsl">
       <Filter>Resource Files\Shaders\DirectX\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DirectX\postFXTint.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -429,7 +438,7 @@
     <None Include="P:\LuminaEngine\content\Shaders\OpenGL\defaultVertex.glsl">
       <Filter>Resource Files\Shaders\OpenGL</Filter>
     </None>
-    <None Include="..\content\Shaders\DirectX\Lumina.hlsli">
+    <None Include="Shaders\DirectX\Lumina.hlsli">
       <Filter>Resource Files\Shaders\DirectX\Include</Filter>
     </None>
   </ItemGroup>

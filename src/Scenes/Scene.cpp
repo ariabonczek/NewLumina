@@ -14,6 +14,7 @@ Scene::~Scene()
 
 void Scene::Initialize()
 {
+	assert(activeCamera != nullptr);
 	Renderer::GetInstance()->SetActiveCamera(activeCamera);
 	Renderer::GetInstance()->SetAmbientLight(ambientLight);
 

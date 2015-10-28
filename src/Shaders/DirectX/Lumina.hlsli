@@ -77,6 +77,30 @@ cbuffer lighting : register(b3)
 
 }
 
+float3x3 MakeView(float3 view)
+{
+	view = normalize(view);
+	float3 x, y, z;
+	z = -view;
+	x = normalize(float3(z.z, 0, -z.x));
+	y = cross(z, x);
+	return float3x3(x, y, z);
+}
+
+float4 EncodeNormal(float3 normal, float3 view)
+{
+	return normalize(float4(mul(MakeView(view), normal).xy * 0.5 + 0.5, 0, 0));
+}
+
+float3 DecodeNormal(float4 encoded, float3 view)
+{
+	float3 n;
+	n.xy = encoded * 2.0 - 1.0;
+	n.z = sqrt(1.0 + dot(n.xy, -n.xy));
+	n = mul(n, MakeView(view));
+	return n;
+}
+
 float3 UnpackNormals(float3 samplevalue)
 {
 	return saturate(samplevalue * 2.0f - 1.0f);
@@ -120,10 +144,11 @@ float4 CalculatePointLight(LightData pLight, float3 position, float3 normal, flo
 
 	// Specular
 	float3 halfVec = normalize(reflect(lightVector, normal));
-	float specularFactor = pow(max(0.0f, dot(view, halfVec)), 64);		// hardcoded specular factor
+	float specularFactor = pow(max(0.0f, dot(view, halfVec)), 8);		// hardcoded specular factor
 	float4 specularLight = saturate(pLight.color * pLight.intensity * specularFactor);
 
-	float attenuation = 1.0f / (1.0f + 0.1f * d + 0.01f * d * d);
+	float attenuation = 1.0f / (1.0f + 0.1f * d +0.01f * d * d);
+
 	diffuseLight *= attenuation;
 	specularLight *= attenuation;
 
@@ -154,7 +179,7 @@ float4 CalculateSpotLight(LightData sLight, float3 position, float3 normal, floa
 	diffuseLight *= attenuation;
 	specularLight *= attenuation;
 
-	return diffuseLight + specularLight;
+	return diffuseLight;// +specularLight;
 }
 
 //float4 CalculateAllLights(
@@ -189,7 +214,7 @@ float4 CalculateSpotLight(LightData sLight, float3 position, float3 normal, floa
 
 float4 LambertDiffuse(float4 diffuse)
 {
-	return diffuse / 3.141592;
+	return diffuse;
 }
 
 float NormalDistribution(float roughness, float3 normal, float3 halfvector)
@@ -199,7 +224,7 @@ float NormalDistribution(float roughness, float3 normal, float3 halfvector)
 	float ndotd = saturate(dot(normal, halfvector));
 	float denom = ((ndotd*ndotd) * (alpha2 - 1) + 1);
 
-	return alpha2 / 3.141592 * denom*denom;
+	return alpha2 / denom*denom;
 }
 
 float GaussianFresnelReflectance(float metalness, float3 normal, float3 halfvector)
@@ -223,9 +248,12 @@ float GeometricAttenuation(float roughness, float3 normal, float3 viewvector, fl
 
 float CookTorrenceMicrofacetSpecular(float roughness, float metalness, float3 normal, float3 viewvector, float3 halfvector, float3 lightvector)
 {
-	return
-		(NormalDistribution(roughness, normal, halfvector) * GaussianFresnelReflectance(metalness, normal, halfvector) * GeometricAttenuation(roughness, normal, viewvector, lightvector)) /
-		(4 * saturate(dot(normal, lightvector)) * saturate(dot(normal, viewvector)));
+	float N = NormalDistribution(roughness, normal, halfvector);
+	float G = GeometricAttenuation(roughness, normal, viewvector, lightvector);
+	
+	float denom = 1.0f / (4 * saturate(dot(normal, lightvector)) * saturate(dot(normal, viewvector)));
+
+	return N * G * denom;
 }
 
 float4 PBRCalculateFinalColor(float4 diffuse, float3 normal, float roughness, float metalness, float3 viewvector, float3 lightVector, LightData light)
@@ -234,7 +262,10 @@ float4 PBRCalculateFinalColor(float4 diffuse, float3 normal, float roughness, fl
 
 	float alpha = exp2(10 * (1 - roughness) + 1);
 
-	return (diffuse * (dot(normal, lightVector)) +
-		GaussianFresnelReflectance(metalness, lightVector, halfvector) * ((alpha + 2) / 8) * 
-		pow(saturate(dot(normal, halfvector)), alpha) * dot(normal, lightVector));
+	float spec = CookTorrenceMicrofacetSpecular(roughness, metalness, normal, viewvector, halfvector, lightVector);
+
+	return (diffuse + spec) * (light.color * light.intensity);
+	//return (diffuse * (dot(normal, lightVector)) +
+	//	GaussianFresnelReflectance(metalness, lightVector, halfvector) * ((alpha + 2) / 8) * 
+	//	pow(saturate(dot(normal, halfvector)), alpha) * dot(normal, lightVector));
 }

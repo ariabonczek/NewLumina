@@ -14,11 +14,11 @@ TestScene::~TestScene()
 
 void TestScene::LoadAssets()
 {
-	VertexShader* vs = static_cast<VertexShader*>(ResourceManager::LoadShader(L"Shaders/DirectX/defaultVertex.cso", ShaderType::Vertex));
-	PixelShader* ps = static_cast<PixelShader*>(ResourceManager::LoadShader(L"Shaders/DirectX/defaultPixel.cso", ShaderType::Pixel));
+	VertexShader* vs = static_cast<VertexShader*>(ResourceManager::LoadShader(L"Shaders/defaultVertex.cso", ShaderType::Vertex));
+	PixelShader* ps = static_cast<PixelShader*>(ResourceManager::LoadShader(L"Shaders/defaultPixel.cso", ShaderType::Pixel));
 	
-	VertexShader* quadVS = (VertexShader*)ResourceManager::LoadShader(L"Shaders/DirectX/fullScreenQuadVertex.cso", ShaderType::Vertex);
-	PixelShader* tintPS = (PixelShader*)ResourceManager::LoadShader(L"Shaders/DirectX/postFXTint.cso", ShaderType::Pixel);
+	VertexShader* quadVS = (VertexShader*)ResourceManager::LoadShader(L"Shaders/fullScreenQuadVertex.cso", ShaderType::Vertex);
+	PixelShader* tintPS = (PixelShader*)ResourceManager::LoadShader(L"Shaders/postFXTint.cso", ShaderType::Pixel);
 
 	Material* mat = new Material();
 	mat->SetVertexShader(vs);
@@ -142,7 +142,7 @@ void TestScene::LoadAssets()
 	AddObject(light8);
 
 	GameObject* light9 = new GameObject("Light");
-	light9->AddComponent<Light>(new Light(LightType::Point, Color::Cyan, 1.0f));
+	light9->AddComponent<Light>(new Light(LightType::Directional, Color::Cyan, 1.0f));
 	light9->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
 	light9->GetComponent<Light>()->data.range = 25.0f;
 	light9->GetComponent<Light>()->data.spot = 5.0f;

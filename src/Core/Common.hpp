@@ -48,6 +48,7 @@ using namespace LMath;
 
 #if _WIN32 && _DEBUG
 #include <Utility\Debug.hpp>
+#include <assert.h>
 #endif
 
 typedef unsigned char uint8;

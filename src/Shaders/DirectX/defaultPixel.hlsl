@@ -28,6 +28,10 @@ GBuffer main(MeshVertexOutput i)
 	float3x3 TBN = float3x3(T, B, N);
 	float3 bumpedNormal = normalize(mul(normalT, TBN));
 
+	float3 viewvector = normalize(i.worldpos - eyePos);
+
+	bumpedNormal = bumpedNormal * 0.5f + 0.5f;
+
 	float4 diffuse = _Albedo.Sample(_Sampler, i.texcoord * float2(tileX, tileY));
 
 	o.albedo.rgb = diffuse.rgb;

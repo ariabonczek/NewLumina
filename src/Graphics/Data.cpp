@@ -26,17 +26,20 @@ Color::Color(float r, float g, float b, float a):
 
 void MeshData::Append(MeshData& data)
 {
+	uint32 verticesOffset = vertices.size();
+	uint32 indicesOffset = indices.size();
+
 	vertices.resize(vertices.size() + data.vertices.size());
 	indices.resize(indices.size() + data.indices.size());
-
-	for (std::vector<MeshVertex>::iterator i = data.vertices.begin(); i != data.vertices.end(); ++i)
+	
+	for (uint32 i = 0; i < data.vertices.size(); ++i)
 	{
-		vertices.push_back(*i);
+		vertices[verticesOffset + i] = data.vertices[i];
 	}
 
-	for (std::vector<uint16>::iterator i = data.indices.begin(); i != data.indices.end(); ++i)
+	for (uint32 i = 0; i < data.indices.size(); ++i)
 	{
-		indices.push_back(*i);
+		indices[indicesOffset + i] = data.indices[i];
 	}
 }
 

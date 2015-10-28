@@ -7,6 +7,7 @@
 #include <Utility\stb_image.h>
 #include <assimp\Importer.hpp>
 #include <assimp\postprocess.h>
+#include <fstream>
 
 NS_BEGIN
 
@@ -52,7 +53,8 @@ MeshData Filesystem::LoadMesh(char* filepath)
 #endif
 	}
 	
-	return AssimpProcessScene(scene->mRootNode, scene);
+	MeshData data;
+	return AssimpProcessScene(scene->mRootNode, scene, data);
 }
 
 Shader* Filesystem::LoadShader(wchar_t* filepath, ShaderType type, ID3D11Device* device)
@@ -94,10 +96,8 @@ Resource* Filesystem::LoadMaterial(char* filepath)
 	return 0;
 }
 
-MeshData Filesystem::AssimpProcessScene(aiNode* node, const aiScene* scene)
+MeshData Filesystem::AssimpProcessScene(aiNode* node, const aiScene* scene, MeshData& data)
 {
-	MeshData data;
-
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[i];
@@ -106,7 +106,7 @@ MeshData Filesystem::AssimpProcessScene(aiNode* node, const aiScene* scene)
 
 	for (UINT i = 0; i < node->mNumChildren; i++)
 	{
-		AssimpProcessScene(node->mChildren[i], scene);
+		AssimpProcessScene(node->mChildren[i], scene, data);
 	}
 
 	return data;

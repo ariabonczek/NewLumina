@@ -145,6 +145,21 @@ RenderTexture* ResourceManager::CreateRenderTexture(uint32 width, uint32 height,
 	return r;
 }
 
+Mesh* ResourceManager::CreateFullScreenQuad()
+{
+	LGUID guid = Hash(Timer::GetTimeSinceEpoch());
+
+	if (resourceMap.find(guid) != resourceMap.end())
+	{
+		return static_cast<Mesh*>(resourceMap[guid]);
+	}
+
+	Mesh* mesh = new Mesh(MeshBuilder::CreateQuad(1.0f, 1.0f), guid, p_Device);
+
+	resourceMap[guid] = mesh;
+	return mesh;
+}
+
 Mesh* ResourceManager::CreatePlane(float width, float depth, uint32 n, uint32 m)
 {
 	std::ostringstream str;

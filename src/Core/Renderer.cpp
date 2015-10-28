@@ -97,17 +97,17 @@ void Renderer::InitializeRenderTarget()
 
 	finalRender.Initialize(device);
 	finalRenderMaterial = new Material();
-	finalRenderMaterial->SetVertexShader((VertexShader*)ResourceManager::LoadShader(L"Shaders/DirectX/fullScreenQuadVertex.cso", ShaderType::Vertex));
-	finalRenderMaterial->SetPixelShader((PixelShader*)ResourceManager::LoadShader(L"Shaders/DirectX/copyTexture.cso", ShaderType::Pixel));
+	finalRenderMaterial->SetVertexShader((VertexShader*)ResourceManager::LoadShader(L"Shaders/fullScreenQuadVertex.cso", ShaderType::Vertex));
+	finalRenderMaterial->SetPixelShader((PixelShader*)ResourceManager::LoadShader(L"Shaders/copyTexture.cso", ShaderType::Pixel));
 	finalRender.SetMaterial(finalRenderMaterial);
 
 	lightMaterial = new Material();
-	lightMaterial->SetVertexShader((VertexShader*)ResourceManager::LoadShader(L"Shaders/DirectX/deferredLightVertex.cso", ShaderType::Vertex));
-	lightMaterial->SetPixelShader((PixelShader*)ResourceManager::LoadShader(L"Shaders/DirectX/deferredLightPixel.cso", ShaderType::Pixel));
+	lightMaterial->SetVertexShader((VertexShader*)ResourceManager::LoadShader(L"Shaders/deferredLightVertex.cso", ShaderType::Vertex));
+	lightMaterial->SetPixelShader((PixelShader*)ResourceManager::LoadShader(L"Shaders/deferredLightPixel.cso", ShaderType::Pixel));
 
 	nullMaterial = new Material();
-	nullMaterial->SetVertexShader((VertexShader*)ResourceManager::LoadShader(L"Shaders/DirectX/nullVertex.cso", ShaderType::Vertex));
-	nullMaterial->SetPixelShader((PixelShader*)ResourceManager::LoadShader(L"Shaders/DirectX/nullPixel.cso", ShaderType::Pixel));
+	nullMaterial->SetVertexShader((VertexShader*)ResourceManager::LoadShader(L"Shaders/nullVertex.cso", ShaderType::Vertex));
+	nullMaterial->SetPixelShader((PixelShader*)ResourceManager::LoadShader(L"Shaders/nullPixel.cso", ShaderType::Pixel));
 }
 
 void Renderer::SetupCommandLists()
@@ -308,6 +308,8 @@ void Renderer::RenderPass(RenderPassType type)
 			
 			for (std::unordered_map<LGUID, Light*>::iterator it = lights.begin(); it != lights.end(); ++it)
 			{
+				if (it->second->type != LightType::Point)
+					continue;
 				nullMaterial->SetShaderVariable("world", it->second->GetGameObject()->GetComponent<Transform>()->GetWorldMatrix().Transpose(), ShaderType::Vertex);
 			
 				nullMaterial->BindMaterial(deferredContext);
@@ -316,30 +318,69 @@ void Renderer::RenderPass(RenderPassType type)
 			
 			break;
 		case RenderPassType::DeferredLighting:
-			deferredContext->RSSetState(RasterizerState::BackSolid->GetState());
 			deferredContext->OMSetBlendState(BlendState::Additive->GetState(), blendFactor, 0xffffff);
 
 			rtv = gbuffer.lit->GetRenderTargetView();
 			deferredContext->OMSetRenderTargets(1, &rtv, 0);// p_DepthBuffer);
 			deferredContext->OMSetDepthStencilState(DepthStencilState::Deferred->GetState(), 0);
 			
-			lightMaterial->SetShaderVariable("view", activeCamera->GetView().Transpose(), ShaderType::Vertex);
-			lightMaterial->SetShaderVariable("projection", activeCamera->GetProj().Transpose(), ShaderType::Vertex);
 			lightMaterial->SetShaderVariable("invViewProjection", Matrix::Inverse(activeCamera->GetViewProjection()).Transpose(), ShaderType::Pixel);
 			lightMaterial->SetShaderVariable("width", p_Viewport->Width, ShaderType::Pixel);
 			lightMaterial->SetShaderVariable("height", p_Viewport->Height, ShaderType::Pixel);
+			lightMaterial->SetShaderVariable("eyePos", activeCamera->GetGameObject()->GetComponent<Transform>()->GetWorldPosition(), ShaderType::Pixel);
 
 			lightMaterial->SetTexture("_Albedo", "_Sampler", gbuffer.albedo, ShaderType::Pixel);
 			lightMaterial->SetTexture("_Normal", "_Sampler", gbuffer.normals, ShaderType::Pixel);
 			lightMaterial->SetTextureEX("_Depth", "_DepthSampler", p_DepthSrv , Sampler::ClampPoint->GetSamplerState(), ShaderType::Pixel);
 
+
 			for (std::unordered_map<LGUID, Light*>::iterator it = lights.begin(); it != lights.end(); ++it)
 			{
-				lightMaterial->SetShaderVariable("world", it->second->GetGameObject()->GetComponent<Transform>()->GetWorldMatrix().Transpose(), ShaderType::Vertex);
-				lightMaterial->SetShaderVariable("pointlight", it->second->data, ShaderType::Pixel);
+				Light* light = it->second;
+				Matrix world = Matrix::Identity;
+				switch (light->type)
+				{
+				case LightType::Directional:
+					deferredContext->RSSetState(RasterizerState::FrontSolid->GetState());
+					lightMaterial->SetShaderVariable("view", Matrix::Identity, ShaderType::Vertex);
+					lightMaterial->SetShaderVariable("projection", Matrix::Identity, ShaderType::Vertex);
 
-				lightMaterial->BindMaterial(deferredContext);
-				it->second->RenderLightAsGeometry(deferredContext);
+					lightMaterial->SetShaderVariable("world", world.Transpose(), ShaderType::Vertex);
+					lightMaterial->SetShaderVariable("light", light->data, ShaderType::Pixel);
+					lightMaterial->SetShaderVariable("lightType", LightType::Directional, ShaderType::Pixel);
+
+					lightMaterial->BindMaterial(deferredContext);
+
+					light->RenderLightAsGeometry(deferredContext);
+					break;
+				case LightType::Spot:
+					lightMaterial->SetShaderVariable("view", Matrix::Identity, ShaderType::Vertex);
+					lightMaterial->SetShaderVariable("projection", Matrix::Identity, ShaderType::Vertex);
+
+					lightMaterial->SetShaderVariable("world", world.Transpose(), ShaderType::Vertex);
+					lightMaterial->SetShaderVariable("light", light->data, ShaderType::Pixel);
+					lightMaterial->SetShaderVariable("lightType", LightType::Spot, ShaderType::Pixel);
+
+					lightMaterial->BindMaterial(deferredContext);
+
+					light->RenderLightAsGeometry(deferredContext);
+					break;
+				case LightType::Point:
+					deferredContext->RSSetState(RasterizerState::BackSolid->GetState());
+					lightMaterial->SetShaderVariable("view", activeCamera->GetView().Transpose(), ShaderType::Vertex);
+					lightMaterial->SetShaderVariable("projection", activeCamera->GetProj().Transpose(), ShaderType::Vertex);
+
+					world = Matrix::CreateScale(light->data.range) * Matrix::CreateTranslation(light->GetGameObject()->GetComponent<Transform>()->GetWorldPosition());
+					lightMaterial->SetShaderVariable("world", world.Transpose(), ShaderType::Vertex);
+					lightMaterial->SetShaderVariable("light", light->data, ShaderType::Pixel);
+					lightMaterial->SetShaderVariable("lightType", LightType::Point, ShaderType::Pixel);
+
+					lightMaterial->BindMaterial(deferredContext);
+
+					light->RenderLightAsGeometry(deferredContext);
+					break;
+				}
+				
 			}
 			break;
 	}

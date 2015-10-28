@@ -4,6 +4,7 @@
 #include "Core\Game.hpp"
 #include "Scenes\SceneManager.hpp"
 #include "TestGame\TestScene.hpp"
+#include "TestGame\DancingFlames.hpp"
 
 using namespace Lumina;
 
@@ -13,6 +14,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR cmdLine, i
 int main(int argc, char** argv)
 #endif
 {
+	SceneManager::GetInstance()->AddScene(new DancingFlamesScene());
 	SceneManager::GetInstance()->AddScene(new TestScene());
 	return Game::GetInstance().Run();
 }

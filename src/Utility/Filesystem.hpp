@@ -24,7 +24,7 @@ private:
 	Filesystem();
 	~Filesystem();
 
-	static MeshData AssimpProcessScene(aiNode* node, const aiScene* scene);
+	static MeshData AssimpProcessScene(aiNode* node, const aiScene* scene, MeshData& data);
 	static MeshData AssimpProcessMesh(aiMesh* mesh, const aiScene* scene);
 };
 

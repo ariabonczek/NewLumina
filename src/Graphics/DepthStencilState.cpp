@@ -27,6 +27,7 @@ DepthStencilState::DepthStencilState(ID3D11Device* device, bool depthEnable, boo
 
 	dsd.StencilReadMask = 0xff;
 
+	// TODO: Less hacky, more generic
 	if (depthEnable && stencilEnable)
 	{
 		dsd.DepthFunc = D3D11_COMPARISON_ALWAYS;

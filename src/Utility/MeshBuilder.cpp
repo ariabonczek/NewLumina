@@ -7,6 +7,43 @@ MeshBuilder::~MeshBuilder()
 
 }
 
+MeshData MeshBuilder::CreateQuad(float width, float length)
+{
+	MeshData data;
+
+	data.vertices.resize(4);
+	data.indices.resize(6);
+
+	data.vertices[0].position = Vector3(-width, length, 0.0f);
+	data.vertices[0].normal = Vector3(0.0f, 0.0f, -1.0f);
+	data.vertices[0].tangent = Vector3(1.0f, 0.0f, 0.0f);
+	data.vertices[0].texCoord = Vector2(0.0f, 0.0f);
+
+	data.vertices[1].position = Vector3(width, length, 0.0f);
+	data.vertices[1].normal = Vector3(0.0f, 0.0f, -1.0f);
+	data.vertices[1].tangent = Vector3(1.0f, 0.0f, 0.0f);
+	data.vertices[1].texCoord = Vector2(1.0f, 0.0f);
+
+	data.vertices[2].position = Vector3(-width, -length, 0.0f);
+	data.vertices[2].normal = Vector3(0.0f, 0.0f, -1.0f);
+	data.vertices[2].tangent = Vector3(1.0f, 0.0f, 0.0f);
+	data.vertices[2].texCoord = Vector2(0.0f, 1.0f);
+
+	data.vertices[3].position = Vector3(width, -length, 0.0f);
+	data.vertices[3].normal = Vector3(0.0f, 0.0f, -1.0f);
+	data.vertices[3].tangent = Vector3(1.0f, 0.0f, 0.0f);
+	data.vertices[3].texCoord = Vector2(1.0f, 1.0f);
+
+	data.indices[0] = 0;
+	data.indices[1] = 1;
+	data.indices[2] = 2;
+	data.indices[3] = 2;
+	data.indices[4] = 1;
+	data.indices[5] = 3;
+
+	return data;
+}
+
 MeshData MeshBuilder::CreatePlane(float width, float depth, uint32 n, uint32 m)
 {
 	MeshData data;

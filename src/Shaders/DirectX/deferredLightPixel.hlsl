@@ -8,7 +8,7 @@ cbuffer properties : register(b1)
 	matrix invViewProjection;
 	float width;
 	float height;
-	LightData pointlight;
+	uint lightType;
 }
 
 Texture2D _Albedo : register(t0);
@@ -33,7 +33,23 @@ float4 main(MeshVertexOutput i) : SV_Target0
 	float4 worldpos = mul(vProjectedPos, invViewProjection);
 	worldpos.xyz /= worldpos.w;
 
-	//return float4(worldpos.xyz, 1.0f);
-	float4 lightColor = CalculatePointLight(pointlight, worldpos, normal.rgb, eyePos);
+	float3 view = normalize(worldpos - eyePos);
+
+	normal.xyz = normal.xyz * 2.0f - 1.0f;
+
+	float4 lightColor = float4(0.0, 0.0, 0.0, 1.0);
+	if (lightType == 0)
+	{
+		lightColor = CalculateDirectionalLight(light, normal.rgb, view);
+	}
+	else if (lightType == 1)
+	{
+		lightColor = CalculatePointLight(light, worldpos, normal.rgb, view);
+	}
+	else if (lightType == 2)
+	{
+		lightColor = CalculateSpotLight(light, worldpos, normal.rgb, view);
+	}
+
 	return float4(albedo * lightColor.rgb, 1.0f);
 }

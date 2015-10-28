@@ -16,6 +16,7 @@ Transform::Transform() :
 	dirty(false)
 {
 	children.reserve(3);
+	worldCache = Matrix::Identity;
 }
 
 Transform::~Transform()

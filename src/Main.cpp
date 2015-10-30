@@ -6,7 +6,7 @@
 #include "TestGame\TestScene.hpp"
 #include "TestGame\DancingFlames.hpp"
 
-using namespace Lumina;
+//using namespace Lumina;
 
 #if DX11 || DX12
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR cmdLine, int showCmd)
@@ -14,7 +14,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR cmdLine, i
 int main(int argc, char** argv)
 #endif
 {
-	SceneManager::GetInstance()->AddScene(new DancingFlamesScene());
-	SceneManager::GetInstance()->AddScene(new TestScene());
-	return Game::GetInstance().Run();
+	Lumina::SceneManager::GetInstance()->AddScene(new DancingFlamesScene());
+	Lumina::SceneManager::GetInstance()->AddScene(new TestScene());
+	return Lumina::Game::GetInstance().Run();
 }

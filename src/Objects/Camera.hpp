@@ -44,7 +44,6 @@ public:
 	void RotateY(float angle);
 	void RotateZ(float angle);
 
-#pragma region Gets
 	Vector3 GetLook()const;
 	Vector3 GetRight()const;
 	Vector3 GetUp()const;
@@ -63,10 +62,12 @@ public:
 	Matrix GetProj()const;
 	Matrix GetViewProjection()const;
 
-#pragma endregion
+	void SetSkybox(Cubemap* skybox);
+	Cubemap* GetSkybox()const;
 
 private:
 	Transform* cachedTransform;
+	Cubemap* p_Skybox;
 
 	Vector3 look;
 	Vector3 right;

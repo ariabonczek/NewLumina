@@ -8,14 +8,20 @@
 #include <Graphics\RasterizerState.hpp>
 #include <Graphics\BlendState.hpp>
 #include <Graphics\DepthStencilState.hpp>
+#include <Graphics\Mesh.hpp>
 #include <Graphics\Material.hpp>
+#include <Graphics\Cubemap.hpp>
+#include <Graphics\RenderTexture.hpp>
+
 #include <Objects\GameObject.hpp>
 #include <Objects\Transform.hpp>
 #include <Objects\BaseRenderer.hpp>
-#include <Scenes\Scene.hpp>
 #include <Objects\Camera.hpp>
+#include <Objects\MeshRenderer.hpp>
+
+#include <Scenes\Scene.hpp>
+
 #include <Utility\ResourceManager.hpp>
-#include <Graphics\RenderTexture.hpp>
 
 NS_BEGIN
 
@@ -68,6 +74,9 @@ void Renderer::Shutdown()
 	delete finalRenderMaterial;
 	delete lightMaterial;
 	delete nullMaterial;
+	delete skyEllipsoid;
+	delete skyMaterial;
+
 	Sampler::DestroySamplers();
 	RasterizerState::DestroyStates();
 	BlendState::DestroyStates();
@@ -108,6 +117,12 @@ void Renderer::InitializeRenderTarget()
 	nullMaterial = new Material();
 	nullMaterial->SetVertexShader((VertexShader*)ResourceManager::LoadShader(L"Shaders/nullVertex.cso", ShaderType::Vertex));
 	nullMaterial->SetPixelShader((PixelShader*)ResourceManager::LoadShader(L"Shaders/nullPixel.cso", ShaderType::Pixel));
+
+	skyEllipsoid = ResourceManager::CreateSphere(120.0, 3);
+
+	skyMaterial = new Material();
+	skyMaterial->SetVertexShader((VertexShader*)ResourceManager::LoadShader(L"Shaders/sampleCubemapVertex.cso", ShaderType::Vertex));
+	skyMaterial->SetPixelShader((PixelShader*)ResourceManager::LoadShader(L"Shaders/sampleCubemapPixel.cso", ShaderType::Pixel));
 }
 
 void Renderer::SetupCommandLists()
@@ -205,6 +220,10 @@ Camera const * Renderer::GetActiveCamera()const
 void Renderer::SetActiveCamera(Camera* camera)
 {
 	activeCamera = camera;
+	if (camera->GetSkybox())
+	{
+		skyMaterial->SetTexture("_Cubemap", "_Sampler", camera->GetSkybox(), ShaderType::Pixel);
+	}
 }
 
 void Renderer::SetAmbientLight(Color color)
@@ -252,8 +271,11 @@ DWORD WINAPI Renderer::Render(void* param)
 	_this->SetupGBuffer(_this->mp_OpaqueCommandList.GetDeferredContext());
 
 	_this->RenderPass(RenderPassType::OpaqueGeometry);
+
 	_this->RenderPass(RenderPassType::StencilPass);
 	_this->RenderPass(RenderPassType::DeferredLighting);
+
+	_this->RenderPass(RenderPassType::Skybox);
 
 	_this->ClearBackBuffer(_this->mp_OpaqueCommandList.GetDeferredContext());
 	_this->RenderToBackBuffer(_this->mp_OpaqueCommandList.GetDeferredContext());
@@ -384,6 +406,22 @@ void Renderer::RenderPass(RenderPassType type)
 				
 			}
 			break;
+		case RenderPassType::Skybox:
+			deferredContext->RSSetState(RasterizerState::BackSolid->GetState());
+
+			Matrix world = Matrix::CreateTranslation(activeCamera->GetGameObject()->GetComponent<Transform>()->GetWorldPosition());
+			//sky->Render(deferredContext);
+			skyMaterial->SetShaderVariable("view", activeCamera->GetView().Transpose(), ShaderType::Vertex);
+			skyMaterial->SetShaderVariable("projection", activeCamera->GetProj().Transpose(), ShaderType::Vertex);
+			skyMaterial->SetShaderVariable("world", world.Transpose(), ShaderType::Vertex);
+
+			skyMaterial->BindMaterial(deferredContext);
+
+			ID3D11Buffer* vb = skyEllipsoid->GetVertexBuffer();
+			deferredContext->IASetVertexBuffers(0, 1, &vb, skyEllipsoid->GetStride(), skyEllipsoid->GetOffset());
+			deferredContext->IASetIndexBuffer(skyEllipsoid->GetIndexBuffer(), DXGI_FORMAT_R16_UINT, 0);
+			deferredContext->DrawIndexed(skyEllipsoid->GetNumberOfIndices(), 0, 0);
+			break;
 	}
 }
 
@@ -394,8 +432,8 @@ void Renderer::ClearBackBuffer(ID3D11DeviceContext* deferredContext)
 	deferredContext->RSSetViewports(1, p_Viewport);
 	deferredContext->OMSetRenderTargets(1, &p_BackBuffer, p_DepthBuffer);
 
-	static const float color[4] = { 0.392f, 0.584f, 0.929f, 1.0f };
-	//static const float color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	//static const float color[4] = { 0.392f, 0.584f, 0.929f, 1.0f };
+	static const float color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	deferredContext->ClearRenderTargetView(p_BackBuffer, color);
 	deferredContext->ClearDepthStencilView(p_DepthBuffer, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }

@@ -1,14 +1,5 @@
-cbuffer worldviewproj : register(b0)
-{
-	matrix world;
-	matrix view;
-	matrix projection;
-};
 
-struct VertexShaderInput
-{
-	float3 position		: POSITION;
-};
+#include "Lumina.hlsli"
 
 struct VertexToPixel
 {
@@ -16,7 +7,7 @@ struct VertexToPixel
 	float4 positionL		: POSITION;
 };
 
-VertexToPixel main(VertexShaderInput input)
+VertexToPixel main(MeshVertexInput input)
 {
 	VertexToPixel o;
 

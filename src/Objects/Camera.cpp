@@ -1,6 +1,7 @@
 #include <Objects\Camera.hpp>
 #include <Objects\Transform.hpp>
 #include <Objects\GameObject.hpp>
+#include <Graphics\Cubemap.hpp>
 #include <Config.hpp>
 
 NS_BEGIN
@@ -202,6 +203,16 @@ void Camera::RotateZ(float angle)
 	look = Vector3::Normalize(look * rotation);
 	up = Vector3::Cross(look, right);
 	dirty = true;
+}
+
+void Camera::SetSkybox(Cubemap* skybox)
+{
+	p_Skybox = skybox;
+}
+
+Cubemap* Camera::GetSkybox()const
+{
+	return p_Skybox;
 }
 
 NS_END

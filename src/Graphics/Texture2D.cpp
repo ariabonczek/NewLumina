@@ -29,45 +29,13 @@ NS_BEGIN
 	td.Usage = D3D11_USAGE_DEFAULT;
 	td.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
-	UINT rowpitch = 4 * imageData.width;
-	UINT imagesize = rowpitch * imageData.height;
+	uint32_t rowpitch = 4 * imageData.width;
+	uint32_t imagesize = rowpitch * imageData.height;
 
 	// Copy the memory
 	uint8* temp = new uint8[imagesize];
 
-	// May want to put this in a different function i.e. CopyPixels
-	if (imageData.components == 4)
-	{
-		std::memcpy(temp, imageData.data, imagesize * sizeof(uint8_t));
-	}
-	else if (imageData.components == 3)
-	{
-		// foreach pixel
-		for (uint i = 0; i < imageData.width * imageData.height; i++)
-		{
-			// copy the rgb
-			for (uint j = 0; j < 3; j++)
-			{
-				temp[i * 4 + j] = imageData.data[i * 3 + j];
-			}
-			// set alpha to 1
-			temp[i * 4 + 3] = 1;
-		}
-	}
-	else if (imageData.components == 1)
-	{
-		// foreach pixel
-		for (uint i = 0; i < imageData.width * imageData.height; i++)
-		{
-			// copy the rgb
-			for (uint j = 0; j < 3; j++)
-			{
-				temp[i * 4 + j] = imageData.data[i];
-			}
-			// set alpha to 1
-			temp[i * 4 + 3] = 1;
-		}
-	}
+	CopyPixels(imageData, temp, imagesize);
 
 	D3D11_SUBRESOURCE_DATA srd;
 	ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));

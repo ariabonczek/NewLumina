@@ -23,6 +23,9 @@ public:
 	/// </summary>
 	ID3D11ShaderResourceView* GetShaderResourceView()const;
 protected:
+
+	void CopyPixels(Image& imageData, uint8* temp, uint32_t imagesize);
+
 	Sampler* sampler;
 	ID3D11ShaderResourceView* srv;
 };

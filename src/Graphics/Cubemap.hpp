@@ -3,10 +3,11 @@
 
 #include <Core\Common.hpp>
 #include <Utility\Resources\Resource.hpp>
+#include <Graphics\Texture.hpp>
 
 NS_BEGIN
 
-class Cubemap : public Resource
+class Cubemap : public Texture
 {
 public:
 	Cubemap(LGUID guid, bool baked = false);
@@ -15,8 +16,6 @@ public:
 	void SetTextures(Image* images, ID3D11Device* device);
 private:
 	bool isBaked;
-
-	ID3D11ShaderResourceView* srv;
 };
 
 NS_END

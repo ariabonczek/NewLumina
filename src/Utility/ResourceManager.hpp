@@ -31,7 +31,16 @@ public:
 
 #if DX11
 	static Texture2D* LoadTexture2D(char* filepath);
+
+	/// <summary>
+	/// Right, Left, Up, Down, Forward, Back
+	/// </summary>
 	static Cubemap*   LoadCubemap(char** filepaths);
+
+	/// <summary>
+	/// Right, Left, Up, Down, Forward, Back
+	/// </summary>
+	static Cubemap*	LoadCubemap(char* file1, char* file2, char* file3, char* file4, char* file5, char* file6);
 	static Mesh* LoadMesh(char* filepath);
 	static Shader* LoadShader(wchar_t* filepath, ShaderType type);
 

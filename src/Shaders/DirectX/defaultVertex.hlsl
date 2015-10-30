@@ -8,7 +8,7 @@ MeshVertexOutput main(MeshVertexInput input)
 {
 	MeshVertexOutput o;
 
-	matrix wvp = mul(world, mul(view, projection));
+	matrix wvp = mul(mul(world, view), projection);
 
 	o.position = mul(float4(input.position, 1.0), wvp);
 	o.worldpos = mul(float4(input.position, 1.0), world).xyz;

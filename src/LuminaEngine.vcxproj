@@ -135,6 +135,11 @@
     <ClInclude Include="Utility\Timer.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shaders\DirectX\bumpedPixel.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='DX11_Debug|Win32'">$(OutDir)Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
     <FxCompile Include="Shaders\DirectX\copyTexture.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DX12_Debug|Win32'">5.0</ShaderModel>

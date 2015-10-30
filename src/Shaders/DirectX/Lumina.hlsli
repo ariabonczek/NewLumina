@@ -229,19 +229,20 @@ float NormalDistribution(float roughness, float3 normal, float3 halfvector)
 
 float GaussianFresnelReflectance(float metalness, float3 normal, float3 halfvector)
 {
-	return metalness + (1 - metalness) * pow((1 - dot(normal, halfvector)), 5);
+	return metalness + (1 - metalness) * (1 - dot(normal, halfvector)) *
+		exp2((-5.55473 * dot(normal, halfvector) - 6.98316) * dot(normal, halfvector));
 }
 
 float GeometricAttenuationInternal(float k, float3 normal, float3 _vector)
 {
 	float ndotv = saturate(dot(normal, _vector));
 
-	return ndotv / (ndotv * (1 - k) + k);
+	return ndotv / pow(((1 - k) + k), 2);
 }
 
 float GeometricAttenuation(float roughness, float3 normal, float3 viewvector, float3 lightvector)
 {
-	float k = ((roughness + 1) * (roughness + 1)) / 8;
+	float k = ((roughness + 1) * (roughness + 1)) / 2;
 
 	return GeometricAttenuationInternal(k, normal, viewvector) * GeometricAttenuationInternal(k, normal, lightvector);
 }
@@ -249,23 +250,17 @@ float GeometricAttenuation(float roughness, float3 normal, float3 viewvector, fl
 float CookTorrenceMicrofacetSpecular(float roughness, float metalness, float3 normal, float3 viewvector, float3 halfvector, float3 lightvector)
 {
 	float N = NormalDistribution(roughness, normal, halfvector);
+	float F = GaussianFresnelReflectance(metalness, viewvector, halfvector);
 	float G = GeometricAttenuation(roughness, normal, viewvector, lightvector);
 	
-	float denom = 1.0f / (4 * saturate(dot(normal, lightvector)) * saturate(dot(normal, viewvector)));
-
-	return N * G * denom;
+	return N * G * F;
 }
 
 float4 PBRCalculateFinalColor(float4 diffuse, float3 normal, float roughness, float metalness, float3 viewvector, float3 lightVector, LightData light)
 {
 	float3 halfvector = normalize(lightVector + viewvector);
 
-	float alpha = exp2(10 * (1 - roughness) + 1);
-
 	float spec = CookTorrenceMicrofacetSpecular(roughness, metalness, normal, viewvector, halfvector, lightVector);
 
-	return (diffuse + spec) * (light.color * light.intensity);
-	//return (diffuse * (dot(normal, lightVector)) +
-	//	GaussianFresnelReflectance(metalness, lightVector, halfvector) * ((alpha + 2) / 8) * 
-	//	pow(saturate(dot(normal, halfvector)), alpha) * dot(normal, lightVector));
+	return (diffuse * (1 - metalness) + spec) * dot(normal, lightVector);
 }

@@ -26,6 +26,7 @@ enum class RenderPassType
 	Shadows,
 	DeferredLighting,
 	StencilPass,
+	Skybox,
 };
 
 /// <summary>
@@ -137,11 +138,16 @@ private:
 	ID3D11ShaderResourceView* p_DepthSrv;
 	D3D11_VIEWPORT* p_Viewport;
 	uint32 frameIndex;
+
+	// TODO: CLEAN THIS
 	GBuffer gbuffer;
 	PostProcess finalRender;
 	Material* finalRenderMaterial;
 	Material* lightMaterial;
 	Material* nullMaterial;
+
+	Mesh* skyEllipsoid;
+	Material* skyMaterial;
 #if _DEBUG
 	uint32 deferredIndex;
 #endif

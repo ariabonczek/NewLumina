@@ -80,9 +80,36 @@ Cubemap* ResourceManager::LoadCubemap(char** filepaths)
 	Cubemap* cb = new Cubemap(guid, true);
 	cb->SetTextures(images, p_Device);
 
-	return cb;
+	resourceMap[guid] = cb;
 
+	return cb;
 }
+
+Cubemap* ResourceManager::LoadCubemap(char* file1, char* file2, char* file3, char* file4, char* file5, char* file6)
+{
+	LGUID guid = Hash(file1);
+
+	if (resourceMap.find(guid) != resourceMap.end())
+	{
+		return static_cast<Cubemap*>(resourceMap[guid]);
+	}
+
+	Image images[6];
+	images[0] = Filesystem::LoadTexture2D(file1);
+	images[1] = Filesystem::LoadTexture2D(file2);
+	images[2] = Filesystem::LoadTexture2D(file3);
+	images[3] = Filesystem::LoadTexture2D(file4);
+	images[4] = Filesystem::LoadTexture2D(file5);
+	images[5] = Filesystem::LoadTexture2D(file6);
+
+	Cubemap* cb = new Cubemap(guid, true);
+	cb->SetTextures(images, p_Device);
+
+	resourceMap[guid] = cb;
+
+	return cb;
+}
+
 #if DX11
 Mesh* ResourceManager::LoadMesh(char* filepath)
 #elif DX12
@@ -295,7 +322,8 @@ void ResourceManager::FreeAllResources()
 #if _DEBUG
 		Debug::Log("[ResourceManager] WARNING: Deleting all resources may not clean up all necessary memory!");
 #endif
-		delete it->second;
+		if (it->second)
+			FreeResource(it->second);
 	}
 	resourceMap.clear();
 }

@@ -36,6 +36,8 @@ void GraphicsCommandList::Finish()
 void GraphicsCommandList::Execute()
 {
 	p_ImmediateContext->ExecuteCommandList(commandList, TRUE);
+	if(commandList)
+	commandList->Release();
 }
 
 ID3D11DeviceContext* GraphicsCommandList::GetDeferredContext()const

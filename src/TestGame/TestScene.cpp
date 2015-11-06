@@ -21,6 +21,7 @@ void TestScene::LoadAssets()
 	VertexShader* vs = static_cast<VertexShader*>(ResourceManager::LoadShader(L"Shaders/defaultVertex.cso", ShaderType::Vertex));
 	PixelShader* ps = static_cast<PixelShader*>(ResourceManager::LoadShader(L"Shaders/defaultPixel.cso", ShaderType::Pixel));
 	PixelShader* bumpedps = (PixelShader*)ResourceManager::LoadShader(L"Shaders/bumpedPixel.cso", ShaderType::Pixel);
+	PixelShader* ibPS = (PixelShader*)ResourceManager::LoadShader(L"Shaders/sampleConvulvedCubemap.cso", ShaderType::Pixel);
 
 	VertexShader* quadVS = (VertexShader*)ResourceManager::LoadShader(L"Shaders/fullScreenQuadVertex.cso", ShaderType::Vertex);
 	PixelShader* tintPS = (PixelShader*)ResourceManager::LoadShader(L"Shaders/postFXTint.cso", ShaderType::Pixel);
@@ -76,6 +77,13 @@ void TestScene::LoadAssets()
 	mat2->SetTexture("_Albedo", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_diff.jpg"), ShaderType::Pixel);
 	mat2->SetTexture("_Normal", "_Sampler", ResourceManager::LoadTexture2D("Textures/brick_nor.jpg"), ShaderType::Pixel);
 
+	Material* ibMat = new Material();
+	ibMat->SetVertexShader(vs);
+	ibMat->SetPixelShader(ibPS);
+	ibMat->SetTexture("_Cubemap", "_Sampler", ResourceManager::LoadCubemap(
+		"Textures/emeraldfog/right.jpg", "Textures/emeraldfog/left.jpg", "Textures/emeraldfog/top.jpg",
+		"Textures/emeraldfog/top.jpg", "Textures/emeraldfog/front.jpg", "Textures/emeraldfog/back.jpg"),ShaderType::Pixel);
+
 	Material* ppMat = new Material();
 	ppMat->SetVertexShader(quadVS);
 	ppMat->SetPixelShader(tintPS);
@@ -92,21 +100,21 @@ void TestScene::LoadAssets()
 
 	GameObject* testObject = new GameObject("Test");
 
-	testObject->AddComponent<MeshRenderer>(new MeshRenderer(cube, mat));
+	testObject->AddComponent<MeshRenderer>(new MeshRenderer(cube, ibMat));
 	testObject->AddComponent<TransformRotator>(new TransformRotator(Vector3::Up, 0.f));
 	testObject->GetComponent<Transform>()->SetLocalPosition(Vector3(0.0f, 0.0f, 0.0f));
 
-	GameObject* testObject2 = new GameObject("Test");
-
-	testObject2->AddComponent<MeshRenderer>(new MeshRenderer(cube, mat3));
-	testObject2->AddComponent<TransformRotator>(new TransformRotator(Vector3::Up, 0.f));
-	testObject2->GetComponent<Transform>()->SetLocalPosition(Vector3(2.0f, 0.0f, 0.0f));
-
-	GameObject* testObject3 = new GameObject("Test");
-
-	testObject3->AddComponent<MeshRenderer>(new MeshRenderer(plane, mat4));
-	testObject3->AddComponent<TransformRotator>(new TransformRotator(Vector3::Up, 0.f));
-	testObject3->GetComponent<Transform>()->SetLocalPosition(Vector3(0.0f, -3.0f, 0.0f));
+	//GameObject* testObject2 = new GameObject("Test");
+	//
+	//testObject2->AddComponent<MeshRenderer>(new MeshRenderer(cube, mat3));
+	//testObject2->AddComponent<TransformRotator>(new TransformRotator(Vector3::Up, 0.f));
+	//testObject2->GetComponent<Transform>()->SetLocalPosition(Vector3(2.0f, 0.0f, 0.0f));
+	//
+	//GameObject* testObject3 = new GameObject("Test");
+	//
+	//testObject3->AddComponent<MeshRenderer>(new MeshRenderer(plane, mat4));
+	//testObject3->AddComponent<TransformRotator>(new TransformRotator(Vector3::Up, 0.f));
+	//testObject3->GetComponent<Transform>()->SetLocalPosition(Vector3(0.0f, -3.0f, 0.0f));
 
 	GameObject* camera = new GameObject("Camera");
 	camera->AddComponent<Camera>(new Camera());
@@ -114,94 +122,94 @@ void TestScene::LoadAssets()
 	camera->GetComponent<Transform>()->SetLocalPosition(Vector3(0.0f, 0.0f, -10.0f));
 	camera->GetComponent<Camera>()->SetLens(0.15f * 3.1415926535f, (float)WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 110.0f);
 	camera->GetComponent<Camera>()->SetSkybox(ResourceManager::LoadCubemap(
-		"Textures/cliffsofinsanity/right.jpg", "Textures/cliffsofinsanity/left.jpg", "Textures/cliffsofinsanity/top.jpg",
-		"Textures/cliffsofinsanity/top.jpg", "Textures/cliffsofinsanity/front.jpg", "Textures/cliffsofinsanity/back.jpg"));
+		"Textures/emeraldfog/right.jpg", "Textures/emeraldfog/left.jpg", "Textures/emeraldfog/top.jpg",
+		"Textures/emeraldfog/top.jpg", "Textures/emeraldfog/front.jpg", "Textures/emeraldfog/back.jpg"));
 
 	GameObject* light = new GameObject("Light");
-	light->AddComponent<Light>(new Light(LightType::Point, Color::White, 1.0f));
+	light->AddComponent<Light>(new Light(LightType::Directional, Color::White, 1.0f));
 	light->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
 	light->GetComponent<Light>()->data.range = 25.0f;
 	light->GetComponent<Light>()->data.spot = 5.0f;
-	light->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
+	light->GetComponent<Light>()->data.bidirectionalColor = Vector3(1.0f, 1.0f, 1.0f);
 	light->GetComponent<Transform>()->SetLocalPosition(-5.0f, 0.0f, -5.0f);
 	AddObject(light);
 
 	AddObject(testObject);
-	AddObject(testObject2);
-	AddObject(testObject3);
+	//AddObject(testObject2);
+	//AddObject(testObject3);
 	AddObject(camera);
 
-	GameObject* light2 = new GameObject("Light");
-	light2->AddComponent<Light>(new Light(LightType::Point, Color::Blue, 2.0f));
-	light2->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
-	light2->GetComponent<Light>()->data.range = 25.0f;
-	light2->GetComponent<Light>()->data.spot = 5.0f;
-	light2->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
-	light2->GetComponent<Transform>()->SetLocalPosition(10.0f, 5.0f, 10.0f);
-	AddObject(light2);
+	//GameObject* light2 = new GameObject("Light");
+	//light2->AddComponent<Light>(new Light(LightType::Point, Color::Blue, 2.0f));
+	//light2->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
+	//light2->GetComponent<Light>()->data.range = 25.0f;	
+	//light2->GetComponent<Light>()->data.spot = 5.0f;
+	//light2->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
+	//light2->GetComponent<Transform>()->SetLocalPosition(10.0f, 5.0f, 10.0f);
+	//AddObject(light2);
 	
-	GameObject* light3 = new GameObject("Light");
-	light3->AddComponent<Light>(new Light(LightType::Point, Color::Green, 2.0f));
-	light3->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
-	light3->GetComponent<Light>()->data.range = 25.0f;
-	light3->GetComponent<Light>()->data.spot = 5.0f;
-	light3->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
-	light3->GetComponent<Transform>()->SetLocalPosition(-10.0f, 5.0f, -10.0f);
-	AddObject(light3);
-	
-	GameObject* light4 = new GameObject("Light");
-	light4->AddComponent<Light>(new Light(LightType::Point, Color::Red, 2.0f));
-	light4->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
-	light4->GetComponent<Light>()->data.range = 25.0f;
-	light4->GetComponent<Light>()->data.spot = 5.0f;
-	light4->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
-	light4->GetComponent<Transform>()->SetLocalPosition(10.0f, 5.0f, -10.0f);
-	AddObject(light4);
-	
-	GameObject* light5 = new GameObject("Light");
-	light5->AddComponent<Light>(new Light(LightType::Point, Color::Purple, 2.0f));
-	light5->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
-	light5->GetComponent<Light>()->data.range = 25.0f;
-	light5->GetComponent<Light>()->data.spot = 5.0f;
-	light5->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
-	light5->GetComponent<Transform>()->SetLocalPosition(0.0f, 5.0f, 0.0f);
-	AddObject(light5);
-	
-	GameObject* light6 = new GameObject("Light");
-	light6->AddComponent<Light>(new Light(LightType::Point, Color::Orange, 2.0f));
-	light6->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
-	light6->GetComponent<Light>()->data.range = 25.0f;
-	light6->GetComponent<Light>()->data.spot = 5.0f;
-	light6->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
-	light6->GetComponent<Transform>()->SetLocalPosition(0.0f, 5.0f, 10.0f);
-	AddObject(light6);
-	
-	GameObject* light7 = new GameObject("Light");
-	light7->AddComponent<Light>(new Light(LightType::Point, Color::Yellow, 2.0f));
-	light7->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
-	light7->GetComponent<Light>()->data.range = 25.0f;
-	light7->GetComponent<Light>()->data.spot = 5.0f;
-	light7->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
-	light7->GetComponent<Transform>()->SetLocalPosition(0.0f, 5.0f, -10.0f);
-	AddObject(light7);
-	
-	GameObject* light8 = new GameObject("Light");
-	light8->AddComponent<Light>(new Light(LightType::Point, Color::Magenta, 2.0f));
-	light8->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
-	light8->GetComponent<Light>()->data.range = 25.0f;
-	light8->GetComponent<Light>()->data.spot = 5.0f;
-	light8->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
-	light8->GetComponent<Transform>()->SetLocalPosition(-10.0f, 5.0f, 0.0f);
-	AddObject(light8);
-	
-	GameObject* light9 = new GameObject("Light");
-	light9->AddComponent<Light>(new Light(LightType::Point, Color::Cyan, 2.0f));
-	light9->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
-	light9->GetComponent<Light>()->data.range = 25.0f;
-	light9->GetComponent<Light>()->data.spot = 5.0f;
-	light9->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
-	light9->GetComponent<Transform>()->SetLocalPosition(10.0f, 5.0f, 0.0f);
-	AddObject(light9);
+	//GameObject* light3 = new GameObject("Light");
+	//light3->AddComponent<Light>(new Light(LightType::Point, Color::Green, 2.0f));
+	//light3->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
+	//light3->GetComponent<Light>()->data.range = 25.0f;
+	//light3->GetComponent<Light>()->data.spot = 5.0f;
+	//light3->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
+	//light3->GetComponent<Transform>()->SetLocalPosition(-10.0f, 5.0f, -10.0f);
+	//AddObject(light3);
+	//
+	//GameObject* light4 = new GameObject("Light");
+	//light4->AddComponent<Light>(new Light(LightType::Point, Color::Red, 2.0f));
+	//light4->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
+	//light4->GetComponent<Light>()->data.range = 25.0f;
+	//light4->GetComponent<Light>()->data.spot = 5.0f;
+	//light4->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
+	//light4->GetComponent<Transform>()->SetLocalPosition(10.0f, 5.0f, -10.0f);
+	//AddObject(light4);
+	//
+	//GameObject* light5 = new GameObject("Light");
+	//light5->AddComponent<Light>(new Light(LightType::Point, Color::Purple, 2.0f));
+	//light5->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
+	//light5->GetComponent<Light>()->data.range = 25.0f;
+	//light5->GetComponent<Light>()->data.spot = 5.0f;
+	//light5->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
+	//light5->GetComponent<Transform>()->SetLocalPosition(0.0f, 5.0f, 0.0f);
+	//AddObject(light5);
+	//
+	//GameObject* light6 = new GameObject("Light");
+	//light6->AddComponent<Light>(new Light(LightType::Point, Color::Orange, 2.0f));
+	//light6->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
+	//light6->GetComponent<Light>()->data.range = 25.0f;
+	//light6->GetComponent<Light>()->data.spot = 5.0f;
+	//light6->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
+	//light6->GetComponent<Transform>()->SetLocalPosition(0.0f, 5.0f, 10.0f);
+	//AddObject(light6);
+	//
+	//GameObject* light7 = new GameObject("Light");
+	//light7->AddComponent<Light>(new Light(LightType::Point, Color::Yellow, 2.0f));
+	//light7->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
+	//light7->GetComponent<Light>()->data.range = 25.0f;
+	//light7->GetComponent<Light>()->data.spot = 5.0f;
+	//light7->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
+	//light7->GetComponent<Transform>()->SetLocalPosition(0.0f, 5.0f, -10.0f);
+	//AddObject(light7);
+	//
+	//GameObject* light8 = new GameObject("Light");
+	//light8->AddComponent<Light>(new Light(LightType::Point, Color::Magenta, 2.0f));
+	//light8->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
+	//light8->GetComponent<Light>()->data.range = 25.0f;
+	//light8->GetComponent<Light>()->data.spot = 5.0f;
+	//light8->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
+	//light8->GetComponent<Transform>()->SetLocalPosition(-10.0f, 5.0f, 0.0f);
+	//AddObject(light8);
+	//
+	//GameObject* light9 = new GameObject("Light");
+	//light9->AddComponent<Light>(new Light(LightType::Point, Color::Cyan, 2.0f));
+	//light9->GetComponent<Light>()->data.direction = Vector3::Normalize(Vector3(1.0f, -1.0f, 1.0f));
+	//light9->GetComponent<Light>()->data.range = 25.0f;
+	//light9->GetComponent<Light>()->data.spot = 5.0f;
+	//light9->GetComponent<Light>()->data.bidirectionalColor = Vector3(0.2f, 0.2f, 0.2f);
+	//light9->GetComponent<Transform>()->SetLocalPosition(10.0f, 5.0f, 0.0f);
+	//AddObject(light9);
 
 	SetActiveCamera(camera->GetComponent<Camera>());
 	//SetAmbientLight(Color(0.05f, 0.05f, 0.05f, 1.0f));

@@ -442,6 +442,9 @@
     <FxCompile Include="Shaders\DirectX\bumpedPixel.hlsl">
       <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\DirectX\sampleConvulvedCubemap.hlsl">
+      <Filter>Resource Files\Shaders\DirectX\Pixel</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="P:\LuminaEngine\content\Shaders\OpenGL\defaultFragment.glsl">

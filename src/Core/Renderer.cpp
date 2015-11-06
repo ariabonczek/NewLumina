@@ -118,7 +118,7 @@ void Renderer::InitializeRenderTarget()
 	nullMaterial->SetVertexShader((VertexShader*)ResourceManager::LoadShader(L"Shaders/nullVertex.cso", ShaderType::Vertex));
 	nullMaterial->SetPixelShader((PixelShader*)ResourceManager::LoadShader(L"Shaders/nullPixel.cso", ShaderType::Pixel));
 
-	skyEllipsoid = ResourceManager::CreateSphere(120.0, 3);
+	skyEllipsoid = ResourceManager::CreateSphere(100000.0, 1);
 
 	skyMaterial = new Material();
 	skyMaterial->SetVertexShader((VertexShader*)ResourceManager::LoadShader(L"Shaders/sampleCubemapVertex.cso", ShaderType::Vertex));
@@ -408,19 +408,23 @@ void Renderer::RenderPass(RenderPassType type)
 			break;
 		case RenderPassType::Skybox:
 			deferredContext->RSSetState(RasterizerState::BackSolid->GetState());
+			deferredContext->OMSetDepthStencilState(DepthStencilState::Default->GetState(), 0);
+			rtv = gbuffer.lit->GetRenderTargetView();
+			deferredContext->OMSetRenderTargets(1, &rtv, p_DepthBuffer);
+			deferredContext->OMSetBlendState(BlendState::None->GetState(), blendFactor, 0xffffff);
 
 			Matrix world = Matrix::CreateTranslation(activeCamera->GetGameObject()->GetComponent<Transform>()->GetWorldPosition());
-			//sky->Render(deferredContext);
+
 			skyMaterial->SetShaderVariable("view", activeCamera->GetView().Transpose(), ShaderType::Vertex);
 			skyMaterial->SetShaderVariable("projection", activeCamera->GetProj().Transpose(), ShaderType::Vertex);
 			skyMaterial->SetShaderVariable("world", world.Transpose(), ShaderType::Vertex);
 
 			skyMaterial->BindMaterial(deferredContext);
 
-			ID3D11Buffer* vb = skyEllipsoid->GetVertexBuffer();
-			deferredContext->IASetVertexBuffers(0, 1, &vb, skyEllipsoid->GetStride(), skyEllipsoid->GetOffset());
-			deferredContext->IASetIndexBuffer(skyEllipsoid->GetIndexBuffer(), DXGI_FORMAT_R16_UINT, 0);
-			deferredContext->DrawIndexed(skyEllipsoid->GetNumberOfIndices(), 0, 0);
+		ID3D11Buffer* vb = skyEllipsoid->GetVertexBuffer();
+		deferredContext->IASetVertexBuffers(0, 1, &vb, skyEllipsoid->GetStride(), skyEllipsoid->GetOffset());
+		deferredContext->IASetIndexBuffer(skyEllipsoid->GetIndexBuffer(), DXGI_FORMAT_R16_UINT, 0);
+		deferredContext->DrawIndexed(skyEllipsoid->GetNumberOfIndices(), 0, 0);
 			break;
 	}
 }
